@@ -13,7 +13,6 @@ public class UiManager : MonoBehaviour
 
     public void FadeInScreen()
     {
-        m_DarkenPanel.raycastTarget = false;
         m_DarkenPanel.DOFade(1f, 2f).SetEase(Ease.InOutQuad).OnComplete(() => { OnFadeInEvent?.Invoke(); });
     }
 

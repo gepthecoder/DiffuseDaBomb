@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using DG.Tweening;
 
 public enum BombCaseState { Close, Open, ZoomIn, ZoomOut, }
 
 public class BombManager : MonoBehaviour
 {
     [SerializeField] private BombCase m_BombCase;
-    [SerializeField] private CameraManager m_CameraManager;
+    [SerializeField] private List<Light> m_BombCaseLights;
 
     [HideInInspector] public UnityEvent BombCaseOpeningEvent;
 
@@ -20,6 +21,11 @@ public class BombManager : MonoBehaviour
         {
             BombCaseOpeningEvent = new UnityEvent();
         }
+    }
+
+    private void Start()
+    {
+        TurnOnLightSmooth(true);
     }
 
     private void Update()
@@ -52,5 +58,13 @@ public class BombManager : MonoBehaviour
             BombCaseOpeningEvent?.Invoke();
         }
         else { m_BombCase.TriggerBehaviour(state); }
+    }
+
+    private void TurnOnLightSmooth(bool on)
+    {
+        foreach (var light in m_BombCaseLights)
+        {
+            light.DOIntensity(on ? 2f : 0f, 1.5f);
+        }
     }
 }
