@@ -13,6 +13,7 @@ public class PlantBombManager : MonoBehaviour
     private PlantBombState i_CurrentState = PlantBombState.Start;
 
     private bool m_CanLoopLightEffect = false;
+    private const float m_EffectTime = 2f;
 
     private void Start()
     {
@@ -46,7 +47,7 @@ public class PlantBombManager : MonoBehaviour
 
         foreach (var light in m_CircuitLights)
         {
-            light.DOIntensity(on ? 2.5f : 1f, 2.5f);
+            light.DOIntensity(on ? 2.5f : 0.77f, m_EffectTime);
         }
     }
 
@@ -58,7 +59,7 @@ public class PlantBombManager : MonoBehaviour
             TurnOnLightSmooth(on);
             on = !on;
 
-            yield return null;
+            yield return new WaitForSeconds(m_EffectTime);
         }
     }
 
