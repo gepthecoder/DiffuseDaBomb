@@ -12,7 +12,7 @@ public class PlantBombManager : MonoBehaviour
 
     private PlantBombState i_CurrentState = PlantBombState.Start;
 
-    [HideInInspector] public bool loopLighting = false;
+    private bool m_CanLoopLightEffect = false;
 
     private void Start()
     {
@@ -27,8 +27,8 @@ public class PlantBombManager : MonoBehaviour
         switch (state)
         {
             case PlantBombState.Start:
-                loopLighting = true;
-                TurnOnLightSmooth(true);
+                m_CanLoopLightEffect = true;
+                StartCoroutine(LightShowEffect());
                 HighlightElements(true);
                 break;
             case PlantBombState.Hacking:
@@ -42,15 +42,23 @@ public class PlantBombManager : MonoBehaviour
 
     private void TurnOnLightSmooth(bool on)
     {
-        if (!loopLighting)
-            return;
+        Debug.Log($"Plant Bomb Manager: TurnOnLightSmooth: {on}");
 
         foreach (var light in m_CircuitLights)
         {
-            light.DOIntensity(on ? 2.5f : 1f, 2.5f).OnComplete(() => 
-            {
-                TurnOnLightSmooth(!on);
-            });
+            light.DOIntensity(on ? 2.5f : 1f, 2.5f);
+        }
+    }
+
+    private IEnumerator LightShowEffect()
+    {
+        bool on = true;
+        while (m_CanLoopLightEffect)
+        {
+            TurnOnLightSmooth(on);
+            on = !on;
+
+            yield return null;
         }
     }
 

@@ -24,7 +24,7 @@ public class Highlighter : MonoBehaviour
     {
         if (!CanHiglight)
             return;
-
+        Debug.Log($"HighlightMe: DOShakeScale {transform.name}");
         transform.DOShakeScale(2f, m_WobbleIntensity, 5, 20).OnComplete(() => { HighlightMe(); });
     }
 
