@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UiManager m_UiManager;
     [SerializeField] private PlantBombManager m_PlantBombManager;
     [SerializeField] private SceneSetupManager m_SceneSetupManager;
+    [SerializeField] private CodeManager m_CodeManager;
 
     private void Start()
     {
@@ -69,7 +70,13 @@ public class GameManager : MonoBehaviour
     private void OnBombCaseOpeningEvent()
     {
         m_CameraManager.ZoomInToTarget();
-        m_UiManager.FadeInScreen();
+        m_UiManager.FadeInScreen(1.5f, true);
+    }
+
+    private void OnSetBombCodeEvent()
+    {
+        m_CameraManager.ZoomOutOfTarget();
+        m_UiManager.FadeInScreen(.77f, false);
     }
 
     private void AddListeners()
@@ -79,10 +86,15 @@ public class GameManager : MonoBehaviour
         {
             TriggerBehaviour(GameState.Planting);
         });
+        m_CodeManager.OnSetCodeEvent.AddListener(() => {
+            OnSetBombCodeEvent();
+        });
     }
 
     private void RemoveListeners()
     {
         m_BombManager.BombCaseOpeningEvent.RemoveAllListeners();
+        m_UiManager.OnFadeInEvent.RemoveAllListeners();
+        m_CodeManager.OnSetCodeEvent.RemoveAllListeners();
     }
 }

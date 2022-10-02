@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public enum PlantBombState { Start, Hacking, Success, }
+public enum PlantBombState { Start, Hacking, Success, } 
 
 public class PlantBombManager : MonoBehaviour
 {
+    [SerializeField] private PlantBombHackingController m_HackingController;
+
     [SerializeField] private List<Light> m_CircuitLights;
     [SerializeField] private List<Highlighter> m_HighlightedObjects;
 
@@ -21,7 +23,12 @@ public class PlantBombManager : MonoBehaviour
         HighlightElements(false);
     }
 
-    public void TriggerPlantBehaviour(PlantBombState state)
+    private void Update()
+    {
+        CheckUserInteraction();
+    }
+
+    public void TriggerPlantBehaviour(PlantBombState state, HackingItemData data = null)
     {
         i_CurrentState = state;
 
@@ -33,6 +40,7 @@ public class PlantBombManager : MonoBehaviour
                 HighlightElements(true);
                 break;
             case PlantBombState.Hacking:
+                m_HackingController.OnHackingItemSelected(data);
                 break;
             case PlantBombState.Success:
                 break;
@@ -43,8 +51,6 @@ public class PlantBombManager : MonoBehaviour
 
     private void TurnOnLightSmooth(bool on)
     {
-        Debug.Log($"Plant Bomb Manager: TurnOnLightSmooth: {on}");
-
         foreach (var light in m_CircuitLights)
         {
             light.DOIntensity(on ? 2.5f : 0.77f, m_EffectTime);
@@ -73,6 +79,24 @@ public class PlantBombManager : MonoBehaviour
             {
                 element.CanHiglight = true;
                 element.HighlightMe();
+            }
+        }
+    }
+
+    private void CheckUserInteraction()
+    {
+        if (Input.GetMouseButtonDown(0) && i_CurrentState != PlantBombState.Hacking)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                var clickable = hit.transform.GetComponent<Clickable>();
+                if (clickable != null)
+                {
+                    HackingItemData DATA = new HackingItemData(clickable.clickableType, clickable.positionWorldSpace);
+                    TriggerPlantBehaviour(PlantBombState.Hacking, DATA);
+                }
             }
         }
     }

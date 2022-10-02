@@ -8,16 +8,34 @@ using UnityEngine.Events;
 public class UiManager : MonoBehaviour
 {
     [SerializeField] private Image m_DarkenPanel;
+    [SerializeField] private Keyboard m_KeyboardUI;
 
     [HideInInspector] public UnityEvent OnFadeInEvent = new UnityEvent();
 
-    public void FadeInScreen()
+    public void FadeInScreen(float duration, bool invoke)
     {
-        m_DarkenPanel.DOFade(1f, 2f).SetEase(Ease.InOutQuad).OnComplete(() => { OnFadeInEvent?.Invoke(); });
+        m_DarkenPanel.DOFade(1f, duration).SetEase(Ease.InOutQuad).OnComplete(() => 
+        { 
+            if(invoke)
+                OnFadeInEvent?.Invoke(); 
+        });
+    }
+
+    public void FadeInOutScreen(float duration)
+    {
+        m_DarkenPanel.DOFade(1f, duration).SetEase(Ease.InOutQuad).OnComplete(() =>
+        {
+            FadeOutScreen();
+        });
     }
 
     public void FadeOutScreen()
     {
-        m_DarkenPanel.DOFade(0, 1f).SetEase(Ease.InOutQuad);
+        m_DarkenPanel.DOFade(0, .77f).SetEase(Ease.InOutQuad);
+    }
+
+    public void EnableKeyBoardUI()
+    {
+        m_KeyboardUI.EnableObject(true);
     }
 }

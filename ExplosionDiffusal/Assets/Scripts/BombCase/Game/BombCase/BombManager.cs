@@ -15,6 +15,8 @@ public class BombManager : MonoBehaviour
 
     private BombCaseState m_CurrentBombCaseState = BombCaseState.Close;
 
+    private const string m_BombCaseTag = "BombCase";
+
     private void Awake()
     {
         if (BombCaseOpeningEvent == null)
@@ -30,18 +32,7 @@ public class BombManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && m_CurrentBombCaseState != BombCaseState.Open)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (hit.transform.tag == "BombCase")
-                {
-                    TriggerBombBehaviour(BombCaseState.Open);
-                }
-            }
-        }
+        CheckUserBombInteraction();
     }
 
     public void TriggerBombBehaviour(BombCaseState state)
@@ -65,6 +56,22 @@ public class BombManager : MonoBehaviour
         foreach (var light in m_BombCaseLights)
         {
             light.DOIntensity(on ? 2f : 0f, 1.5f);
+        }
+    }
+
+    private void CheckUserBombInteraction()
+    {
+        if (Input.GetMouseButtonDown(0) && m_CurrentBombCaseState != BombCaseState.Open)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.transform.tag == m_BombCaseTag)
+                {
+                    TriggerBombBehaviour(BombCaseState.Open);
+                }
+            }
         }
     }
 }
