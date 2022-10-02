@@ -7,15 +7,19 @@ public class HackingItemData
 {
     public ClickableType SelectedType;
     public Transform Position;
+    public CodeEncryptionType CodeEncryption;
 
     public HackingItemData() { }
+    public HackingItemData(CodeEncryptionType codeEncryption) { CodeEncryption = codeEncryption; }
     public HackingItemData(ClickableType selectedType, Transform position) { SelectedType = selectedType; Position = position; }
 }
 
 public class PlantBombHackingController : MonoBehaviour
 {
-    private Dictionary<ClickableType, bool> m_TaskListInfo = new Dictionary<ClickableType, bool>()
-    { { ClickableType.Keyboard, false }, { ClickableType.Keypad, false } };
+    [SerializeField] private PlantBombActionHandler m_PlantBombActionHandler;
+
+    private Dictionary<CodeEncryptionType, bool> m_TaskListInfo = new Dictionary<CodeEncryptionType, bool>()
+    { { CodeEncryptionType.KeyboardEncryption, false }, { CodeEncryptionType.KeyPadEncryption, false } };
 
     private ClickableType m_CurrentSelected = ClickableType.None;
 
@@ -37,5 +41,30 @@ public class PlantBombHackingController : MonoBehaviour
         m_CurrentSelected = data.SelectedType;
 
         OnHackingItemSelectedEvent?.Invoke(data);
+    }
+
+    public void OnItemHacked(HackingItemData DATA)
+    {
+        m_TaskListInfo[DATA.CodeEncryption] = true;
+        m_PlantBombActionHandler.DeinitKeyboardView();
+
+        if (TaskDone())
+        {
+            // TODO: EMIT EVENT to GAME MANAGER -> DEFUSING
+        }
+
+    }
+
+    private bool TaskDone()
+    {
+        foreach (var task in m_TaskListInfo)
+        {
+            if(task.Value == false)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

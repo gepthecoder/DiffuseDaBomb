@@ -9,7 +9,7 @@ public class CodeManager : MonoBehaviour
 
     [SerializeField] private List<Code> codes = new List<Code>();
 
-    [HideInInspector] public UnityEvent OnSetCodeEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent<CodeEncryptionType> OnSetCodeEvent = new UnityEvent<CodeEncryptionType>();
 
     private void Awake()
     {
@@ -21,7 +21,7 @@ public class CodeManager : MonoBehaviour
         Code code = GetCodeByEncryption(encryption);
         code.SetBombCode(pass);
 
-        OnSetCodeEvent?.Invoke();
+        OnSetCodeEvent?.Invoke(encryption);
     }
 
     public void ValidateCode(CodeEncryptionType encryption, string pass)

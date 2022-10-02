@@ -73,10 +73,12 @@ public class GameManager : MonoBehaviour
         m_UiManager.FadeInScreen(1.5f, true);
     }
 
-    private void OnSetBombCodeEvent()
+    private void OnSetBombCodeEvent(CodeEncryptionType encryption)
     {
         m_CameraManager.ZoomOutOfTarget();
-        m_UiManager.FadeInScreen(.77f, false);
+        m_UiManager.FadeInOutScreen(.77f);
+
+        m_PlantBombManager.TriggerPlantBehaviour(PlantBombState.Success, new HackingItemData(encryption));
     }
 
     private void AddListeners()
@@ -86,8 +88,8 @@ public class GameManager : MonoBehaviour
         {
             TriggerBehaviour(GameState.Planting);
         });
-        m_CodeManager.OnSetCodeEvent.AddListener(() => {
-            OnSetBombCodeEvent();
+        m_CodeManager.OnSetCodeEvent.AddListener((codeEncryptionType) => {
+            OnSetBombCodeEvent(codeEncryptionType);
         });
     }
 

@@ -369,6 +369,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 8245851257503065259}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &163281988 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4731170267575069518, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8245851257503065259}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163281986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a747feecf0f92e146b584389e89d23e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &168889628
 GameObject:
   m_ObjectHideFlags: 0
@@ -887,6 +899,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813ed8db157e2a446ac650a91651eb6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_PlantBombActionHandler: {fileID: 163281988}
   OnHackingItemSelectedEvent:
     m_PersistentCalls:
       m_Calls: []

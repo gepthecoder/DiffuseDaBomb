@@ -10,7 +10,6 @@ public class PlantBombActionHandler : MonoBehaviour
     [SerializeField] private CameraManager m_CameraManager;
     [SerializeField] private UiManager m_UiManager;
 
-
     private void Start()
     {
         m_HackingController.OnHackingItemSelectedEvent.AddListener(OnHackingItemSelected);
@@ -32,5 +31,10 @@ public class PlantBombActionHandler : MonoBehaviour
     {
         m_UiManager.EnableKeyBoardUI();
         m_3dKeyboard.SetActive(false);
+    }
+
+    public void DeinitKeyboardView()
+    {
+        m_3dKeyboard.SetActive(true);
     }
 }

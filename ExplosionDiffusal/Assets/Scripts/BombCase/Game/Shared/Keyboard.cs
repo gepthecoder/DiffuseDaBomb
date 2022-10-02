@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public enum AudioEffect { Keypress, Success, Denial, }
@@ -42,24 +43,26 @@ public class Keyboard : MonoBehaviour
     {
         Debug.Log(key);
         bool isBackspace = key == "Backspace";
+        bool isEnter = key == "Enter";
+
         if (m_CanShowEnterCode) { m_CanShowEnterCode = false; m_EnterCodeText.SetActive(m_CanShowEnterCode); }
 
-        if (m_CharacterCounter >= m_MaxCharacters && !isBackspace)
+        if (m_CharacterCounter >= m_MaxCharacters && !isBackspace && !isEnter)
         {
             PlayButtonPressedSFX(AudioEffect.Denial);
             return;
         }
+        else if(IsSpecialKey(key)) {
+            PlayButtonPressedSFX(AudioEffect.Keypress);
+            return;
+        }
 
         UpdateInputField(key);
-
     }
 
     private bool IsSpecialKey(string key)
     {
-        return key == "Backspace"           ||
-                key == "Enter"              ||
-                 key == "Esc"               ||
-                  key == "LeftShift"        ||
+        return    key == "LeftShift"        ||
                    key == "LargeShift"      ||
                     key == "Space"          ||
                      key == "Alt"           ||
@@ -192,8 +195,11 @@ public class Keyboard : MonoBehaviour
 
     private void SubmitCode()
     {
+        Debug.Log("SubmitCode: " + m_CurrentString);
         if(m_CurrentString.Length != m_MaxCharacters)
         {
+            Debug.Log("SubmitCode Denial ");
+
             PlayButtonPressedSFX(AudioEffect.Denial);
             return;
         }

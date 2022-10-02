@@ -43,6 +43,7 @@ public class PlantBombManager : MonoBehaviour
                 m_HackingController.OnHackingItemSelected(data);
                 break;
             case PlantBombState.Success:
+                m_HackingController.OnItemHacked(data);
                 break;
             default:
                 break;
