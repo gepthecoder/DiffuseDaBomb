@@ -1,22 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
-public enum AudioEffect { Keypress, Success, Denial, }
-
-public class Keyboard : MonoBehaviour
+public class Keyboard : Encryptor
 {
-    [Header("Audio")]
-    [SerializeField] private AudioSource m_KeyPressAudio;
-    [SerializeField] private AudioSource m_OtherAudio;
-
-    [SerializeField] private AudioClip m_KeyPressClip;
-    [SerializeField] private AudioClip m_AccessDeniedClip;
-    [SerializeField] private AudioClip m_AccessGrantedClip;
-
     [Header("Elements")]
     [SerializeField] private InputField m_InputField;
     [SerializeField] private GameObject m_EnterCodeText;
@@ -39,9 +26,8 @@ public class Keyboard : MonoBehaviour
         gameObject.SetActive(enable);
     }
 
-    public void OnKeyButtonPress(string key) 
+    override public void OnKeyButtonPress(string key) 
     {
-        //Debug.Log(key);
         bool isBackspace = key == "Backspace";
         bool isEnter = key == "Enter";
 
@@ -58,6 +44,11 @@ public class Keyboard : MonoBehaviour
         }
 
         UpdateInputField(key);
+    }
+
+    private void PlayButtonPressedSFX(AudioEffect fx)
+    {
+        AudioManager.INSTANCE.PlayButtonPressedSFX(fx);
     }
 
     private bool IsSpecialKey(string key)
@@ -170,24 +161,7 @@ public class Keyboard : MonoBehaviour
         }
     }
 
-    private void PlayButtonPressedSFX(AudioEffect effectType)
-    {
-        switch (effectType)
-        {
-            case AudioEffect.Keypress:
-                m_KeyPressAudio.PlayOneShot(m_KeyPressClip);
-                break;
-            case AudioEffect.Success:
-                m_OtherAudio.PlayOneShot(m_AccessGrantedClip);
-                break;
-            case AudioEffect.Denial:
-                m_OtherAudio.PlayOneShot(m_AccessDeniedClip);
-                break;
-            default:
-                break;
-        }
-    }
-
+  
     private void CloseKeyboard()
     {
         EnableObject(false);

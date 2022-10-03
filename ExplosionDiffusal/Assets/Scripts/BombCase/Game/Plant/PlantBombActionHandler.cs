@@ -48,7 +48,7 @@ public class PlantBombActionHandler : MonoBehaviour
 
     private void InitKeyPadView()
     {
-        m_UiManager.EnableKeyBoardUI();
+        m_UiManager.EnableKeyPadUI();
         m_3dKeypad.SetActive(false);
     }
 

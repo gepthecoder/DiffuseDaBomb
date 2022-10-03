@@ -7,8 +7,10 @@ using UnityEngine.Events;
 
 public class UiManager : MonoBehaviour
 {
-    [SerializeField] private Image m_DarkenPanel;
     [SerializeField] private Keyboard m_KeyboardUI;
+    [SerializeField] private Keypad m_KeypadUI;
+
+    [SerializeField] private Image m_DarkenPanel;
 
     [HideInInspector] public UnityEvent OnFadeInEvent = new UnityEvent();
 
@@ -37,5 +39,9 @@ public class UiManager : MonoBehaviour
     public void EnableKeyBoardUI()
     {
         m_KeyboardUI.EnableObject(true);
+    }
+    public void EnableKeyPadUI()
+    {
+        m_KeypadUI.EnableObject(true);
     }
 }

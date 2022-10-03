@@ -44,9 +44,6 @@ public class PlantBombHackingController : MonoBehaviour
         if (m_CurrentSelected != ClickableType.None)
             return;
 
-        Debug.Log("OnHackingItemSelected1");
-
-
         m_CurrentSelected = data.SelectedType;
 
         OnHackingItemSelectedEvent?.Invoke(data);
@@ -66,7 +63,6 @@ public class PlantBombHackingController : MonoBehaviour
             m_CurrentSelected = ClickableType.None;
             OnItemHackedEvent?.Invoke(DATA);
         }
-
     }
 
     private bool TaskDone()
