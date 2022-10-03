@@ -24,6 +24,7 @@ public class PlantBombHackingController : MonoBehaviour
     private ClickableType m_CurrentSelected = ClickableType.None;
 
     [HideInInspector] public UnityEvent<HackingItemData> OnHackingItemSelectedEvent = new UnityEvent<HackingItemData>();
+    [HideInInspector] public UnityEvent<HackingItemData> OnItemHackedEvent = new UnityEvent<HackingItemData>();
 
     private void Awake()
     {
@@ -31,12 +32,20 @@ public class PlantBombHackingController : MonoBehaviour
         {
             OnHackingItemSelectedEvent = new UnityEvent<HackingItemData>();
         }
+
+        if (OnItemHackedEvent == null)
+        {
+            OnItemHackedEvent = new UnityEvent<HackingItemData>();
+        }
     }
 
     public void OnHackingItemSelected(HackingItemData data)
     {
         if (m_CurrentSelected != ClickableType.None)
             return;
+
+        Debug.Log("OnHackingItemSelected1");
+
 
         m_CurrentSelected = data.SelectedType;
 
@@ -46,11 +55,16 @@ public class PlantBombHackingController : MonoBehaviour
     public void OnItemHacked(HackingItemData DATA)
     {
         m_TaskListInfo[DATA.CodeEncryption] = true;
-        m_PlantBombActionHandler.DeinitKeyboardView();
+
+        Deinit3dViews(DATA.CodeEncryption);
 
         if (TaskDone())
         {
             // TODO: EMIT EVENT to GAME MANAGER -> DEFUSING
+        } else
+        {
+            m_CurrentSelected = ClickableType.None;
+            OnItemHackedEvent?.Invoke(DATA);
         }
 
     }
@@ -66,5 +80,20 @@ public class PlantBombHackingController : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void Deinit3dViews(CodeEncryptionType type)
+    {
+        switch (type)
+        {
+            case CodeEncryptionType.KeyboardEncryption:
+                m_PlantBombActionHandler.DeinitKeyboardView();
+                break;
+            case CodeEncryptionType.KeyPadEncryption:
+                m_PlantBombActionHandler.DeinitKeypadView();
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -20,12 +20,15 @@ public class BombCase : MonoBehaviour
         switch (state)
         {
             case BombCaseState.Close:
+                Debug.Log("<color=yellow>BombCaseState</color><color=gold>Close</color>");
                 WobbleBombCase();
                 break;
             case BombCaseState.Open:
+                Debug.Log("<color=yellow>BombCaseState</color><color=gold>Open</color>");
                 OpenBombCase(callback);
                 break;
-            case BombCaseState.ZoomIn:
+            case BombCaseState.Hacking:
+                Debug.Log("<color=yellow>BombCaseState</color><color=gold>Hacking</color>");
                 break;
             default:
                 break;

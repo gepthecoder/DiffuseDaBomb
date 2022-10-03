@@ -32,7 +32,10 @@ public class CameraManager : MonoBehaviour
 
     public void ZoomInOutOfTarget(Transform target, Action callback = null, Action callback1 = null)
     {
+        Debug.Log("ZoomInOutOfTarget");
+
         m_MainCam.transform.DOMove(new Vector3(target.position.x, m_MainCam.transform.position.y, target.position.z), .5f)
+            .SetEase(Ease.InOutBack)
             .OnComplete((() =>
             {
                 callback();

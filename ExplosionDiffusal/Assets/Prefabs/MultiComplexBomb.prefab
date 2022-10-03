@@ -33275,7 +33275,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a747feecf0f92e146b584389e89d23e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_3dKeyboard: {fileID: 0}
+  m_3dKeyboard: {fileID: 8245851257686221930}
+  m_3dKeypad: {fileID: 8245851256496045834}
   m_HackingController: {fileID: 0}
   m_CameraManager: {fileID: 0}
   m_UiManager: {fileID: 0}
@@ -47785,6 +47786,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 88ce46d2be8f3294da5be0a30ee2d490, type: 3}
+--- !u!1 &8245851256496045834 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6939466849718928004, guid: 88ce46d2be8f3294da5be0a30ee2d490,
+    type: 3}
+  m_PrefabInstance: {fileID: 1306842492691234190}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8245851256496045833 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6939466849718928007, guid: 88ce46d2be8f3294da5be0a30ee2d490,
@@ -47860,6 +47867,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98b0b2af459dca24fa60cc490e474a39, type: 3}
+--- !u!1 &8245851257686221930 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3127391986875092684, guid: 98b0b2af459dca24fa60cc490e474a39,
+    type: 3}
+  m_PrefabInstance: {fileID: 6415831177169447590}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8245851257686221929 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3127391986875092687, guid: 98b0b2af459dca24fa60cc490e474a39,

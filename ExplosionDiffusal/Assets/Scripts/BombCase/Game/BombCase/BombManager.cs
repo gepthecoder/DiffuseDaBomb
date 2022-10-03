@@ -4,10 +4,13 @@ using UnityEngine;
 using UnityEngine.Events;
 using DG.Tweening;
 
-public enum BombCaseState { Close, Open, ZoomIn, ZoomOut, }
+public enum BombCaseState { Close, Open, Hacking, }
 
 public class BombManager : MonoBehaviour
 {
+    [SerializeField] private bool m_IsSuitcaseOpeningEnabled = true;
+    [Space(5)]
+    [SerializeField] private BombOpeningUiManager m_BombOpeningUiManager;
     [SerializeField] private BombCase m_BombCase;
     [SerializeField] private List<Light> m_BombCaseLights;
 
@@ -16,6 +19,14 @@ public class BombManager : MonoBehaviour
     private BombCaseState m_CurrentBombCaseState = BombCaseState.Close;
 
     private const string m_BombCaseTag = "BombCase";
+
+    //--------------------------------------------/\--------------------------------------------\\
+    private float m_OnDownTimer = 0;
+    private float m_OnDownTreshold = 3f;
+    private bool m_OpenSuitcase = false;
+    private bool m_OnDownStart = false;
+    //--------------------------------------------\/--------------------------------------------\\
+
 
     private void Awake()
     {
@@ -39,11 +50,12 @@ public class BombManager : MonoBehaviour
     {
         m_CurrentBombCaseState = state;
 
-        if(m_CurrentBombCaseState == BombCaseState.Open)
+
+        if (m_CurrentBombCaseState == BombCaseState.Open)
         {
             m_BombCase.TriggerBehaviour(state, () => 
             { 
-                TriggerBombBehaviour(BombCaseState.ZoomIn);
+                TriggerBombBehaviour(BombCaseState.Hacking);
             });
 
             BombCaseOpeningEvent?.Invoke();
@@ -61,17 +73,75 @@ public class BombManager : MonoBehaviour
 
     private void CheckUserBombInteraction()
     {
-        if (Input.GetMouseButtonDown(0) && m_CurrentBombCaseState != BombCaseState.Open)
+        if (m_CurrentBombCaseState != BombCaseState.Close)
+            return;
+
+        if(m_IsSuitcaseOpeningEnabled)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            if(Input.GetMouseButtonDown(0))
             {
-                if (hit.transform.tag == m_BombCaseTag)
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit))
                 {
-                    TriggerBombBehaviour(BombCaseState.Open);
+                    if (hit.transform.tag == m_BombCaseTag)
+                    {
+                        m_BombOpeningUiManager.ShowSlider(true);
+                        m_OnDownStart = true;        
+                    }
+                }
+            }
+
+            if(Input.GetMouseButtonUp(0))
+            {
+                m_OnDownStart = false;
+            }
+
+            if (m_OnDownStart)
+            {
+                m_OnDownTimer += Time.deltaTime;
+                m_BombOpeningUiManager.SetSliderValue(m_OnDownTimer);
+            } else
+            {
+                m_OnDownTimer -= Time.deltaTime * 2;
+                if(m_OnDownTimer <= 0)
+                {
+                    m_OnDownTimer = 0;
+                    m_BombOpeningUiManager.ShowSlider(false);
+                }
+            }
+
+            if (m_OnDownTimer >= m_OnDownTreshold)
+            {
+                m_OpenSuitcase = true;
+                m_OnDownTimer = 0;
+                m_BombOpeningUiManager.ShowSlider(false);
+            }
+
+            m_BombOpeningUiManager.SetSliderValue(m_OnDownTimer);
+
+            if (m_OpenSuitcase)
+            {
+                m_OpenSuitcase = false;
+                TriggerBombBehaviour(BombCaseState.Open);
+            }
+
+        } else
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit))
+                {
+                    if (hit.transform.tag == m_BombCaseTag)
+                    {
+                        TriggerBombBehaviour(BombCaseState.Open);
+                    }
                 }
             }
         }
+
+       
     }
 }

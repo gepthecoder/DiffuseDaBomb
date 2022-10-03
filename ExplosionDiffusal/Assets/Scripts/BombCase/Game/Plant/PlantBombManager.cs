@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public enum PlantBombState { Start, Hacking, Success, } 
 
@@ -21,6 +22,24 @@ public class PlantBombManager : MonoBehaviour
     {
         TurnOnLightSmooth(false);
         HighlightElements(false);
+
+        Subscribe();
+    }
+
+    private void OnDestroy()
+    {
+        UnSubscribe();
+    }
+
+    private void Subscribe()
+    {
+        m_HackingController.OnItemHackedEvent.AddListener(
+            (data) => { TriggerPlantBehaviour(PlantBombState.Start, data); }    
+        );
+    }
+    private void UnSubscribe()
+    {
+        m_HackingController.OnItemHackedEvent.RemoveAllListeners();
     }
 
     private void Update()
@@ -35,14 +54,17 @@ public class PlantBombManager : MonoBehaviour
         switch (state)
         {
             case PlantBombState.Start:
+                Debug.Log("<color=green>PlantBombState</color><color=gold>Start</color>");
                 m_CanLoopLightEffect = true;
                 StartCoroutine(LightShowEffect());
                 HighlightElements(true);
                 break;
             case PlantBombState.Hacking:
+                Debug.Log($"<color=green>PlantBombState</color><color=gold>Hacking</color>: {data.SelectedType}");
                 m_HackingController.OnHackingItemSelected(data);
                 break;
             case PlantBombState.Success:
+                Debug.Log("<color=green>PlantBombState</color><color=gold>Success</color>");
                 m_HackingController.OnItemHacked(data);
                 break;
             default:

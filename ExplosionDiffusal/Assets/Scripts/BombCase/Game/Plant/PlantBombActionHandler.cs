@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 public class PlantBombActionHandler : MonoBehaviour
 {
     [SerializeField] private GameObject m_3dKeyboard;
+    [SerializeField] private GameObject m_3dKeypad;
 
     [SerializeField] private PlantBombHackingController m_HackingController;
     [SerializeField] private CameraManager m_CameraManager;
@@ -22,11 +24,17 @@ public class PlantBombActionHandler : MonoBehaviour
 
     private void OnHackingItemSelected(HackingItemData data)
     {
+        Debug.Log("OnHackingItemSelected2");
         m_CameraManager.ZoomInOutOfTarget(data.Position, () => {
             m_UiManager.FadeInOutScreen(.77f);
-        }, InitKeyboardView);
+        }, () => 
+            {
+                if(data.SelectedType == ClickableType.Keyboard) { InitKeyboardView(); }
+                if(data.SelectedType == ClickableType.Keypad) { InitKeyPadView(); }
+            });
     }
 
+  
     private void InitKeyboardView()
     {
         m_UiManager.EnableKeyBoardUI();
@@ -36,5 +44,16 @@ public class PlantBombActionHandler : MonoBehaviour
     public void DeinitKeyboardView()
     {
         m_3dKeyboard.SetActive(true);
+    }
+
+    private void InitKeyPadView()
+    {
+        m_UiManager.EnableKeyBoardUI();
+        m_3dKeypad.SetActive(false);
+    }
+
+    public void DeinitKeypadView()
+    {
+        m_3dKeypad.SetActive(true);
     }
 }

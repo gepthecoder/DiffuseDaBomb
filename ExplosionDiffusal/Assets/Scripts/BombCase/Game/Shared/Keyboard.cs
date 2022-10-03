@@ -41,7 +41,7 @@ public class Keyboard : MonoBehaviour
 
     public void OnKeyButtonPress(string key) 
     {
-        Debug.Log(key);
+        //Debug.Log(key);
         bool isBackspace = key == "Backspace";
         bool isEnter = key == "Enter";
 
@@ -74,7 +74,7 @@ public class Keyboard : MonoBehaviour
 
     private void UpdateInputField(string key)
     {
-        Debug.Log("UpdateOutputText: " + key);
+        //Debug.Log("UpdateOutputText: " + key);
         Event fakeEvent;
         switch (key)
         {
@@ -139,7 +139,7 @@ public class Keyboard : MonoBehaviour
                 }
                 break;
         }
-        Debug.Log("ProcessEvent: " + fakeEvent.functionKey);
+        //Debug.Log("ProcessEvent: " + fakeEvent.functionKey);
 
         m_InputField.ProcessEvent(fakeEvent);
         m_InputField.ForceLabelUpdate();
@@ -161,7 +161,7 @@ public class Keyboard : MonoBehaviour
 
             m_CharacterCounter -= 1;
             m_CurrentString = m_CurrentString.Substring(0, m_CurrentString.Length - 1);
-            Debug.Log("ProcessEvent: backspace charCount: " + m_CharacterCounter);
+            //Debug.Log("ProcessEvent: backspace charCount: " + m_CharacterCounter);
         }
         else
         {
@@ -195,7 +195,7 @@ public class Keyboard : MonoBehaviour
 
     private void SubmitCode()
     {
-        Debug.Log("SubmitCode: " + m_CurrentString);
+        Debug.Log("<color=gold>SubmitCode</color>: " + m_CurrentString);
         if(m_CurrentString.Length != m_MaxCharacters)
         {
             Debug.Log("SubmitCode Denial ");
