@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum AudioEffect { Keypress, Success, Denial, }
+public enum AudioEffect { Keypress, Success, Denial, Plant, }
 
 public class AudioManager : MonoBehaviour
 {
@@ -14,6 +14,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip m_KeyPressClip;
     [SerializeField] private AudioClip m_AccessDeniedClip;
     [SerializeField] private AudioClip m_AccessGrantedClip;
+    [SerializeField] private AudioClip m_PlantBombClip;
 
     private void Awake()
     {
@@ -33,6 +34,10 @@ public class AudioManager : MonoBehaviour
             case AudioEffect.Denial:
                 m_OtherAudio.PlayOneShot(m_AccessDeniedClip);
                 break;
+            case AudioEffect.Plant:
+                m_OtherAudio.PlayOneShot(m_PlantBombClip);
+                break;
+
             default:
                 break;
         }

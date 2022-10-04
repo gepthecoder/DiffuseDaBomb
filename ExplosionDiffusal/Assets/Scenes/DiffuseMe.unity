@@ -2556,7 +2556,8 @@ MonoBehaviour:
   m_OtherAudio: {fileID: 1382593998}
   m_KeyPressClip: {fileID: 8300000, guid: 972b3ad727a0c364cbe16b402305c631, type: 3}
   m_AccessDeniedClip: {fileID: 8300000, guid: edd81f165f7bb7c4081b474c521ef968, type: 3}
-  m_AccessGrantedClip: {fileID: 8300000, guid: a50df5d1531ccf84aa03dccc4847f9a9, type: 3}
+  m_AccessGrantedClip: {fileID: 8300000, guid: 1a97c0aacd3290541adeaffac96c99c6, type: 3}
+  m_PlantBombClip: {fileID: 8300000, guid: a50df5d1531ccf84aa03dccc4847f9a9, type: 3}
 --- !u!1 &1831449184
 GameObject:
   m_ObjectHideFlags: 0

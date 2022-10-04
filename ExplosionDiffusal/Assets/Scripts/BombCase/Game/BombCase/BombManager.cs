@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using DG.Tweening;
+using System;
 
 public enum BombCaseState { Close, Open, Hacking, }
+public enum BombCaseSubState { OnBombCasePressDown, OnBombCasePressUp, NonInteractive, }
 
 public class BombManager : MonoBehaviour
 {
@@ -16,7 +18,10 @@ public class BombManager : MonoBehaviour
 
     [HideInInspector] public UnityEvent BombCaseOpeningEvent;
 
+    private UnityEvent<BombCaseSubState> OnBombCaseInteractionEvent;
+
     private BombCaseState m_CurrentBombCaseState = BombCaseState.Close;
+    private BombCaseSubState m_SubBombCaseState = BombCaseSubState.NonInteractive;
 
     private const string m_BombCaseTag = "BombCase";
 
@@ -27,18 +32,42 @@ public class BombManager : MonoBehaviour
     private bool m_OnDownStart = false;
     //--------------------------------------------\/--------------------------------------------\\
 
-
     private void Awake()
     {
         if (BombCaseOpeningEvent == null)
         {
             BombCaseOpeningEvent = new UnityEvent();
         }
+
+        if (OnBombCaseInteractionEvent == null)
+        {
+            OnBombCaseInteractionEvent = new UnityEvent<BombCaseSubState>();
+        }
+
+        m_BombCase.Init();
     }
 
     private void Start()
     {
         TurnOnLightSmooth(true);
+        SetupBombOpeningSlider(m_OnDownTreshold);
+
+        OnBombCaseInteractionEvent.AddListener( (bombCaseSubState) => {
+            m_BombCase.SetWobbleIntensity(bombCaseSubState);
+        });
+    }
+
+    private void OnDestroy()
+    {
+        OnBombCaseInteractionEvent.RemoveAllListeners();
+    }
+
+    private void SetupBombOpeningSlider(float onDownTreshold)
+    {
+        if (!m_IsSuitcaseOpeningEnabled)
+            return;
+
+        m_BombOpeningUiManager.SetupSlider(onDownTreshold);
     }
 
     private void Update()
@@ -49,7 +78,6 @@ public class BombManager : MonoBehaviour
     public void TriggerBombBehaviour(BombCaseState state)
     {
         m_CurrentBombCaseState = state;
-
 
         if (m_CurrentBombCaseState == BombCaseState.Open)
         {
@@ -86,6 +114,7 @@ public class BombManager : MonoBehaviour
                 {
                     if (hit.transform.tag == m_BombCaseTag)
                     {
+                        OnBombCaseInteractionEvent?.Invoke(BombCaseSubState.OnBombCasePressDown);
                         m_BombOpeningUiManager.ShowSlider(true);
                         m_OnDownStart = true;        
                     }
@@ -95,6 +124,7 @@ public class BombManager : MonoBehaviour
             if(Input.GetMouseButtonUp(0))
             {
                 m_OnDownStart = false;
+                OnBombCaseInteractionEvent?.Invoke(BombCaseSubState.OnBombCasePressUp);
             }
 
             if (m_OnDownStart)
@@ -124,6 +154,8 @@ public class BombManager : MonoBehaviour
             {
                 m_OpenSuitcase = false;
                 TriggerBombBehaviour(BombCaseState.Open);
+
+                OnBombCaseInteractionEvent?.Invoke(BombCaseSubState.NonInteractive);            
             }
 
         } else

@@ -11,7 +11,18 @@ public class BombCase : MonoBehaviour
 
     private float m_CaseOpenedValue = 87f;
 
+    private int m_ShakeIntensityNormal= 5;
+    private int m_ShakeIntensityIntense= 9;
+    private int m_ShakeIntensity;
+
+    private float m_ShakeStrenght = .12f;
+
     private BombCaseState i_State;
+
+    public void Init()
+    {
+        m_ShakeIntensity = m_ShakeIntensityNormal;
+    }
 
     public void TriggerBehaviour(BombCaseState state, Action callback = null)
     {
@@ -35,7 +46,6 @@ public class BombCase : MonoBehaviour
         }
     }
 
-
     private void OpenBombCase(Action callback)
     {
         m_TopCasePart.DOLocalRotate(new Vector3(0f, m_CaseOpenedValue, 0f), 1.5f).SetEase(Ease.OutExpo).OnComplete(() => 
@@ -52,7 +62,33 @@ public class BombCase : MonoBehaviour
         if (i_State != BombCaseState.Close)
             return;
 
-        m_BombTransform.DOShakePosition(2f, .3f, 7).OnComplete(() => { WobbleBombCase(); });
+        m_BombTransform.DOKill();
+        m_BombTransform.DOShakePosition(2f, m_ShakeStrenght, m_ShakeIntensity)
+            .SetEase(Ease.InOutBounce)
+            .OnComplete(() => { WobbleBombCase(); });
+    }
+
+    public void SetWobbleIntensity(BombCaseSubState situation)
+    {
+        switch (situation)
+        {
+            case BombCaseSubState.OnBombCasePressDown:
+                m_ShakeIntensity = m_ShakeIntensityIntense;
+                m_ShakeStrenght = .2f;
+                break;
+            case BombCaseSubState.OnBombCasePressUp:
+                m_ShakeIntensity = m_ShakeIntensityNormal;
+                m_ShakeStrenght = .12f;
+                break;
+            case BombCaseSubState.NonInteractive:
+                m_ShakeIntensity = m_ShakeIntensityNormal;
+                m_ShakeStrenght = .12f;
+                break;
+            default:
+                m_ShakeIntensity = m_ShakeIntensityNormal;
+                break;
+
+        }
     }
 
 }

@@ -24,7 +24,8 @@ public class PlantBombActionHandler : MonoBehaviour
 
     private void OnHackingItemSelected(HackingItemData data)
     {
-        Debug.Log("OnHackingItemSelected2");
+        AudioManager.INSTANCE.PlayButtonPressedSFX(AudioEffect.Plant);
+
         m_CameraManager.ZoomInOutOfTarget(data.Position, () => {
             m_UiManager.FadeInOutScreen(.77f);
         }, () => 

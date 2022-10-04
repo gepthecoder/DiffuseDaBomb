@@ -27,7 +27,7 @@ public class CameraManager : MonoBehaviour
 
     public void ZoomInToTarget()
     {
-        m_MainCam.DOFieldOfView(m_MainCam.nearClipPlane, 1f).SetEase(Ease.InSine);
+        m_MainCam.DOFieldOfView(m_MainCam.nearClipPlane + 4, 1f).SetEase(Ease.InOutBack);
     }
 
     public void ZoomInOutOfTarget(Transform target, Action callback = null, Action callback1 = null)

@@ -35,4 +35,9 @@ public class BombOpeningUiManager : MonoBehaviour
     {
         m_BombOpeningSlider.value = value;
     }
+
+    public void SetupSlider(float onDownTreshold)
+    {
+        m_BombOpeningSlider.maxValue = Mathf.Round(onDownTreshold);
+    }
 }
