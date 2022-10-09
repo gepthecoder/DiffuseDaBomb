@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class Keypad : Encryptor
 {
@@ -48,7 +50,7 @@ public class Keypad : Encryptor
                 SubmitCode();
                 return;
             case "Close":
-                CloseKeypad();
+                CloseEncryptor();
                 return;
             default:
                 if (key.Length != 1)
@@ -71,10 +73,10 @@ public class Keypad : Encryptor
         PlayButtonPressedSFX(AudioEffect.Keypress);
     }
 
-    private void CloseKeypad()
+    public override void CloseEncryptor()
     {
-        EnableObject(false);
-    }
+        OnEncryptorClose?.Invoke(new HackingItemData(CodeEncryptionType.KeyPadEncryption));
+    } 
 
     private void SubmitCode()
     {
@@ -89,8 +91,7 @@ public class Keypad : Encryptor
 
         CodeManager.instance.SetCode(CodeEncryptionType.KeyPadEncryption, m_CurrentString);
 
-        PlayButtonPressedSFX(AudioEffect.Success);
-        CloseKeypad();
+        EnableObject(false);
     }
 
     private void ClearCode()
@@ -114,6 +115,16 @@ public class Keypad : Encryptor
 
     public void EnableObject(bool enable)
     {
-        gameObject.SetActive(enable);
+        if (enable)
+        {
+            gameObject.SetActive(true);
+            gameObject.transform.DOScale(Vector3.one, 1f)
+                .SetEase(Ease.InOutCubic);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+            gameObject.transform.localScale = Vector3.zero;
+        }
     }
 }

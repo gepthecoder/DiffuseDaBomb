@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class BombOpeningUiManager : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class BombOpeningUiManager : MonoBehaviour
     private Slider m_BombOpeningSlider;
 
     private bool m_CanShow = true;
+    private float m_ShakeIntensity = 0;
 
     private void Awake()
     {
@@ -31,9 +33,12 @@ public class BombOpeningUiManager : MonoBehaviour
         m_BombOpeningSlider.gameObject.SetActive(show);
     }
 
+    private bool bitVal = false;
     public void SetSliderValue(float value)
     {
         m_BombOpeningSlider.value = value;
+        bitVal = !bitVal;
+        m_BombOpeningSlider.transform.DOBlendablePunchRotation(new Vector3(0, 0, bitVal ? -3 : 3), value / m_BombOpeningSlider.maxValue);
     }
 
     public void SetupSlider(float onDownTreshold)

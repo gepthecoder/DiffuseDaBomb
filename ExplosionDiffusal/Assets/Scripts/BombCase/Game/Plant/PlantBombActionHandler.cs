@@ -2,24 +2,38 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlantBombActionHandler : MonoBehaviour
 {
+    [Header("3D")]
     [SerializeField] private GameObject m_3dKeyboard;
     [SerializeField] private GameObject m_3dKeypad;
-
+    [Space(5)]
+    [SerializeField] private List<GameObject> m_PlasticBombCoverObjects;
+    [SerializeField] private GameObject m_TnTimerObject;
+    [Header("UI")]
+    [SerializeField] private Keyboard m_2dKeyboard;
+    [SerializeField] private Keypad m_2dKeypad;
+    [Header("Controllers")]
     [SerializeField] private PlantBombHackingController m_HackingController;
     [SerializeField] private CameraManager m_CameraManager;
     [SerializeField] private UiManager m_UiManager;
 
+    [HideInInspector] public UnityEvent<HackingItemData> OnEncryptorCloseEvent = new UnityEvent<HackingItemData>();
+
     private void Start()
     {
         m_HackingController.OnHackingItemSelectedEvent.AddListener(OnHackingItemSelected);
+        m_2dKeyboard.OnEncryptorClose.AddListener((data) => { OnEncryptorClose(data); });
+        m_2dKeypad.OnEncryptorClose.AddListener((data) => { OnEncryptorClose(data); });
     }
 
     private void OnDestroy()
     {
         m_HackingController.OnHackingItemSelectedEvent.RemoveListener(OnHackingItemSelected);
+        m_2dKeyboard.OnEncryptorClose.RemoveAllListeners();
+        m_2dKeypad.OnEncryptorClose.RemoveAllListeners();
     }
 
     private void OnHackingItemSelected(HackingItemData data)
@@ -35,7 +49,20 @@ public class PlantBombActionHandler : MonoBehaviour
             });
     }
 
-  
+    private void OnEncryptorClose(HackingItemData data)
+    {
+        m_CameraManager.ZoomOutOfTarget();
+        m_UiManager.FadeInOutScreen(.77f);
+
+        DeinitKeyboardView();
+        DeinitKeypadView();
+
+        m_UiManager.DisableKeyBoardUI();
+        m_UiManager.DisableKeyPadUI();
+
+        OnEncryptorCloseEvent?.Invoke(data);
+    }
+
     private void InitKeyboardView()
     {
         m_UiManager.EnableKeyBoardUI();
@@ -56,5 +83,25 @@ public class PlantBombActionHandler : MonoBehaviour
     public void DeinitKeypadView()
     {
         m_3dKeypad.SetActive(true);
+    }
+
+    public void ActivateBombEffect(bool activate, CodeEncryptionType type)
+    {
+        switch (type)
+        {
+            case CodeEncryptionType.KeyboardEncryption:
+
+                foreach (var item in m_PlasticBombCoverObjects)
+                {
+                    item.SetActive(activate);
+                }
+                break;
+            case CodeEncryptionType.KeyPadEncryption:
+                m_TnTimerObject.SetActive(!activate);
+                break;
+            default:
+                break;
+        }
+
     }
 }

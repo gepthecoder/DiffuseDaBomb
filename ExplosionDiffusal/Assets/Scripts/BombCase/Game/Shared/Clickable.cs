@@ -7,4 +7,6 @@ public class Clickable : MonoBehaviour
 {
     public ClickableType clickableType;
     public Transform positionWorldSpace;
+
+    public bool CanClick = true;
 }

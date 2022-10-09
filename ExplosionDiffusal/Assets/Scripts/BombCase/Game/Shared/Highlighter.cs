@@ -12,6 +12,7 @@ public class Highlighter : MonoBehaviour
 {
     public bool CanHiglight = true;
     public HighlightType Type = HighlightType.Default;
+    public ClickableType ID;
 
     private float m_WobbleIntensity;
 
@@ -24,6 +25,7 @@ public class Highlighter : MonoBehaviour
     {
         if (!CanHiglight)
             return;
+
         transform.DOShakeScale(2f, m_WobbleIntensity, 5, 20).OnComplete(() => { HighlightMe(); });
     }
 

@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using DG.Tweening;
 
 public class Keyboard : Encryptor
 {
@@ -15,6 +17,7 @@ public class Keyboard : Encryptor
 
     private bool m_CanShowEnterCode = true;
 
+
     private void Awake()
     {
         m_InputField.characterLimit = m_MaxCharacters;
@@ -23,7 +26,16 @@ public class Keyboard : Encryptor
 
     public void EnableObject(bool enable)
     {
-        gameObject.SetActive(enable);
+        if(enable)
+        {
+            gameObject.SetActive(true);
+            gameObject.transform.DOScale(Vector3.one, 1f)
+                .SetEase(Ease.InOutCubic);
+        } else
+        {
+            gameObject.SetActive(false);
+            gameObject.transform.localScale = Vector3.zero;
+        }
     }
 
     override public void OnKeyButtonPress(string key) 
@@ -76,7 +88,7 @@ public class Keyboard : Encryptor
                 SubmitCode();
                 return;
             case "Esc":
-                CloseKeyboard();
+                CloseEncryptor();
                 return;
 
             case ",":
@@ -162,9 +174,9 @@ public class Keyboard : Encryptor
     }
 
   
-    private void CloseKeyboard()
+    public override void CloseEncryptor()
     {
-        EnableObject(false);
+        OnEncryptorClose?.Invoke(new HackingItemData(CodeEncryptionType.KeyboardEncryption));
     }
 
     private void SubmitCode()
@@ -180,7 +192,6 @@ public class Keyboard : Encryptor
 
         CodeManager.instance.SetCode(CodeEncryptionType.KeyboardEncryption, m_CurrentString);
 
-        PlayButtonPressedSFX(AudioEffect.Success);
-        CloseKeyboard();
+        EnableObject(false);
     }
 }

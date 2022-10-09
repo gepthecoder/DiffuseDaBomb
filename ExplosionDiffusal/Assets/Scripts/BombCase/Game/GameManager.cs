@@ -6,17 +6,23 @@ using UnityEngine;
 
 // Attacker Defender
 
-// Attacker Steals The Bomb -> Plant
+// Attacker -> Plant The Bomb 
 
-// Defender Needs To Defuse it before Time Runs Out -> Defuse
+// Defender Needs To Defuse it before Time Runs Out -> Defuse -> Victory: Defender
+// Defender Doesn't Defuse bomb in Time -> Victory: Attacker
 
 // SCORE/TEAM system, history
 
-
 // FLOW
-// Bomb Suitcase Starts Wobbling -> Press To Open + Key To Open
+// Bomb Suitcase Starts Wobbling -> OnDown timer || Click
 // Bomb Opens -> Camera Zooms In -> Scene Transition
 // Circuit Board With Key Locks and Riddle ??
+
+// Keyboard || Keypad \\
+
+// Enter Code On Both (TODO: settings to select either or)
+
+// Bomb Is Planted
 
 public enum GameState { Initial, Planting, Defusing, Victory, }
 

@@ -130,7 +130,6 @@ public class BombManager : MonoBehaviour
             if (m_OnDownStart)
             {
                 m_OnDownTimer += Time.deltaTime;
-                m_BombOpeningUiManager.SetSliderValue(m_OnDownTimer);
             } else
             {
                 m_OnDownTimer -= Time.deltaTime * 2;

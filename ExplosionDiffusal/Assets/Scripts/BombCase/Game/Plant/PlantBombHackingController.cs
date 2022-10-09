@@ -9,8 +9,12 @@ public class HackingItemData
     public Transform Position;
     public CodeEncryptionType CodeEncryption;
 
-    public HackingItemData() { }
+    public bool CloseHackingItemSuccess;
+
     public HackingItemData(CodeEncryptionType codeEncryption) { CodeEncryption = codeEncryption; }
+    public HackingItemData(CodeEncryptionType codeEncryption, bool closeHackingItemSuccess) 
+    { CodeEncryption = codeEncryption; CloseHackingItemSuccess = closeHackingItemSuccess; }
+
     public HackingItemData(ClickableType selectedType, Transform position) { SelectedType = selectedType; Position = position; }
 }
 
@@ -37,6 +41,15 @@ public class PlantBombHackingController : MonoBehaviour
         {
             OnItemHackedEvent = new UnityEvent<HackingItemData>();
         }
+
+        m_PlantBombActionHandler.OnEncryptorCloseEvent.AddListener((data) => {
+            m_CurrentSelected = ClickableType.None;
+        });
+    }
+
+    private void OnDestroy()
+    {
+        m_PlantBombActionHandler.OnEncryptorCloseEvent.RemoveAllListeners();
     }
 
     public void OnHackingItemSelected(HackingItemData data)
@@ -54,14 +67,18 @@ public class PlantBombHackingController : MonoBehaviour
         m_TaskListInfo[DATA.CodeEncryption] = true;
 
         Deinit3dViews(DATA.CodeEncryption);
+        m_PlantBombActionHandler.ActivateBombEffect(false, DATA.CodeEncryption);
 
         if (TaskDone())
         {
             // TODO: EMIT EVENT to GAME MANAGER -> DEFUSING
-        } else
+            PlayButtonPressedSFX(AudioEffect.BombsPlanted);
+        }
+        else
         {
             m_CurrentSelected = ClickableType.None;
             OnItemHackedEvent?.Invoke(DATA);
+            PlayButtonPressedSFX(AudioEffect.Success);
         }
     }
 
@@ -76,6 +93,10 @@ public class PlantBombHackingController : MonoBehaviour
         }
 
         return true;
+    }
+    private void PlayButtonPressedSFX(AudioEffect fx)
+    {
+        AudioManager.INSTANCE.PlayButtonPressedSFX(fx);
     }
 
     private void Deinit3dViews(CodeEncryptionType type)

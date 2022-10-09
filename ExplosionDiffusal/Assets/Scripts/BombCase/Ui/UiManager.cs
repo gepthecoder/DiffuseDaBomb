@@ -44,4 +44,12 @@ public class UiManager : MonoBehaviour
     {
         m_KeypadUI.EnableObject(true);
     }
+    public void DisableKeyBoardUI()
+    {
+        m_KeyboardUI.EnableObject(false);
+    }
+    public void DisableKeyPadUI()
+    {
+        m_KeypadUI.EnableObject(false);
+    }
 }

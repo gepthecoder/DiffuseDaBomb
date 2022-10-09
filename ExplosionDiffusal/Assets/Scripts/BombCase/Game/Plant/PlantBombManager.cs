@@ -9,18 +9,19 @@ public enum PlantBombState { Start, Hacking, Success, }
 public class PlantBombManager : MonoBehaviour
 {
     [SerializeField] private PlantBombHackingController m_HackingController;
+    [SerializeField] private PlantBombActionHandler m_PlantBombActionHandler;
 
-    [SerializeField] private List<Light> m_CircuitLights;
+    [SerializeField] private Lights m_Lights;
+
     [SerializeField] private List<Highlighter> m_HighlightedObjects;
+
 
     private PlantBombState i_CurrentState = PlantBombState.Start;
 
-    private bool m_CanLoopLightEffect = false;
-    private const float m_EffectTime = 2f;
 
     private void Start()
     {
-        TurnOnLightSmooth(false);
+        m_Lights.TurnOnLightSmooth(false);
         HighlightElements(false);
 
         Subscribe();
@@ -33,8 +34,12 @@ public class PlantBombManager : MonoBehaviour
 
     private void Subscribe()
     {
+        m_PlantBombActionHandler.OnEncryptorCloseEvent.AddListener((data) => {
+            TriggerPlantBehaviour(PlantBombState.Start, new HackingItemData(data.CodeEncryption, false));
+        });
+
         m_HackingController.OnItemHackedEvent.AddListener(
-            (data) => { TriggerPlantBehaviour(PlantBombState.Start, data); }    
+            (data) => { TriggerPlantBehaviour(PlantBombState.Start, new HackingItemData(data.CodeEncryption, true)); }    
         );
     }
     private void UnSubscribe()
@@ -55,9 +60,26 @@ public class PlantBombManager : MonoBehaviour
         {
             case PlantBombState.Start:
                 Debug.Log("<color=green>PlantBombState</color><color=gold>Start</color>");
-                m_CanLoopLightEffect = true;
-                StartCoroutine(LightShowEffect());
-                HighlightElements(true);
+                if(data != null) {
+                    if(data.CloseHackingItemSuccess)
+                    {
+                        if (data.CodeEncryption == CodeEncryptionType.KeyboardEncryption)
+                        {
+                            m_Lights.EnableKeyboardLight(false);
+                            m_Lights.LightEffectByType(CodeEncryptionType.KeyPadEncryption);
+                        }
+                        else if(data.CodeEncryption == CodeEncryptionType.KeyPadEncryption)
+                        {
+                            m_Lights.EnableKeypadLight(false);
+                            m_Lights.LightEffectByType(CodeEncryptionType.KeyboardEncryption);
+                        }
+                    }           
+                } 
+                else
+                {
+                    m_Lights.LightEffect();
+                    HighlightElements(true);
+                }             
                 break;
             case PlantBombState.Hacking:
                 Debug.Log($"<color=green>PlantBombState</color><color=gold>Hacking</color>: {data.SelectedType}");
@@ -65,30 +87,13 @@ public class PlantBombManager : MonoBehaviour
                 break;
             case PlantBombState.Success:
                 Debug.Log("<color=green>PlantBombState</color><color=gold>Success</color>");
+                HighlightByType(false, data.CodeEncryption);
+                m_Lights.LightUpBombs(true, data.CodeEncryption);
+
                 m_HackingController.OnItemHacked(data);
                 break;
             default:
                 break;
-        }
-    }
-
-    private void TurnOnLightSmooth(bool on)
-    {
-        foreach (var light in m_CircuitLights)
-        {
-            light.DOIntensity(on ? 2.5f : 0.77f, m_EffectTime);
-        }
-    }
-
-    private IEnumerator LightShowEffect()
-    {
-        bool on = true;
-        while (m_CanLoopLightEffect)
-        {
-            TurnOnLightSmooth(on);
-            on = !on;
-
-            yield return new WaitForSeconds(m_EffectTime);
         }
     }
 
@@ -100,8 +105,33 @@ public class PlantBombManager : MonoBehaviour
 
             if (highlight)
             {
+                element.GetComponent<Clickable>().CanClick = true;
                 element.CanHiglight = true;
                 element.HighlightMe();
+            }
+        }
+    }
+
+    private void HighlightByType(bool highlight, CodeEncryptionType type)
+    {
+        foreach (var element in m_HighlightedObjects)
+        {
+            Code code = element.GetComponent<Code>();
+
+            if (code.EncryptionType == type)
+            {
+                if(highlight)
+                {
+                    element.CanHiglight = true;
+                    element.HighlightMe();
+                }
+                else
+                {
+                    element.GetComponent<Clickable>().CanClick = false;
+                    element.StopHighlightEffect();
+                }
+
+                break;
             }
         }
     }
@@ -117,8 +147,11 @@ public class PlantBombManager : MonoBehaviour
                 var clickable = hit.transform.GetComponent<Clickable>();
                 if (clickable != null)
                 {
-                    HackingItemData DATA = new HackingItemData(clickable.clickableType, clickable.positionWorldSpace);
-                    TriggerPlantBehaviour(PlantBombState.Hacking, DATA);
+                    if(clickable.CanClick)
+                    {
+                        HackingItemData DATA = new HackingItemData(clickable.clickableType, clickable.positionWorldSpace);
+                        TriggerPlantBehaviour(PlantBombState.Hacking, DATA);
+                    }             
                 }
             }
         }
