@@ -1419,6 +1419,9 @@ MonoBehaviour:
   OnItemHackedEvent:
     m_PersistentCalls:
       m_Calls: []
+  OnAllItemsHackedEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &615690726
 GameObject:
   m_ObjectHideFlags: 0
@@ -1725,6 +1728,9 @@ MonoBehaviour:
   m_HighlightedObjects:
   - {fileID: 8245851257503065261}
   - {fileID: 8245851257503065260}
+  OnPlantBombDoneEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &900197299
 GameObject:
   m_ObjectHideFlags: 0

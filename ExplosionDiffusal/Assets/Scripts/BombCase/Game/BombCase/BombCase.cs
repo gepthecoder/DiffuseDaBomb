@@ -33,6 +33,7 @@ public class BombCase : MonoBehaviour
             case BombCaseState.Close:
                 Debug.Log("<color=yellow>BombCaseState</color><color=gold>Close</color>");
                 WobbleBombCase();
+                CloseBombCase();
                 break;
             case BombCaseState.Open:
                 Debug.Log("<color=yellow>BombCaseState</color><color=gold>Open</color>");

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SceneType { Planting, Defusing, Waiting, }
+public enum SceneType { Planting, Defusing, Waiting, Default, }
 
 public class SceneSetupManager : MonoBehaviour
 {
@@ -21,7 +21,11 @@ public class SceneSetupManager : MonoBehaviour
                 break;
             case SceneType.Waiting:
                 break;
+
+            case SceneType.Default:
             default:
+                m_BombCase.SetActive(true);
+                m_Curcuit.SetActive(false);
                 break;
         }
     }

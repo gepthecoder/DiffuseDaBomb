@@ -152,6 +152,7 @@ public class BombManager : MonoBehaviour
             if (m_OpenSuitcase)
             {
                 m_OpenSuitcase = false;
+                m_OnDownStart = false;
                 TriggerBombBehaviour(BombCaseState.Open);
 
                 OnBombCaseInteractionEvent?.Invoke(BombCaseSubState.NonInteractive);            

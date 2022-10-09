@@ -68,12 +68,28 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.Defusing:
                 Debug.Log($"<color=red>GameState</color><color=gold>Defusing</color>");
+                StartCoroutine(OnDefuseBombEvent());
                 break;
             case GameState.Victory:
                 break;
             default:
                 break;
         }
+    }
+
+    private IEnumerator OnDefuseBombEvent()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        m_UiManager.FadeInOutScreen(1f);
+        m_CameraManager.ZoomInOutToBombCaseView(
+                  () => {
+                      m_SceneSetupManager.SetupScene(SceneType.Default);
+                  },
+                  () => {
+                      m_BombManager.TriggerBombBehaviour(BombCaseState.Close);
+                  }
+              );
     }
 
     private void OnBombCaseOpeningEvent()

@@ -56,4 +56,19 @@ public class CameraManager : MonoBehaviour
         if(!seq)
             m_MainCam.transform.DOLocalMove(new Vector3(1, 12, 1), 1f);
     }
+
+    public void ZoomInOutToBombCaseView(Action setupScene, Action closeBombCase)
+    {
+        m_MainCam.DOFieldOfView(m_MainCam.nearClipPlane, .77f).SetEase(Ease.InSine)
+            .OnComplete(() => {
+                m_MainCam.transform.localEulerAngles = m_InitalCameraRotation;
+                setupScene();
+                m_MainCam.transform.DOLocalMove(m_InitalCameraPosition, .77f);
+                m_MainCam.DOFieldOfView(m_InitialFieldOfView, .77f).SetEase(Ease.InSine)
+                .OnComplete(() => {
+                    closeBombCase();
+                });
+            });
+
+    }
 }
