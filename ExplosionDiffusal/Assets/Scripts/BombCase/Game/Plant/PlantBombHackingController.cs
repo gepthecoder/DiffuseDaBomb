@@ -29,6 +29,7 @@ public class PlantBombHackingController : MonoBehaviour
 
     [HideInInspector] public UnityEvent<HackingItemData> OnHackingItemSelectedEvent = new UnityEvent<HackingItemData>();
     [HideInInspector] public UnityEvent<HackingItemData> OnItemHackedEvent = new UnityEvent<HackingItemData>();
+    [HideInInspector] public UnityEvent<HackingItemData> OnAllItemsHackedEvent = new UnityEvent<HackingItemData>();
 
     private void Awake()
     {
@@ -72,6 +73,7 @@ public class PlantBombHackingController : MonoBehaviour
         if (TaskDone())
         {
             // TODO: EMIT EVENT to GAME MANAGER -> DEFUSING
+            OnAllItemsHackedEvent?.Invoke(DATA);
             PlayButtonPressedSFX(AudioEffect.BombsPlanted);
         }
         else

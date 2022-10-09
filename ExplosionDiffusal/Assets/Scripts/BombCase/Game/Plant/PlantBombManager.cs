@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using DG.Tweening;
 using System;
 
-public enum PlantBombState { Start, Hacking, Success, } 
+public enum PlantBombState { Start, Hacking, Success, Done } 
 
 public class PlantBombManager : MonoBehaviour
 {
@@ -15,9 +16,9 @@ public class PlantBombManager : MonoBehaviour
 
     [SerializeField] private List<Highlighter> m_HighlightedObjects;
 
-
     private PlantBombState i_CurrentState = PlantBombState.Start;
 
+    [HideInInspector] public UnityEvent OnPlantBombDoneEvent = new UnityEvent();
 
     private void Start()
     {
@@ -34,17 +35,25 @@ public class PlantBombManager : MonoBehaviour
 
     private void Subscribe()
     {
-        m_PlantBombActionHandler.OnEncryptorCloseEvent.AddListener((data) => {
-            TriggerPlantBehaviour(PlantBombState.Start, new HackingItemData(data.CodeEncryption, false));
-        });
+        m_PlantBombActionHandler.OnEncryptorCloseEvent.AddListener(
+            (data) => {
+                TriggerPlantBehaviour(PlantBombState.Start, new HackingItemData(data.CodeEncryption, false));
+            });
 
         m_HackingController.OnItemHackedEvent.AddListener(
-            (data) => { TriggerPlantBehaviour(PlantBombState.Start, new HackingItemData(data.CodeEncryption, true)); }    
-        );
+            (data) => { 
+                TriggerPlantBehaviour(PlantBombState.Start, new HackingItemData(data.CodeEncryption, true)); }    
+            );
+
+        m_HackingController.OnAllItemsHackedEvent.AddListener(
+            (data) => {
+                TriggerPlantBehaviour(PlantBombState.Done, data);
+            });
     }
     private void UnSubscribe()
     {
         m_HackingController.OnItemHackedEvent.RemoveAllListeners();
+        m_PlantBombActionHandler.OnEncryptorCloseEvent.RemoveAllListeners();
     }
 
     private void Update()
@@ -91,6 +100,10 @@ public class PlantBombManager : MonoBehaviour
                 m_Lights.LightUpBombs(true, data.CodeEncryption);
 
                 m_HackingController.OnItemHacked(data);
+                break;
+            case PlantBombState.Done:
+                Debug.Log("<color=green>PlantBombState</color><color=gold>Done</color>");
+                OnPlantBombDoneEvent?.Invoke();
                 break;
             default:
                 break;

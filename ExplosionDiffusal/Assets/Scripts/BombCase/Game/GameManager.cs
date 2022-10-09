@@ -56,15 +56,18 @@ public class GameManager : MonoBehaviour
         switch (state)
         {
             case GameState.Initial:
+                Debug.Log($"<color=red>GameState</color><color=gold>Initial</color>");
                 m_BombManager.TriggerBombBehaviour(BombCaseState.Close);
                 break;
             case GameState.Planting:
+                Debug.Log($"<color=red>GameState</color><color=gold>Planting</color>");
                 m_SceneSetupManager.SetupScene(SceneType.Planting);
                 m_PlantBombManager.TriggerPlantBehaviour(PlantBombState.Start);
                 m_UiManager.FadeOutScreen();
                 m_CameraManager.ZoomOutOfTarget();
                 break;
             case GameState.Defusing:
+                Debug.Log($"<color=red>GameState</color><color=gold>Defusing</color>");
                 break;
             case GameState.Victory:
                 break;
@@ -96,6 +99,10 @@ public class GameManager : MonoBehaviour
         });
         m_CodeManager.OnSetCodeEvent.AddListener((codeEncryptionType) => {
             OnSetBombCodeEvent(codeEncryptionType);
+        });
+        m_PlantBombManager.OnPlantBombDoneEvent.AddListener(() =>
+        {
+            TriggerBehaviour(GameState.Defusing);
         });
     }
 
