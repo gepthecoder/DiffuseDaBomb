@@ -58,6 +58,7 @@ public class GameManager : MonoBehaviour
             case GameState.Initial:
                 Debug.Log($"<color=red>GameState</color><color=gold>Initial</color>");
                 m_BombManager.TriggerBombBehaviour(BombCaseState.Close);
+                m_SceneSetupManager.EnableBombCoverUps(true);
                 break;
             case GameState.Planting:
                 Debug.Log($"<color=red>GameState</color><color=gold>Planting</color>");
@@ -79,6 +80,8 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator OnDefuseBombEvent()
     {
+        m_SceneSetupManager.EnableBombCoverUps(false);
+
         yield return new WaitForSeconds(1.5f);
 
         m_UiManager.FadeInOutScreen(1f);
@@ -111,7 +114,21 @@ public class GameManager : MonoBehaviour
         m_BombManager.BombCaseOpeningEvent.AddListener(OnBombCaseOpeningEvent);
         m_UiManager.OnFadeInEvent.AddListener(() =>
         {
-            TriggerBehaviour(GameState.Planting);
+            if(m_CurrentState == GameState.Initial)
+            {
+                TriggerBehaviour(GameState.Planting);
+                return;
+            }
+
+            if (m_CurrentState == GameState.Defusing)
+            {
+                m_SceneSetupManager.SetupScene(SceneType.Defusing);
+                m_UiManager.FadeOutScreen();
+                m_CameraManager.ZoomOutOfTarget();
+
+
+            }
+
         });
         m_CodeManager.OnSetCodeEvent.AddListener((codeEncryptionType) => {
             OnSetBombCodeEvent(codeEncryptionType);

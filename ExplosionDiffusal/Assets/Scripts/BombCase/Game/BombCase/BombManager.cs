@@ -173,7 +173,5 @@ public class BombManager : MonoBehaviour
                 }
             }
         }
-
-       
     }
 }
