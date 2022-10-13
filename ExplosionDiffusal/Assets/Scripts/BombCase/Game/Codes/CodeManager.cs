@@ -30,7 +30,7 @@ public class CodeManager : MonoBehaviour
         OnSetCodeEvent?.Invoke(encryption);
     }
 
-    public void ValidateCode(CodeEncryptionType encryption, string pass)
+    public bool ValidateCode(CodeEncryptionType encryption, string pass)
     {
         Code code = GetCodeByEncryption(encryption);
         bool success = code.DoCodeValidation(pass);
@@ -38,10 +38,13 @@ public class CodeManager : MonoBehaviour
         if(success)
         {
             OnValidateCodeEvent?.Invoke(encryption);
+            return true;
         } else
         {
-            Debug.Log("CodeValidation Failed!");
+            Debug.Log("<color=red>CodeValidation Failed</color><color=black>!</color>");
         }
+
+        return false;
     }
 
     private Code GetCodeByEncryption(CodeEncryptionType encryption)

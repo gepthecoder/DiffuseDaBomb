@@ -92,13 +92,22 @@ public class Keypad : Encryptor
         if (currentGameState == GameState.Planting)
         {
             CodeManager.instance.SetCode(CodeEncryptionType.KeyPadEncryption, m_CurrentString);
+            EnableObject(false);
+            return;
         }
         else if (currentGameState == GameState.Defusing)
         {
-            CodeManager.instance.ValidateCode(CodeEncryptionType.KeyPadEncryption, m_CurrentString);
+            if (CodeManager.instance.ValidateCode(CodeEncryptionType.KeyPadEncryption, m_CurrentString))
+            {
+                EnableObject(false);
+                return;
+            }
+            else
+            {
+                PlayButtonPressedSFX(AudioEffect.Denial);
+            }
         }
 
-        EnableObject(false);
     }
 
     public void ClearCode()
