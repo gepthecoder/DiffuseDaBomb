@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public enum DefuseBombState { Start, Hacking, Success, Done, Null }
 
@@ -23,6 +24,8 @@ public class DefuseBombManager : MonoBehaviour
 
     private DefuseBombState i_CurrentState = DefuseBombState.Null;
 
+    [HideInInspector] public UnityEvent OnPlantBombDoneEvent = new UnityEvent();
+
     private void Awake()
     {
         Subscribe();
@@ -42,6 +45,10 @@ public class DefuseBombManager : MonoBehaviour
 
     private void Subscribe()
     {
+        m_DefuseBombController.OnAllItemsHackedEvent.AddListener((data) => {
+            TriggerDefuseBehaviour(DefuseBombState.Done);
+        });
+
         m_DefuseBombController.OnItemHackedEvent.AddListener((data) => {
             TriggerDefuseBehaviour(DefuseBombState.Start, new HackingItemData(data.CodeEncryption, true));
         });
@@ -108,8 +115,8 @@ public class DefuseBombManager : MonoBehaviour
                 m_DefuseBombController.OnItemHacked(data);
                 break;
             case DefuseBombState.Done:
-                Debug.Log($"<color=blue>DefuseBombState</color><color=gold>Done</color>: {data.SelectedType}");
-
+                Debug.Log($"<color=blue>DefuseBombState</color><color=gold>Done</color>");
+                OnPlantBombDoneEvent?.Invoke();
                 break;
             case DefuseBombState.Null:
             default:

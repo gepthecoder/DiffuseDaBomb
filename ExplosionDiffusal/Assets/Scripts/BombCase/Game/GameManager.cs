@@ -73,6 +73,8 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(OnDefuseBombEvent());
                 break;
             case GameState.Victory:
+                Debug.Log($"<color=red>GameState</color><color=gold>Victory</color>");
+
                 break;
             default:
                 break;
@@ -136,7 +138,6 @@ public class GameManager : MonoBehaviour
                 m_CameraManager.ZoomOutOfTarget();
                 m_DefuseBombManager.TriggerDefuseBehaviour(DefuseBombState.Start);
             }
-
         });
 
         m_CodeManager.OnSetCodeEvent.AddListener((codeEncryptionType) => {
@@ -151,6 +152,11 @@ public class GameManager : MonoBehaviour
         m_PlantBombManager.OnPlantBombDoneEvent.AddListener(() =>
         {
             TriggerBehaviour(GameState.Defusing);
+        });
+
+        m_DefuseBombManager.OnPlantBombDoneEvent.AddListener(() =>
+        {
+            TriggerBehaviour(GameState.Victory);
         });
     }
 

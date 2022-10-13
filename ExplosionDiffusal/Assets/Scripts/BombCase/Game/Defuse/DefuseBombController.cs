@@ -18,7 +18,7 @@ public class DefuseBombController : MonoBehaviour
     private ClickableType m_CurrentSelected = ClickableType.None;
 
     [HideInInspector] public UnityEvent<HackingItemData> OnItemHackedEvent = new UnityEvent<HackingItemData>();
-
+    [HideInInspector] public UnityEvent<HackingItemData> OnAllItemsHackedEvent = new UnityEvent<HackingItemData>();
 
     public void OnHackingItemSelected(HackingItemData data)
     {
@@ -46,6 +46,7 @@ public class DefuseBombController : MonoBehaviour
         if(TaskDone())
         {
             // TODO: EMIT EVENT to GAME MANAGER -> VICTORY
+            OnAllItemsHackedEvent?.Invoke(data);
             AudioManager.INSTANCE.PlayButtonPressedSFX(AudioEffect.BombsDefused);
         }
         else
