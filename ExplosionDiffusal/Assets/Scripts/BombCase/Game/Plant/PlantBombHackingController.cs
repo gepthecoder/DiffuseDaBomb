@@ -10,8 +10,10 @@ public class HackingItemData
     public CodeEncryptionType CodeEncryption;
 
     public bool CloseHackingItemSuccess;
+    public GameState gState;
 
     public HackingItemData(CodeEncryptionType codeEncryption) { CodeEncryption = codeEncryption; }
+    public HackingItemData(CodeEncryptionType codeEncryption, GameState gameState) { CodeEncryption = codeEncryption; gState = gameState; }
     public HackingItemData(CodeEncryptionType codeEncryption, bool closeHackingItemSuccess) 
     { CodeEncryption = codeEncryption; CloseHackingItemSuccess = closeHackingItemSuccess; }
 

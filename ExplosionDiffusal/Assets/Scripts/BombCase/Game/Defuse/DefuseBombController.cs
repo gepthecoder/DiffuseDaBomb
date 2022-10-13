@@ -56,6 +56,11 @@ public class DefuseBombController : MonoBehaviour
         }
     }
 
+    public void OnHackingItemDeselected()
+    {
+        m_CurrentSelected = ClickableType.None;
+    }
+
     private bool TaskDone()
     {
         foreach (var task in m_TaskListInfo)

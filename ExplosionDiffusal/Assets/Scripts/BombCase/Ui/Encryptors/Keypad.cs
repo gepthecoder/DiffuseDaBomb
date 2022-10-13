@@ -75,7 +75,7 @@ public class Keypad : Encryptor
 
     public override void CloseEncryptor()
     {
-        OnEncryptorClose?.Invoke(new HackingItemData(CodeEncryptionType.KeyPadEncryption));
+        OnEncryptorClose?.Invoke(new HackingItemData(CodeEncryptionType.KeyPadEncryption, currentGameState));
     } 
 
     private void SubmitCode()

@@ -37,6 +37,9 @@ public class PlantBombManager : MonoBehaviour
     {
         m_PlantBombActionHandler.OnEncryptorCloseEvent.AddListener(
             (data) => {
+                if (data.gState != GameState.Planting)
+                    return;
+
                 TriggerPlantBehaviour(PlantBombState.Start, new HackingItemData(data.CodeEncryption, false));
             });
 
@@ -47,6 +50,9 @@ public class PlantBombManager : MonoBehaviour
 
         m_HackingController.OnAllItemsHackedEvent.AddListener(
             (data) => {
+                m_Lights.EnableKeyboardLight(false);
+                m_Lights.EnableKeypadLight(false);
+
                 TriggerPlantBehaviour(PlantBombState.Done, data);
             });
     }

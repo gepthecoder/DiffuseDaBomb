@@ -175,7 +175,7 @@ public class Keyboard : Encryptor
   
     public override void CloseEncryptor()
     {
-        OnEncryptorClose?.Invoke(new HackingItemData(CodeEncryptionType.KeyboardEncryption));
+        OnEncryptorClose?.Invoke(new HackingItemData(CodeEncryptionType.KeyboardEncryption, currentGameState));
     }
 
     private void SubmitCode()

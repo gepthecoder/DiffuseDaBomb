@@ -30,12 +30,30 @@ public class DefuseBombManager : MonoBehaviour
     private void UnSubscribe()
     {
         m_DefuseBombController.OnItemHackedEvent.RemoveAllListeners();
+        m_KeyboardUI.OnEncryptorClose.RemoveAllListeners();
+        m_KeypadUI.OnEncryptorClose.RemoveAllListeners();
     }
 
     private void Subscribe()
     {
         m_DefuseBombController.OnItemHackedEvent.AddListener((data) => {
             TriggerDefuseBehaviour(DefuseBombState.Start, new HackingItemData(data.CodeEncryption, true));
+        });
+
+        m_KeyboardUI.OnEncryptorClose.AddListener((data) => {
+            if (data.gState != GameState.Defusing)
+                return;
+
+            m_DefuseBombController.OnHackingItemDeselected();
+            TriggerDefuseBehaviour(DefuseBombState.Start, new HackingItemData(data.CodeEncryption, false));
+        });
+
+        m_KeypadUI.OnEncryptorClose.AddListener((data) => {
+            if (data.gState != GameState.Defusing)
+                return;
+
+            m_DefuseBombController.OnHackingItemDeselected();
+            TriggerDefuseBehaviour(DefuseBombState.Start, new HackingItemData(data.CodeEncryption, false));
         });
     }
 
@@ -64,7 +82,6 @@ public class DefuseBombManager : MonoBehaviour
 
                         }
                     }
-
                 } else
                 {
                     SetupInitialBombDefuseSettings();
