@@ -17,7 +17,6 @@ public class Keyboard : Encryptor
 
     private bool m_CanShowEnterCode = true;
 
-
     private void Awake()
     {
         m_InputField.characterLimit = m_MaxCharacters;
@@ -184,14 +183,37 @@ public class Keyboard : Encryptor
         Debug.Log("<color=gold>SubmitCode</color>: " + m_CurrentString);
         if(m_CurrentString.Length != m_MaxCharacters)
         {
-            Debug.Log("SubmitCode Denial ");
-
+            Debug.Log("SubmitCode Denial");
             PlayButtonPressedSFX(AudioEffect.Denial);
             return;
         }
 
-        CodeManager.instance.SetCode(CodeEncryptionType.KeyboardEncryption, m_CurrentString);
+        if(currentGameState == GameState.Planting)
+        {
+            CodeManager.instance.SetCode(CodeEncryptionType.KeyboardEncryption, m_CurrentString);
+        } else if(currentGameState == GameState.Defusing)
+        {
+            CodeManager.instance.ValidateCode(CodeEncryptionType.KeyboardEncryption, m_CurrentString);
+        }
 
         EnableObject(false);
     }
+
+    public void ClearCode()
+    {
+        m_CurrentString = "";
+        m_CharacterCounter = 0;
+        m_InputField.clearText();
+        m_CanShowEnterCode = true; m_EnterCodeText.SetActive(m_CanShowEnterCode);
+    }
+
+    public void InitializeBombDefusalCodes()
+    {
+        BombDefusalCodesUi.SetActive(true);
+
+        var codeText = BombDefusalCodesUi.GetComponentInChildren<Text>();
+        string code = CodeManager.instance.TryGetCode(CodeEncryptionType.KeyboardEncryption);
+        codeText.text = code;
+    }
+
 }

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2351798089450059221}
   - component: {fileID: 8985515721497388046}
   - component: {fileID: 956544215060474991}
+  - component: {fileID: 1398113260807861605}
   m_Layer: 9
   m_Name: Keyboard
   m_TagString: Keypad
@@ -113,6 +114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanHiglight: 1
   Type: 0
+  ID: 0
 --- !u!114 &8985515721497388046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,6 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clickableType: 0
   positionWorldSpace: {fileID: 3127391986875092687}
+  CanClick: 1
 --- !u!114 &956544215060474991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,6 +143,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EncryptionType: 0
+--- !u!114 &1398113260807861605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3127391986875092684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 280459ee4dd363f4ca9f69e2a07b6a9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Clickable: {fileID: 8985515721497388046}
+  _Highlighter: {fileID: 2351798089450059221}
+  _Code: {fileID: 956544215060474991}
 --- !u!1 &4984085443634953133
 GameObject:
   m_ObjectHideFlags: 0

@@ -89,12 +89,19 @@ public class Keypad : Encryptor
             return;
         }
 
-        CodeManager.instance.SetCode(CodeEncryptionType.KeyPadEncryption, m_CurrentString);
+        if (currentGameState == GameState.Planting)
+        {
+            CodeManager.instance.SetCode(CodeEncryptionType.KeyPadEncryption, m_CurrentString);
+        }
+        else if (currentGameState == GameState.Defusing)
+        {
+            CodeManager.instance.ValidateCode(CodeEncryptionType.KeyPadEncryption, m_CurrentString);
+        }
 
         EnableObject(false);
     }
 
-    private void ClearCode()
+    public void ClearCode()
     {
         if(m_CharacterCounter == 0)
         {
@@ -104,8 +111,9 @@ public class Keypad : Encryptor
         {
             m_CharacterCounter = 0;
             m_CurrentString = "";
-            m_InputField.text = "";
-        } 
+            m_InputField.clearText();
+            m_CanShowEnterCode = true; m_EnterCodeText.SetActive(m_CanShowEnterCode);
+        }
     }
 
     private void PlayButtonPressedSFX(AudioEffect fx)
@@ -126,5 +134,14 @@ public class Keypad : Encryptor
             gameObject.SetActive(false);
             gameObject.transform.localScale = Vector3.zero;
         }
+    }
+
+    public void InitializeBombDefusalCodes()
+    {
+        BombDefusalCodesUi.SetActive(true);
+
+        var codeText = BombDefusalCodesUi.GetComponentInChildren<Text>();
+        string code = CodeManager.instance.TryGetCode(CodeEncryptionType.KeyPadEncryption);
+        codeText.text = code;
     }
 }

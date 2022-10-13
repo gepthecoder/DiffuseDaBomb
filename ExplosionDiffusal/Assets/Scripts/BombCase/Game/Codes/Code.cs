@@ -28,5 +28,13 @@ public class Code : MonoBehaviour
             return false;
 
         return __BOMB__CODE__ == pass;
-    } 
+    }
+
+    public string GetBombCode()
+    {
+        if (!__isCodeSet__)
+            return string.Empty;
+
+        return __BOMB__CODE__;
+    }
 }

@@ -86,6 +86,8 @@ public class PlantBombManager : MonoBehaviour
                 } 
                 else
                 {
+                    m_PlantBombActionHandler.SetMainStateForEncryptors(GameState.Planting);
+
                     m_Lights.LightEffect();
                     HighlightElements(true);
                 }             
@@ -151,7 +153,7 @@ public class PlantBombManager : MonoBehaviour
 
     private void CheckUserInteraction()
     {
-        if (Input.GetMouseButtonDown(0) && i_CurrentState != PlantBombState.Hacking)
+        if (Input.GetMouseButtonDown(0) && i_CurrentState == PlantBombState.Start)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;

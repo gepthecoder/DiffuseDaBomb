@@ -104,4 +104,10 @@ public class PlantBombActionHandler : MonoBehaviour
         }
 
     }
+
+    public void SetMainStateForEncryptors(GameState state)
+    {
+        m_2dKeypad.currentGameState = state;
+        m_2dKeyboard.currentGameState = state;
+    }
 }

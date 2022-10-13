@@ -10,10 +10,16 @@ public class CodeManager : MonoBehaviour
     [SerializeField] private List<Code> codes = new List<Code>();
 
     [HideInInspector] public UnityEvent<CodeEncryptionType> OnSetCodeEvent = new UnityEvent<CodeEncryptionType>();
+    [HideInInspector] public UnityEvent<CodeEncryptionType> OnValidateCodeEvent = new UnityEvent<CodeEncryptionType>();
 
     private void Awake()
     {
         instance = this;
+    }
+
+    public string TryGetCode(CodeEncryptionType encryption)
+    {
+        return GetCodeByEncryption(encryption).GetBombCode();
     }
 
     public void SetCode(CodeEncryptionType encryption, string pass)
@@ -31,7 +37,10 @@ public class CodeManager : MonoBehaviour
 
         if(success)
         {
-            // TODO EMIT EVENT
+            OnValidateCodeEvent?.Invoke(encryption);
+        } else
+        {
+            Debug.Log("CodeValidation Failed!");
         }
     }
 

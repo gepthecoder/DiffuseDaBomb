@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CameraManager m_CameraManager;
     [SerializeField] private UiManager m_UiManager;
     [SerializeField] private PlantBombManager m_PlantBombManager;
+    [SerializeField] private DefuseBombManager m_DefuseBombManager;
     [SerializeField] private SceneSetupManager m_SceneSetupManager;
     [SerializeField] private CodeManager m_CodeManager;
 
@@ -109,6 +110,14 @@ public class GameManager : MonoBehaviour
         m_PlantBombManager.TriggerPlantBehaviour(PlantBombState.Success, new HackingItemData(encryption));
     }
 
+    private void OnValidateBombCodeEvent(CodeEncryptionType encryption)
+    {
+        m_CameraManager.ZoomOutOfTarget();
+        m_UiManager.FadeInOutScreen(.77f);
+
+        m_DefuseBombManager.TriggerDefuseBehaviour(DefuseBombState.Success, new HackingItemData(encryption));
+    }
+
     private void AddListeners()
     {
         m_BombManager.BombCaseOpeningEvent.AddListener(OnBombCaseOpeningEvent);
@@ -125,14 +134,20 @@ public class GameManager : MonoBehaviour
                 m_SceneSetupManager.SetupScene(SceneType.Defusing);
                 m_UiManager.FadeOutScreen();
                 m_CameraManager.ZoomOutOfTarget();
-
-
+                m_DefuseBombManager.TriggerDefuseBehaviour(DefuseBombState.Start);
             }
 
         });
+
         m_CodeManager.OnSetCodeEvent.AddListener((codeEncryptionType) => {
             OnSetBombCodeEvent(codeEncryptionType);
         });
+
+        m_CodeManager.OnValidateCodeEvent.AddListener((codeEncryptionType) =>
+        {
+            OnValidateBombCodeEvent(codeEncryptionType);
+        });
+
         m_PlantBombManager.OnPlantBombDoneEvent.AddListener(() =>
         {
             TriggerBehaviour(GameState.Defusing);

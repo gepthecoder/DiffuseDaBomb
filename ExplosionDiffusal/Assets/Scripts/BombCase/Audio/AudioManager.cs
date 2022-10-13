@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum AudioEffect { Keypress, Success, Denial, Plant, BombsPlanted}
+public enum AudioEffect { Keypress, Success, Denial, Plant, BombsPlanted, Defuse, BombsDefused }
 
 public class AudioManager : MonoBehaviour
 {
@@ -14,7 +14,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip m_KeyPressClip;
     [SerializeField] private AudioClip m_AccessDeniedClip;
     [SerializeField] private AudioClip m_BombPlantedClip;
+    [SerializeField] private AudioClip m_DefusingClip;
     [SerializeField] private AudioClip m_AllBombsPlantedClip;
+    [SerializeField] private AudioClip m_AllBombsDefusedClip;
     [SerializeField] private AudioClip m_PlantBombClip;
 
     private void Awake()
@@ -40,6 +42,12 @@ public class AudioManager : MonoBehaviour
                 break;
             case AudioEffect.BombsPlanted:
                 m_OtherAudio.PlayOneShot(m_AllBombsPlantedClip);
+                break;
+            case AudioEffect.Defuse:
+                m_OtherAudio.PlayOneShot(m_DefusingClip);
+                break;
+            case AudioEffect.BombsDefused:
+                m_OtherAudio.PlayOneShot(m_AllBombsDefusedClip);
                 break;
             default:
                 break;
