@@ -54,6 +54,9 @@ public class DefuseBombController : MonoBehaviour
             OnItemHackedEvent?.Invoke(data);
             AudioManager.INSTANCE.PlayButtonPressedSFX(AudioEffect.BombsDefused);
         }
+
+        DeinitKeyboardView();
+        DeinitKeypadView();
     }
 
     public void OnHackingItemDeselected()

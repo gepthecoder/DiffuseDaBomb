@@ -1304,6 +1304,15 @@ MonoBehaviour:
   m_Keypad: {fileID: 8245851257503065265}
   m_KeyboardUI: {fileID: 584573110}
   m_KeypadUI: {fileID: 2717480609212478844}
+  m_Lights: {fileID: 8245851257503065264}
+  m_HighlightedObjects:
+  - {fileID: 8245851257503065261}
+  - {fileID: 8245851257503065260}
+  m_PlasticBombCoverObjects:
+  - {fileID: 994871174}
+  - {fileID: 872623343}
+  - {fileID: 1351935295}
+  m_TnTimerObject: {fileID: 1128873447}
 --- !u!1 &503148690
 GameObject:
   m_ObjectHideFlags: 0
@@ -1842,6 +1851,12 @@ MonoBehaviour:
   OnPlantBombDoneEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &872623343 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1752172701329167902, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8245851257503065259}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &900197299
 GameObject:
   m_ObjectHideFlags: 0
@@ -2039,6 +2054,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!1 &994871174 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 562280699724183772, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8245851257503065259}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1128873447 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6727756988168367038, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8245851257503065259}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1263784444
 GameObject:
   m_ObjectHideFlags: 0
@@ -2118,6 +2145,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1263784444}
   m_CullTransparentMesh: 1
+--- !u!1 &1351935295 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2781184834118222654, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8245851257503065259}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1382593997
 GameObject:
   m_ObjectHideFlags: 0

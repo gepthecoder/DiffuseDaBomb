@@ -14,6 +14,12 @@ public class DefuseBombManager : MonoBehaviour
     [Space(5)]
     [SerializeField] private Keyboard m_KeyboardUI;
     [SerializeField] private Keypad m_KeypadUI;
+    [Space(5)]
+    [SerializeField] private Lights m_Lights;
+    [SerializeField] private List<Highlighter> m_HighlightedObjects;
+    [Space(5)]
+    [SerializeField] private List<GameObject> m_PlasticBombCoverObjects;
+    [SerializeField] private GameObject m_TnTimerObject;
 
     private DefuseBombState i_CurrentState = DefuseBombState.Null;
 
@@ -76,10 +82,13 @@ public class DefuseBombManager : MonoBehaviour
                     {
                         if(data.CodeEncryption == CodeEncryptionType.KeyboardEncryption)
                         {
-
+                            foreach (var item in m_PlasticBombCoverObjects)
+                            {
+                                item.SetActive(true);
+                            }
                         } else if(data.CodeEncryption == CodeEncryptionType.KeyPadEncryption)
                         {
-
+                            m_TnTimerObject.SetActive(false);
                         }
                     }
                 } else
@@ -93,8 +102,9 @@ public class DefuseBombManager : MonoBehaviour
                 break;
             case DefuseBombState.Success:
                 Debug.Log($"<color=blue>DefuseBombState</color><color=gold>Success</color>: {data.SelectedType}");
-                // dehighlight by type
-                // turn off light
+                HighlightByType(false, data.CodeEncryption);
+                m_Lights.LightUpBombs(false, data.CodeEncryption);
+
                 m_DefuseBombController.OnItemHacked(data);
                 break;
             case DefuseBombState.Done:
@@ -145,5 +155,29 @@ public class DefuseBombManager : MonoBehaviour
 
         m_KeyboardUI.InitializeBombDefusalCodes();
         m_KeypadUI.InitializeBombDefusalCodes();
+    }
+
+    private void HighlightByType(bool highlight, CodeEncryptionType type)
+    {
+        foreach (var element in m_HighlightedObjects)
+        {
+            Code code = element.GetComponent<Code>();
+
+            if (code.EncryptionType == type)
+            {
+                if (highlight)
+                {
+                    element.CanHiglight = true;
+                    element.HighlightMe();
+                }
+                else
+                {
+                    element.GetComponent<Clickable>().CanClick = false;
+                    element.StopHighlightEffect();
+                }
+
+                break;
+            }
+        }
     }
 }
