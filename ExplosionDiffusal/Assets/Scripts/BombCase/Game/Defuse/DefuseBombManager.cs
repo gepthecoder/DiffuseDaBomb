@@ -18,9 +18,6 @@ public class DefuseBombManager : MonoBehaviour
     [Space(5)]
     [SerializeField] private Lights m_Lights;
     [SerializeField] private List<Highlighter> m_HighlightedObjects;
-    [Space(5)]
-    [SerializeField] private List<GameObject> m_PlasticBombCoverObjects;
-    [SerializeField] private GameObject m_TnTimerObject;
 
     private DefuseBombState i_CurrentState = DefuseBombState.Null;
 
@@ -39,6 +36,7 @@ public class DefuseBombManager : MonoBehaviour
     private void UnSubscribe()
     {
         m_DefuseBombController.OnItemHackedEvent.RemoveAllListeners();
+        m_DefuseBombController.OnAllItemsHackedEvent.RemoveAllListeners();
         m_KeyboardUI.OnEncryptorClose.RemoveAllListeners();
         m_KeypadUI.OnEncryptorClose.RemoveAllListeners();
     }
@@ -46,7 +44,7 @@ public class DefuseBombManager : MonoBehaviour
     private void Subscribe()
     {
         m_DefuseBombController.OnAllItemsHackedEvent.AddListener((data) => {
-            TriggerDefuseBehaviour(DefuseBombState.Done);
+            TriggerDefuseBehaviour(DefuseBombState.Done, data);
         });
 
         m_DefuseBombController.OnItemHackedEvent.AddListener((data) => {
@@ -83,23 +81,7 @@ public class DefuseBombManager : MonoBehaviour
         {
             case DefuseBombState.Start:
                 Debug.Log($"<color=blue>DefuseBombState</color><color=gold>Start</color>");
-                if(data != null)
-                {
-                    if(data.CloseHackingItemSuccess)
-                    {
-                        if(data.CodeEncryption == CodeEncryptionType.KeyboardEncryption)
-                        {
-                            foreach (var item in m_PlasticBombCoverObjects)
-                            {
-                                item.SetActive(true);
-                            }
-                        } else if(data.CodeEncryption == CodeEncryptionType.KeyPadEncryption)
-                        {
-                            m_TnTimerObject.SetActive(false);
-                        }
-                    }
-                } else
-                {
+                if(data != null){ break; } else {
                     SetupInitialBombDefuseSettings();
                 }
                 break;
@@ -108,7 +90,7 @@ public class DefuseBombManager : MonoBehaviour
                 m_DefuseBombController.OnHackingItemSelected(data);
                 break;
             case DefuseBombState.Success:
-                Debug.Log($"<color=blue>DefuseBombState</color><color=gold>Success</color>: {data.SelectedType}");
+                Debug.Log($"<color=blue>DefuseBombState</color><color=gold>Success</color>: {data.CodeEncryption}");
                 HighlightByType(false, data.CodeEncryption);
                 m_Lights.LightUpBombs(false, data.CodeEncryption);
 

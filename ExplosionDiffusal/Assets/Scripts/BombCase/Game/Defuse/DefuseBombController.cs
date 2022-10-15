@@ -11,6 +11,9 @@ public class DefuseBombController : MonoBehaviour
     [Space(5)]
     [SerializeField] private GameObject m_3dKeyboard;
     [SerializeField] private GameObject m_3dKeypad;
+    [Space(5)]
+    [SerializeField] private List<GameObject> m_PlasticBombCoverObjects;
+    [SerializeField] private GameObject m_TnTimerObject;
 
     private Dictionary<CodeEncryptionType, bool> m_TaskListInfo = new Dictionary<CodeEncryptionType, bool>()
             { { CodeEncryptionType.KeyboardEncryption, false }, { CodeEncryptionType.KeyPadEncryption, false } };
@@ -56,8 +59,8 @@ public class DefuseBombController : MonoBehaviour
             AudioManager.INSTANCE.PlayButtonPressedSFX(AudioEffect.BombsDefused);
         }
 
-        DeinitKeyboardView();
-        DeinitKeypadView();
+        ActivateBombEffect(true, data.CodeEncryption);
+        Deinit3dViews(data.CodeEncryption);
     }
 
     public void OnHackingItemDeselected()
@@ -76,6 +79,41 @@ public class DefuseBombController : MonoBehaviour
         }
 
         return true;
+    }
+
+    public void ActivateBombEffect(bool activate, CodeEncryptionType type)
+    {
+        switch (type)
+        {
+            case CodeEncryptionType.KeyboardEncryption:
+
+                foreach (var item in m_PlasticBombCoverObjects)
+                {
+                    item.SetActive(activate);
+                }
+                break;
+            case CodeEncryptionType.KeyPadEncryption:
+                m_TnTimerObject.SetActive(!activate);
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    private void Deinit3dViews(CodeEncryptionType type)
+    {
+        switch (type)
+        {
+            case CodeEncryptionType.KeyboardEncryption:
+                DeinitKeyboardView();
+                break;
+            case CodeEncryptionType.KeyPadEncryption:
+                DeinitKeypadView();
+                break;
+            default:
+                break;
+        }
     }
 
     private void InitKeyboardView()
