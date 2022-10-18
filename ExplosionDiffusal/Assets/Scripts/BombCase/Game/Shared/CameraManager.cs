@@ -14,17 +14,6 @@ public class CameraManager : MonoBehaviour
     private Vector3 m_InitalCameraPosition = new Vector3(.14f, 7.78f, -5.61f);
     private Vector3 m_InitalCameraRotation = new Vector3(55f, 0, 0);
 
-    private void Start()
-    {
-        InitCamera();
-    }
-
-    private void InitCamera()
-    {
-        m_MainCam.transform.localPosition = m_InitalCameraPosition;
-        m_MainCam.transform.localEulerAngles = m_InitalCameraRotation;
-    }
-
     public void ZoomInToTarget()
     {
         m_MainCam.DOFieldOfView(m_MainCam.nearClipPlane + 4, 1f).SetEase(Ease.InOutBack);

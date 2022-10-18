@@ -24,12 +24,13 @@ using UnityEngine;
 
 // Bomb Is Planted
 
-public enum GameState { Initial, Planting, Defusing, Victory, }
+public enum GameState { PreMatch, Initial, Planting, Defusing, Victory, }
 
 public class GameManager : MonoBehaviour
 {
     private GameState m_CurrentState = GameState.Initial;
 
+    [SerializeField] private StartMatchManager m_StartMatchManager;
     [SerializeField] private BombManager m_BombManager;
     [SerializeField] private CameraManager m_CameraManager;
     [SerializeField] private UiManager m_UiManager;
@@ -41,8 +42,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         AddListeners();
-
-        TriggerBehaviour(m_CurrentState);
+        TriggerBehaviour(GameState.PreMatch);
     }
 
     private void OnDestroy()
@@ -56,6 +56,10 @@ public class GameManager : MonoBehaviour
 
         switch (state)
         {
+            case GameState.PreMatch:
+                Debug.Log($"<color=red>GameState</color><color=gold>PreMatch</color>");
+                m_StartMatchManager.Init();
+                break;
             case GameState.Initial:
                 Debug.Log($"<color=red>GameState</color><color=gold>Initial</color>");
                 m_BombManager.TriggerBombBehaviour(BombCaseState.Close);
@@ -122,6 +126,10 @@ public class GameManager : MonoBehaviour
 
     private void AddListeners()
     {
+        m_StartMatchManager.OnStartMatchEvent.AddListener(() => {
+            TriggerBehaviour(m_CurrentState);
+        });
+
         m_BombManager.BombCaseOpeningEvent.AddListener(OnBombCaseOpeningEvent);
         m_UiManager.OnFadeInEvent.AddListener(() =>
         {
