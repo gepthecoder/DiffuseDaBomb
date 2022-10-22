@@ -21,6 +21,13 @@ public class UiManager : MonoBehaviour
 
     private void OnDestroy() { DeSub(); }
 
+    private void Start() => SetupScene();
+
+    private void SetupScene()
+    {
+        m_DarkenPanel.gameObject.SetActive(true);
+    }
+
     private void Sub()
     {
         m_StartMatchManagerUI.OnFadeOutEffectEvent.AddListener((ACTION) =>
