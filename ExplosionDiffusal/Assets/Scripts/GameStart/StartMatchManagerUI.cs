@@ -20,6 +20,13 @@ public class StartMatchManagerUI : MonoBehaviour
     [SerializeField] private List<Transform> m_StartGameOptionItems;
     //
     [SerializeField] private Button m_PlayButton;
+    //
+    [SerializeField] private Animation m_SelectTeamsAnime;
+    [SerializeField] private Transform m_Duel;
+    [SerializeField] private Transform m_TeamSettings;
+    [SerializeField] private Image m_TeamSettingsBackground;
+    //
+
 
     [HideInInspector] public UnityEvent OnStartMatchButtonClickedEvent = new UnityEvent();
     [HideInInspector] public UnityEvent<Action> OnFadeOutEffectEvent = new UnityEvent<Action>();
@@ -76,9 +83,12 @@ public class StartMatchManagerUI : MonoBehaviour
             yield return new WaitForSeconds(.1f);
         }
 
-
-        m_GameTile.DOScale(0, .4f);
-        m_RectGameOptions.DOSizeDelta(new Vector2(m_RectGameOptions.sizeDelta.x, 787f), 1f);
+        m_GameTile.DOScale(0, .4f).OnComplete(() => {
+            m_SelectTeamsAnime.Play();
+        }); ;
+        m_RectGameOptions.DOSizeDelta(new Vector2(m_RectGameOptions.sizeDelta.x, 787f), 1f).OnComplete(() => {
+            m_Duel.DOScale(1f, .3f);
+        });
     }
 
 
@@ -112,7 +122,15 @@ public class StartMatchManagerUI : MonoBehaviour
             item.localScale = Vector3.zero;
         });
 
+        m_Duel.localScale = Vector3.zero;
+        m_Duel.localPosition = Vector3.zero;
+
+        m_TeamSettings.localScale = Vector3.zero;
+        m_TeamSettingsBackground.color = new Color(m_TeamSettingsBackground.color.r, m_TeamSettingsBackground.color.g, m_TeamSettingsBackground.color.b, 0f);
+
         m_RectGameOptions = m_StartGameOptions.GetComponent<RectTransform>();
+
+        m_RectGameOptions.sizeDelta = new Vector2(m_RectGameOptions.sizeDelta.x, 531.2f);
     }
 
     private IEnumerator StartGameSequenceEffect()
