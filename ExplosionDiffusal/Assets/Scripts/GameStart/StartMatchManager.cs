@@ -5,11 +5,13 @@ using DG.Tweening;
 using UnityEngine.Events;
 using System;
 
-public enum StartMatchState { Initial, PlayMatchMain, SettingsMain, }
+public enum StartMatchState { Initial, PlayMatchMain, SettingsMain, TeamAConfig, TeamBConfig, }
 
 public class StartMatchManager : MonoBehaviour
 {
     [SerializeField] private StartMatchManagerUI m_StartMatchManagerUI;
+    [SerializeField] private DuelController m_DuelController;
+    [Space(5)]
     [SerializeField] private Transform t_MainCamera;
     [Space(5)]
     [SerializeField] private Transform t_CameraStartPosition;
@@ -35,6 +37,10 @@ public class StartMatchManager : MonoBehaviour
     private void Sub()
     {
         m_StartMatchManagerUI.OnStartMatchButtonClickedEvent.AddListener(StartMatch);
+        m_DuelController.OnDuelObjectSelectedEvent.AddListener((TYPE) => {
+            m_StartMatchManagerUI.TriggerBehaviour(TYPE == DuelObjectType.Attacker ? 
+                StartMatchState.TeamAConfig : StartMatchState.TeamBConfig);
+        });
     }
 
     internal void Init()

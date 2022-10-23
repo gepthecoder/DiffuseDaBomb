@@ -67,9 +67,28 @@ public class StartMatchManagerUI : MonoBehaviour
             case StartMatchState.PlayMatchMain:
                 StartCoroutine(ShowPlayMatchMainScene());
                 break;
+            case StartMatchState.TeamAConfig:
+            case StartMatchState.TeamBConfig:
+                StartCoroutine(ShowTeamConfig(m_CurrentState));
+                break;
             default:
                 break;
         }
+    }
+
+    private IEnumerator ShowTeamConfig(StartMatchState teamConfig)
+    {
+        m_Duel.DOScale(new Vector3(.7f, .7f, .7f), .5f);
+        m_Duel.DOLocalMoveY(-230f, .5f).SetEase(Ease.InOutBack);
+
+        m_TeamSettingsBackground.DOColor(
+            new Color(m_TeamSettingsBackground.color.r,
+                        m_TeamSettingsBackground.color.g,
+                            m_TeamSettingsBackground.color.b, 1f), .6f)
+                                .OnComplete(() => {
+                                    m_TeamSettings.DOScale(Vector3.one, .5f);
+                                });
+        yield break;
     }
 
 
