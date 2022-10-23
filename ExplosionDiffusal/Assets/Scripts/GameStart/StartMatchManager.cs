@@ -5,7 +5,7 @@ using DG.Tweening;
 using UnityEngine.Events;
 using System;
 
-public enum StartMatchState { Initial, }
+public enum StartMatchState { Initial, PlayMatchMain, SettingsMain, }
 
 public class StartMatchManager : MonoBehaviour
 {

@@ -66,10 +66,8 @@ public class UiManager : MonoBehaviour
 
     public void FadeOutScreenAction(Action action)
     {
-        m_DarkenPanel.DOFade(0, .77f).SetEase(Ease.InOutQuad)
-            .OnComplete(() => {
-                action();
-            });
+        action();
+        m_DarkenPanel.DOFade(0, .77f).SetEase(Ease.InOutQuad);
     }
 
     public void EnableKeyBoardUI()
