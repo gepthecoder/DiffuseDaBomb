@@ -22,6 +22,7 @@ public class StartMatchManagerUI : MonoBehaviour
     [SerializeField] private Button m_PlayButton;
     //
     [SerializeField] private Animation m_SelectTeamsAnime;
+    [SerializeField] private Animation m_SetupAnime;
     [SerializeField] private Transform m_Duel;
     [SerializeField] private Transform m_TeamSettings;
     [SerializeField] private Image m_TeamSettingsBackground;
@@ -78,6 +79,9 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private IEnumerator ShowTeamConfig(StartMatchState teamConfig)
     {
+        m_SelectTeamsAnime.Play("select_teams_HIDE");
+        m_SetupAnime.Play();
+
         m_Duel.DOScale(new Vector3(.7f, .7f, .7f), .5f);
         m_Duel.DOLocalMoveY(-230f, .5f).SetEase(Ease.InOutBack);
 
@@ -103,7 +107,7 @@ public class StartMatchManagerUI : MonoBehaviour
         }
 
         m_GameTile.DOScale(0, .4f).OnComplete(() => {
-            m_SelectTeamsAnime.Play();
+            m_SelectTeamsAnime.Play("select_teams");
         }); ;
         m_RectGameOptions.DOSizeDelta(new Vector2(m_RectGameOptions.sizeDelta.x, 787f), 1f).OnComplete(() => {
             m_Duel.DOScale(1f, .3f);
