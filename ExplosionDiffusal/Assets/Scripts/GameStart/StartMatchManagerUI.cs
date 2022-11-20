@@ -23,17 +23,20 @@ public class StartMatchManagerUI : MonoBehaviour
     //
     [SerializeField] private Animation m_SelectTeamsAnime;
     [SerializeField] private Animation m_SetupAnime;
+    //
     [SerializeField] private Transform m_Duel;
-    [SerializeField] private Transform m_TeamSettings;
+    [SerializeField] private Animator m_TeamSettingsAxis;
+    [SerializeField] private Animator m_TeamSettingsAllies;
     [SerializeField] private Image m_TeamSettingsBackground;
     //
-
 
     [HideInInspector] public UnityEvent OnStartMatchButtonClickedEvent = new UnityEvent();
     [HideInInspector] public UnityEvent<Action> OnFadeOutEffectEvent = new UnityEvent<Action>();
 
     private RectTransform m_RectGameOptions;
     private StartMatchState m_CurrentState;
+
+    private bool m_CanPlaySetupAnime = true;
 
     private void Awake()
     {
@@ -70,7 +73,25 @@ public class StartMatchManagerUI : MonoBehaviour
                 break;
             case StartMatchState.TeamAConfig:
             case StartMatchState.TeamBConfig:
-                StartCoroutine(ShowTeamConfig(m_CurrentState));
+                {
+                    if(m_CanPlaySetupAnime)
+                    {
+                        m_SelectTeamsAnime.Play("select_teams_HIDE");
+                        m_SetupAnime.Play();
+
+                        m_Duel.DOScale(new Vector3(.7f, .7f, .7f), .5f);
+                        m_Duel.DOLocalMoveY(-230f, .5f).SetEase(Ease.InOutBack);
+
+                        m_TeamSettingsBackground.DOColor(
+                            new Color(m_TeamSettingsBackground.color.r,
+                                        m_TeamSettingsBackground.color.g,
+                                            m_TeamSettingsBackground.color.b, 1f), .6f);
+
+                        m_CanPlaySetupAnime = false;
+                    }
+
+                    StartCoroutine(ShowTeamConfig(m_CurrentState));
+                }
                 break;
             default:
                 break;
@@ -79,19 +100,15 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private IEnumerator ShowTeamConfig(StartMatchState teamConfig)
     {
-        m_SelectTeamsAnime.Play("select_teams_HIDE");
-        m_SetupAnime.Play();
+        yield return new WaitForSeconds(.6f);
 
-        m_Duel.DOScale(new Vector3(.7f, .7f, .7f), .5f);
-        m_Duel.DOLocalMoveY(-230f, .5f).SetEase(Ease.InOutBack);
 
-        m_TeamSettingsBackground.DOColor(
-            new Color(m_TeamSettingsBackground.color.r,
-                        m_TeamSettingsBackground.color.g,
-                            m_TeamSettingsBackground.color.b, 1f), .6f)
-                                .OnComplete(() => {
-                                    m_TeamSettings.DOScale(Vector3.one, .5f);
-                                });
+        var (settingShow, settingHide) = 
+            teamConfig == StartMatchState.TeamAConfig ? (m_TeamSettingsAxis, m_TeamSettingsAllies) : 
+            teamConfig == StartMatchState.TeamBConfig ? (m_TeamSettingsAllies, m_TeamSettingsAxis) : (null, null);
+
+        settingHide?.Play("hide");
+        settingShow?.Play("show");
         yield break;
     }
 
@@ -148,8 +165,10 @@ public class StartMatchManagerUI : MonoBehaviour
         m_Duel.localScale = Vector3.zero;
         m_Duel.localPosition = Vector3.zero;
 
-        m_TeamSettings.localScale = Vector3.zero;
+        m_TeamSettingsAxis.GetComponent<CanvasGroup>().alpha = 0;
+        m_TeamSettingsAllies.GetComponent<CanvasGroup>().alpha = 0;
         m_TeamSettingsBackground.color = new Color(m_TeamSettingsBackground.color.r, m_TeamSettingsBackground.color.g, m_TeamSettingsBackground.color.b, 0f);
+        m_CanPlaySetupAnime = true;
 
         m_RectGameOptions = m_StartGameOptions.GetComponent<RectTransform>();
 
