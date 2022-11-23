@@ -27,6 +27,7 @@ public class StartMatchManagerUI : MonoBehaviour
     [SerializeField] private Transform m_Duel;
     [SerializeField] private Animator m_TeamSettingsAxis;
     [SerializeField] private Animator m_TeamSettingsAllies;
+    private CanvasGroup m_TeamSettingsCanvasGroupRef = new CanvasGroup();
     [SerializeField] private Image m_TeamSettingsBackground;
     //
 
@@ -108,7 +109,11 @@ public class StartMatchManagerUI : MonoBehaviour
             teamConfig == StartMatchState.TeamBConfig ? (m_TeamSettingsAllies, m_TeamSettingsAxis) : (null, null);
 
         settingHide?.Play("hide");
+        m_TeamSettingsCanvasGroupRef = settingHide?.GetComponent<CanvasGroup>();
+        m_TeamSettingsCanvasGroupRef.blocksRaycasts = false;
         settingShow?.Play("show");
+        m_TeamSettingsCanvasGroupRef = settingShow?.GetComponent<CanvasGroup>();
+        m_TeamSettingsCanvasGroupRef.blocksRaycasts = true;
         yield break;
     }
 
