@@ -81,7 +81,7 @@ public class StartMatchManagerUI : MonoBehaviour
                         m_SetupAnime.Play();
 
                         m_Duel.DOScale(new Vector3(.7f, .7f, .7f), .5f);
-                        m_Duel.DOLocalMoveY(-230f, .5f).SetEase(Ease.InOutBack);
+                        m_Duel.DOLocalMoveY(-200f, .5f).SetEase(Ease.InOutBack);
 
                         m_TeamSettingsBackground.DOColor(
                             new Color(m_TeamSettingsBackground.color.r,

@@ -45,8 +45,6 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
 
     private void DrawDataAndSaveConfig(SettingsItemData data)
     {
-        if (QuestionMark.isActiveAndEnabled) { QuestionMark.enabled = false; }
-
         if (data.TeamCount != 0)
         {
             m_ConfigData.TeamCount = data.TeamCount;
@@ -59,6 +57,11 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
             m_ConfigData.TeamEmblem = data.TeamEmblem;
 
             Emblem.sprite = data.TeamEmblem;
+
+            if (QuestionMark.isActiveAndEnabled) { 
+                QuestionMark.enabled = false;
+                Emblem.DOFade(1f, .4f);
+            }
         }
 
         if (data.TeamName != "")

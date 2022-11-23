@@ -36,6 +36,7 @@ public class SettingsItem : MonoBehaviour
     [Header("Emblem Selector")]
     [SerializeField] private List<Sprite> m_EmblemSprites = new List<Sprite>();
     [SerializeField] private Image m_EmblemImage;
+    [SerializeField] private Image m_EmblemQuestionMark;
     private Sprite m_CurrentEmblem;
     private int m_CurrentEmblemIndex = 0;
     [Space(5)]
@@ -78,6 +79,8 @@ public class SettingsItem : MonoBehaviour
             m_CurrentEmblem = m_EmblemSprites[m_CurrentEmblemIndex];
             m_EmblemImage.sprite = m_CurrentEmblem;
 
+            if(m_EmblemQuestionMark.isActiveAndEnabled) { m_EmblemQuestionMark.enabled = false; }
+
             OnSettingsItemChanged?.Invoke(new SettingsItemData(this.Type, string.Empty, 0, m_CurrentEmblem));           
         });
 
@@ -86,8 +89,9 @@ public class SettingsItem : MonoBehaviour
             if (m_CurrentEmblemIndex < 0) { m_CurrentEmblemIndex = m_EmblemSprites.Count - 1; }
 
             m_CurrentEmblem = m_EmblemSprites[m_CurrentEmblemIndex];
-
             m_EmblemImage.sprite = m_CurrentEmblem;
+
+            if (m_EmblemQuestionMark.isActiveAndEnabled) { m_EmblemQuestionMark.enabled = false; }
 
             OnSettingsItemChanged?.Invoke(new SettingsItemData(this.Type, string.Empty, 0, m_CurrentEmblem));
         });
