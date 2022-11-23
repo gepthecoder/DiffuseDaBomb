@@ -73,7 +73,7 @@ public class SettingsItem : MonoBehaviour
     {
         m_RightArrow.onClick.AddListener(() => {
             m_CurrentEmblemIndex++;
-            if(m_CurrentEmblemIndex > m_EmblemSprites.Count) { m_CurrentEmblemIndex = 0; }
+            if(m_CurrentEmblemIndex > m_EmblemSprites.Count-1) { m_CurrentEmblemIndex = 0; }
 
             m_CurrentEmblem = m_EmblemSprites[m_CurrentEmblemIndex];
             m_EmblemImage.sprite = m_CurrentEmblem;

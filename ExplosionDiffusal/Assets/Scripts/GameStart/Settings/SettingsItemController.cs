@@ -7,7 +7,7 @@ public class SettingsItemController : MonoBehaviour
 {
     [SerializeField] private SettingsItem m_SettingItems_Axis;
     [SerializeField] private SettingsItem m_SettingItems_Allies;
-
+    [Space(5)]
     [SerializeField] private DuelController m_DuelController;
 
     private void Awake()

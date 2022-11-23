@@ -29,9 +29,6 @@ public class DuelController : MonoBehaviour
 
     public void OnSettingsChanged(SettingsItemData data)
     {
-        Debug.Log($"OnSettingsChanged: Team Count: {data.TeamCount}, Team Name: {data.TeamName}");
-
-
         DuelObject duelObj = GetDuelObjByType(data.Type == SettingsItemType.Axis ? DuelObjectType.Attacker : DuelObjectType.Defender);
         duelObj.OnSettingsChanged(data);
     }

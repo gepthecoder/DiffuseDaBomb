@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using DG.Tweening;
 using UnityEngine.EventSystems;
-using System;
 using TMPro;
 
 public enum DuelObjectType { Attacker, Defender, None }
@@ -20,6 +19,7 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
     public TextMeshProUGUI TeamCount;
 
     public Image QuestionMark;
+    public Image TeamNamePlaceHodler;
 
     private SettingsItemData m_ConfigData = new SettingsItemData();
 
@@ -52,8 +52,6 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
             m_ConfigData.TeamCount = data.TeamCount;
 
             TeamCount.text = data.TeamCount.ToString();
-
-            Debug.Log($"DrawDataAndSaveConfig: Team Count: {data.TeamCount}");
         }
 
         if (data.TeamEmblem != null)
@@ -61,8 +59,6 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
             m_ConfigData.TeamEmblem = data.TeamEmblem;
 
             Emblem.sprite = data.TeamEmblem;
-
-            Debug.Log($"DrawDataAndSaveConfig: Team Emblem: {data.TeamEmblem.name}");
         }
 
         if (data.TeamName != "")
@@ -71,7 +67,10 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
 
             TeamName.text = data.TeamName;
 
-            Debug.Log($"DrawDataAndSaveConfig: Team Name: {data.TeamName}");
+            if(TeamNamePlaceHodler.color.a == 0f)
+            {
+                TeamNamePlaceHodler.DOFade(1f, .3f);
+            }
         }
     }
 }
