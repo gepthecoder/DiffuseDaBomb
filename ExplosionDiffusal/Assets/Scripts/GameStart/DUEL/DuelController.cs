@@ -10,6 +10,9 @@ public class DuelController : MonoBehaviour
     private DuelObjectType m_CurrentSelectedTeam = DuelObjectType.None;
 
     [HideInInspector] public UnityEvent<DuelObjectType> OnDuelObjectSelectedEvent = new UnityEvent<DuelObjectType>();
+    [HideInInspector] public UnityEvent OnDuelConfigSetEvent = new UnityEvent();
+
+    private bool m_IsConfigReady = false;
 
     private void Awake()
     {
@@ -30,7 +33,29 @@ public class DuelController : MonoBehaviour
     public void OnSettingsChanged(SettingsItemData data)
     {
         DuelObject duelObj = GetDuelObjByType(data.Type == SettingsItemType.Axis ? DuelObjectType.Attacker : DuelObjectType.Defender);
-        duelObj.OnSettingsChanged(data);
+        duelObj.OnSettingsChanged(data, ()=> {
+            if (m_IsConfigReady)
+                return;
+
+            if (IsConfigReady())
+            {
+                m_IsConfigReady = true;
+                OnDuelConfigSetEvent?.Invoke();
+            }
+        });
+    }
+
+    private bool IsConfigReady()
+    {
+        foreach (var item in m_DuelObjects)
+        {
+            if (!item.IsDuelObjectReady())
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void OnDuelObjectSelected(DuelObjectType TYPE)
@@ -48,7 +73,7 @@ public class DuelController : MonoBehaviour
         OnDuelObjectSelectedEvent?.Invoke(m_CurrentSelectedTeam);
     }
 
-    private DuelObject GetDuelObjByType(DuelObjectType type)
+    public DuelObject GetDuelObjByType(DuelObjectType type)
     {
         foreach (var item in m_DuelObjects)
         {

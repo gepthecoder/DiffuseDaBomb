@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using DG.Tweening;
 using UnityEngine.EventSystems;
 using TMPro;
+using System;
 
 public enum DuelObjectType { Attacker, Defender, None }
 
@@ -17,6 +18,7 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
     public Image Emblem;
     public TextMeshProUGUI TeamName;
     public TextMeshProUGUI TeamCount;
+    public Animator TeamCountBgAnimator;
 
     public Image QuestionMark;
     public Image TeamNamePlaceHodler;
@@ -38,17 +40,12 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
         OnDuelObjectSelected?.Invoke(ID);
     }
 
-    internal void OnSettingsChanged(SettingsItemData data)
-    {
-        DrawDataAndSaveConfig(data);
-    }
-
-    private void DrawDataAndSaveConfig(SettingsItemData data)
+    internal void OnSettingsChanged(SettingsItemData data, Action action)
     {
         if (data.TeamCount != 0)
         {
             m_ConfigData.TeamCount = data.TeamCount;
-
+            TeamCountBgAnimator.Play("FadeIn");
             TeamCount.text = data.TeamCount.ToString();
         }
 
@@ -58,7 +55,8 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
 
             Emblem.sprite = data.TeamEmblem;
 
-            if (QuestionMark.isActiveAndEnabled) { 
+            if (QuestionMark.isActiveAndEnabled)
+            {
                 QuestionMark.enabled = false;
                 Emblem.DOFade(1f, .4f);
             }
@@ -70,10 +68,28 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
 
             TeamName.text = data.TeamName;
 
-            if(TeamNamePlaceHodler.color.a == 0f)
+            if (TeamNamePlaceHodler.color.a == 0f)
             {
                 TeamNamePlaceHodler.DOFade(1f, .3f);
             }
+        }
+
+        action?.Invoke();
+    }
+
+    public bool IsDuelObjectReady()
+    {
+        if (m_ConfigData.TeamCount == 0) {
+            return false;
+        }
+        else if (m_ConfigData.TeamEmblem == null) {
+            return false;
+        }
+        else if (m_ConfigData.TeamName == "") {
+            return false;
+        } 
+        else {
+            return true;
         }
     }
 }

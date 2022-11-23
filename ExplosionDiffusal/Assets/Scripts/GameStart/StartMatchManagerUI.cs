@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using DG.Tweening;
 using System;
+using TMPro;
 
 public class StartMatchManagerUI : MonoBehaviour
 {
@@ -30,6 +31,11 @@ public class StartMatchManagerUI : MonoBehaviour
     private CanvasGroup m_TeamSettingsCanvasGroupRef = new CanvasGroup();
     [SerializeField] private Image m_TeamSettingsBackground;
     //
+    [SerializeField] private Button m_ReadyButton;
+    private TextMeshProUGUI m_ReadyText;
+    //
+    [Header("CONFIG - Duel")]
+    [SerializeField] private DuelController m_DuelController;
 
     [HideInInspector] public UnityEvent OnStartMatchButtonClickedEvent = new UnityEvent();
     [HideInInspector] public UnityEvent<Action> OnFadeOutEffectEvent = new UnityEvent<Action>();
@@ -41,6 +47,44 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private void Awake()
     {
+        m_DuelController.OnDuelConfigSetEvent.AddListener(() => {
+
+            m_ReadyButton.transform.DOScale(1f, 1f)
+            .SetEase(Ease.InQuart)
+            .OnComplete(() => {
+                m_ReadyText.DOFade(1f, .5f)
+                .OnComplete(() => {
+                    m_ReadyButton.transform.DOScale(1.1f, .7f).SetEase(Ease.InQuart).OnComplete(() => {
+                        m_ReadyButton.transform.DOScale(1f, .7f).SetEase(Ease.InOutBack).OnComplete(() => {
+                            m_ReadyButton.interactable = true;
+                        });
+                    });
+                });
+            });
+
+        });
+
+        m_ReadyButton.onClick.AddListener(() => {
+            Debug.Log("Ready!!");
+
+            m_ReadyButton.transform.DOScale(0f, .3f).SetEase(Ease.InQuart);
+
+            m_DuelController.GetDuelObjByType(DuelObjectType.Attacker).OnDeSelected();
+            m_DuelController.GetDuelObjByType(DuelObjectType.Defender).OnDeSelected();
+
+            m_TeamSettingsAxis.Play("hide");
+            m_TeamSettingsAllies.Play("hide");
+
+            m_TeamSettingsBackground.DOColor(
+                         new Color(m_TeamSettingsBackground.color.r,
+                                     m_TeamSettingsBackground.color.g,
+                                         m_TeamSettingsBackground.color.b, 0), .6f).OnComplete(() => {
+                                             m_Duel.DOScale(Vector3.one, .5f);
+                                             m_Duel.DOLocalMoveY(0, .5f).SetEase(Ease.InOutBack);
+                                         });
+
+        });
+
         m_StartMatchButton.onClick.AddListener(() => {
             OnStartMatchButtonClickedEvent?.Invoke();
         });
@@ -87,6 +131,8 @@ public class StartMatchManagerUI : MonoBehaviour
                             new Color(m_TeamSettingsBackground.color.r,
                                         m_TeamSettingsBackground.color.g,
                                             m_TeamSettingsBackground.color.b, 1f), .6f);
+
+                        m_ReadyButton.transform.DOScale(1f, .5f).SetEase(Ease.InOutExpo);
 
                         m_CanPlaySetupAnime = false;
                     }
@@ -174,6 +220,12 @@ public class StartMatchManagerUI : MonoBehaviour
         m_TeamSettingsAllies.GetComponent<CanvasGroup>().alpha = 0;
         m_TeamSettingsBackground.color = new Color(m_TeamSettingsBackground.color.r, m_TeamSettingsBackground.color.g, m_TeamSettingsBackground.color.b, 0f);
         m_CanPlaySetupAnime = true;
+
+        m_ReadyText = m_ReadyButton.GetComponentInChildren<TextMeshProUGUI>();
+        m_ReadyButton.interactable = false;
+        m_ReadyText.color = new Color(m_ReadyText.color.r, m_ReadyText.color.g, m_ReadyText.color.b, .5f);
+        m_ReadyButton.transform.localScale = Vector3.zero;
+
 
         m_RectGameOptions = m_StartGameOptions.GetComponent<RectTransform>();
 
