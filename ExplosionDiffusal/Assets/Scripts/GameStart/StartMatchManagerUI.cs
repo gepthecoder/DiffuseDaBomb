@@ -125,19 +125,25 @@ public class StartMatchManagerUI : MonoBehaviour
                         m_SetupAnime.Play();
 
                         m_Duel.DOScale(new Vector3(.7f, .7f, .7f), .5f);
-                        m_Duel.DOLocalMoveY(-200f, .5f).SetEase(Ease.InOutBack);
+                        m_Duel.DOLocalMoveY(-200f, .5f).SetEase(Ease.InOutBack).OnComplete(() => {
+                            m_TeamSettingsBackground.DOColor(
+                                new Color(m_TeamSettingsBackground.color.r,
+                                       m_TeamSettingsBackground.color.g,
+                                           m_TeamSettingsBackground.color.b, 1f), .5f);
 
-                        m_TeamSettingsBackground.DOColor(
-                            new Color(m_TeamSettingsBackground.color.r,
-                                        m_TeamSettingsBackground.color.g,
-                                            m_TeamSettingsBackground.color.b, 1f), .6f);
+                            var settings = state == StartMatchState.TeamAConfig ? m_TeamSettingsAxis : m_TeamSettingsAllies;
+                            settings?.Play("show");
+                            m_TeamSettingsCanvasGroupRef = settings?.GetComponent<CanvasGroup>();
+                            m_TeamSettingsCanvasGroupRef.blocksRaycasts = true;
+                        });
 
                         m_ReadyButton.transform.DOScale(1f, .5f).SetEase(Ease.InOutExpo);
 
                         m_CanPlaySetupAnime = false;
+                    } else
+                    {
+                        StartCoroutine(ShowTeamConfig(m_CurrentState));
                     }
-
-                    StartCoroutine(ShowTeamConfig(m_CurrentState));
                 }
                 break;
             default:
@@ -147,8 +153,7 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private IEnumerator ShowTeamConfig(StartMatchState teamConfig)
     {
-        yield return new WaitForSeconds(.6f);
-
+        yield return new WaitForSeconds(.15f);
 
         var (settingShow, settingHide) = 
             teamConfig == StartMatchState.TeamAConfig ? (m_TeamSettingsAxis, m_TeamSettingsAllies) : 

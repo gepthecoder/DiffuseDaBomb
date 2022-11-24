@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 public enum SettingsItemType { Axis, Allies, }
 
 public class SettingsItemData {
@@ -78,6 +79,9 @@ public class SettingsItem : MonoBehaviour
 
             m_CurrentEmblem = m_EmblemSprites[m_CurrentEmblemIndex];
             m_EmblemImage.sprite = m_CurrentEmblem;
+            m_EmblemImage.transform.DOLocalJump(new Vector3(0,20,0), 2, 1, .5f).OnComplete(() => {
+                m_EmblemImage.transform.DOLocalJump(Vector3.zero, 2, 1, .5f);
+            });
 
             if(m_EmblemQuestionMark.isActiveAndEnabled) { m_EmblemQuestionMark.enabled = false; }
 
@@ -90,6 +94,10 @@ public class SettingsItem : MonoBehaviour
 
             m_CurrentEmblem = m_EmblemSprites[m_CurrentEmblemIndex];
             m_EmblemImage.sprite = m_CurrentEmblem;
+
+            m_EmblemImage.transform.DOLocalJump(new Vector3(0, 20, 0), 2, 1, .5f).OnComplete(() => {
+                m_EmblemImage.transform.DOLocalJump(Vector3.zero, 2, 1, .5f);
+            });
 
             if (m_EmblemQuestionMark.isActiveAndEnabled) { m_EmblemQuestionMark.enabled = false; }
 
