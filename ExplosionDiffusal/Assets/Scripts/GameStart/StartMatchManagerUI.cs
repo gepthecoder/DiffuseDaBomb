@@ -72,6 +72,11 @@ public class StartMatchManagerUI : MonoBehaviour
             m_DuelController.GetDuelObjByType(DuelObjectType.Attacker).OnDeSelected();
             m_DuelController.GetDuelObjByType(DuelObjectType.Defender).OnDeSelected();
 
+            // Duel Object & Team Settings Are From Here On Not Interactable!
+            m_DuelController.DeActivateDuelObjectInteractability();
+            m_TeamSettingsAxis.GetComponent<CanvasGroup>().interactable = false;
+            m_TeamSettingsAllies.GetComponent<CanvasGroup>().interactable = false;
+
             m_TeamSettingsAxis.Play("hide");
             m_TeamSettingsAllies.Play("hide");
 
@@ -82,7 +87,6 @@ public class StartMatchManagerUI : MonoBehaviour
                                              m_Duel.DOScale(Vector3.one, .5f);
                                              m_Duel.DOLocalMoveY(0, .5f).SetEase(Ease.InOutBack);
                                          });
-
         });
 
         m_StartMatchButton.onClick.AddListener(() => {
@@ -223,6 +227,8 @@ public class StartMatchManagerUI : MonoBehaviour
 
         m_TeamSettingsAxis.GetComponent<CanvasGroup>().alpha = 0;
         m_TeamSettingsAllies.GetComponent<CanvasGroup>().alpha = 0;
+        m_TeamSettingsAxis.GetComponent<CanvasGroup>().interactable = true;
+        m_TeamSettingsAllies.GetComponent<CanvasGroup>().interactable = true;
         m_TeamSettingsBackground.color = new Color(m_TeamSettingsBackground.color.r, m_TeamSettingsBackground.color.g, m_TeamSettingsBackground.color.b, 0f);
         m_CanPlaySetupAnime = true;
 

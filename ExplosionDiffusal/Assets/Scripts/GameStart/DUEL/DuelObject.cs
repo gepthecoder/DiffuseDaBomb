@@ -25,6 +25,8 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
 
     private SettingsItemData m_ConfigData = new SettingsItemData();
 
+    private bool m_IsInteractable = true;
+
     public void OnSelected()
     {
         transform.DOScale(new Vector3(1.1f, 1.1f, 1.1f), .2f);
@@ -37,7 +39,16 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (!m_IsInteractable)
+            return;
+
+        Debug.Log("OnDuelObjectSelected?.Invoke");
         OnDuelObjectSelected?.Invoke(ID);
+    }
+
+    public void SetInteractability(bool enabled)
+    {
+        m_IsInteractable = enabled;
     }
 
     internal void OnSettingsChanged(SettingsItemData data, Action action)

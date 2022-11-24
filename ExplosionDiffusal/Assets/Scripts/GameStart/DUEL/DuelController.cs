@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -84,5 +85,12 @@ public class DuelController : MonoBehaviour
         }
 
         return null;
+    }
+
+    internal void DeActivateDuelObjectInteractability()
+    {
+        m_DuelObjects.ForEach((duelObj) => {
+            duelObj.SetInteractability(false);
+        });
     }
 } 
