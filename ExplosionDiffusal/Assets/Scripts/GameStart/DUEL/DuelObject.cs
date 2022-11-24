@@ -42,7 +42,6 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
         if (!m_IsInteractable)
             return;
 
-        Debug.Log("OnDuelObjectSelected?.Invoke");
         OnDuelObjectSelected?.Invoke(ID);
     }
 

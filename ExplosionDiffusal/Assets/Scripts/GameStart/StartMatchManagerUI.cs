@@ -65,8 +65,6 @@ public class StartMatchManagerUI : MonoBehaviour
         });
 
         m_ReadyButton.onClick.AddListener(() => {
-            Debug.Log("Ready!!");
-
             m_ReadyButton.transform.DOScale(0f, .3f).SetEase(Ease.InQuart);
 
             m_DuelController.GetDuelObjByType(DuelObjectType.Attacker).OnDeSelected();
