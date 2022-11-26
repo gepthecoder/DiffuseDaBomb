@@ -4,7 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 
 public class GameModeObject : GameModeObjectBase
-{
+{   
     public override void OnPointerClick(PointerEventData eventData)
     {
         OnGameModeSelectedEvent?.Invoke(Type);
@@ -12,6 +12,11 @@ public class GameModeObject : GameModeObjectBase
 
     public override void OnSelected()
     {
+        if(Type == GameModeType.SpecialEdition)
+        {
+            // wobble lock
+            LockAnime?.Play("wobbleLock");
+        }
         transform.DOScale(Vector3.one, .5f);
     }
 

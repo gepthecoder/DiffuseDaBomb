@@ -5,7 +5,26 @@ using DG.Tweening;
 using UnityEngine.Events;
 using System;
 
-public enum StartMatchState { Initial, PlayMatchMain, SettingsMain, TeamAConfig, TeamBConfig, }
+public class GlobalConfig
+{
+    public GameModeType __GAME_MODE_TYPE__;
+    //MatchSettings
+    public SettingsItemData __DUEL_SETTINGS__;
+
+    public GlobalConfig(GameModeType type) {
+        this.__GAME_MODE_TYPE__ = type;
+    }
+
+    public GlobalConfig(SettingsItemData data)
+    {
+        this.__DUEL_SETTINGS__ = data;
+    }
+
+    public GlobalConfig() { }
+}
+
+
+public enum StartMatchState { Initial, PlayMatchMain, SettingsMain, MatchSettings, TeamAConfig, TeamBConfig, }
 
 public class StartMatchManager : MonoBehaviour
 {
@@ -16,6 +35,8 @@ public class StartMatchManager : MonoBehaviour
     [Space(5)]
     [SerializeField] private Transform t_CameraStartPosition;
     [SerializeField] private Transform t_CameraEndPosition;
+
+    private GlobalConfig m_GlobalConfigData = new GlobalConfig();
 
     [HideInInspector] public UnityEvent OnStartMatchEvent = new UnityEvent();
 
@@ -32,6 +53,7 @@ public class StartMatchManager : MonoBehaviour
     private void DeSub()
     {
         m_StartMatchManagerUI.OnStartMatchButtonClickedEvent.RemoveListener(StartMatch);
+        m_StartMatchManagerUI.OnGameModeSelectedEvent.RemoveAllListeners();
     }
 
     private void Sub()
@@ -40,6 +62,10 @@ public class StartMatchManager : MonoBehaviour
         m_DuelController.OnDuelObjectSelectedEvent.AddListener((TYPE) => {
             m_StartMatchManagerUI.TriggerBehaviour(TYPE == DuelObjectType.Attacker ? 
                 StartMatchState.TeamAConfig : StartMatchState.TeamBConfig);
+        });
+
+        m_StartMatchManagerUI.OnGameModeSelectedEvent.AddListener((mode) => {
+            m_GlobalConfigData.__GAME_MODE_TYPE__ = mode;
         });
     }
 

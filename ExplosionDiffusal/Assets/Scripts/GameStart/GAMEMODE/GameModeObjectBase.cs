@@ -11,6 +11,9 @@ public class GameModeObjectBase : MonoBehaviour, IPointerClickHandler
     public GameModeType Type;
 
     [HideInInspector] public UnityEvent<GameModeType> OnGameModeSelectedEvent = new UnityEvent<GameModeType>();
+
+    public Animation LockAnime = null;
+
     public virtual void OnPointerClick(PointerEventData eventData) {
     }
 

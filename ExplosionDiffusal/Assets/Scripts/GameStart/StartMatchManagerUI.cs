@@ -29,7 +29,8 @@ public class StartMatchManagerUI : MonoBehaviour
     [SerializeField] private Animation m_SetupAnime;
     // GAME MODE
     [SerializeField] private Transform m_GameMode;
-
+    [SerializeField] private Transform m_DuelParent;
+    [Space(5)]
     // DUEL
     [SerializeField] private Transform m_Duel;
     [SerializeField] private Animator m_TeamSettingsAxis;
@@ -50,6 +51,7 @@ public class StartMatchManagerUI : MonoBehaviour
 
     [HideInInspector] public UnityEvent OnStartMatchButtonClickedEvent = new UnityEvent();
     [HideInInspector] public UnityEvent<Action> OnFadeOutEffectEvent = new UnityEvent<Action>();
+    [HideInInspector] public UnityEvent<GameModeType> OnGameModeSelectedEvent = new UnityEvent<GameModeType>();
 
     private RectTransform m_RectGameOptions;
     private StartMatchState m_CurrentState;
@@ -58,6 +60,12 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private void Awake()
     {
+        m_GameModeController.OnGameModeSelectedFinalEvent.AddListener((MODE) => {
+            OnGameModeSelectedEvent?.Invoke(MODE);
+            TriggerBehaviour(StartMatchState.MatchSettings);
+        });
+
+
         m_DuelController.OnDuelConfigSetEvent.AddListener(() => {
 
             m_ReadyButton.transform.DOScale(1f, 1f)
@@ -129,6 +137,10 @@ public class StartMatchManagerUI : MonoBehaviour
             case StartMatchState.PlayMatchMain:
                 StartCoroutine(ShowPlayMatchMainScene());
                 break;
+
+            case StartMatchState.MatchSettings:
+                StartCoroutine(ShowDuelInterfaceSequence());
+                break;
             case StartMatchState.TeamAConfig:
             case StartMatchState.TeamBConfig:
                 {
@@ -164,6 +176,18 @@ public class StartMatchManagerUI : MonoBehaviour
         }
     }
 
+    private IEnumerator ShowDuelInterfaceSequence()
+    {
+        m_GameMode.gameObject.SetActive(false);
+        m_DuelParent.gameObject.SetActive(true);
+
+        m_GameModeAnime.Play("signal_HIDE");
+        yield return new WaitForSeconds(.15f);
+        m_SelectTeamsAnime.Play("signal_SHOW");
+        yield return new WaitForSeconds(.3f);
+        m_Duel.DOScale(1f, .3f);
+    }
+
     private IEnumerator ShowTeamConfig(StartMatchState teamConfig)
     {
         yield return new WaitForSeconds(.15f);
@@ -192,20 +216,14 @@ public class StartMatchManagerUI : MonoBehaviour
             yield return new WaitForSeconds(.1f);
         }
 
-        m_GameTile.DOScale(0, .4f).OnComplete(() => {
+        m_GameTile.DOScale(0, .4f).OnComplete(() =>
+        {
             m_GameModeAnime.Play("signal_SHOW");
         }); ;
-        m_RectGameOptions.DOSizeDelta(new Vector2(m_RectGameOptions.sizeDelta.x, 787f), 1f).OnComplete(() => {
-            m_GameMode.DOScale(1f, .4f).SetEase(Ease.InQuint);
+        m_RectGameOptions.DOSizeDelta(new Vector2(m_RectGameOptions.sizeDelta.x, 787f), 1f).OnComplete(() =>
+        {
+            m_GameMode.DOScale(1f, .77f).SetEase(Ease.InOutQuart);
         });
-    }
-
-    private void ShowTeamSelection()
-    {
-        m_SelectTeamsAnime.Play("signal_SHOW");
-
-
-        m_Duel.DOScale(1f, .3f);
     }
 
 
