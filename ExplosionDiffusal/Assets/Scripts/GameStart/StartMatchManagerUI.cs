@@ -7,6 +7,10 @@ using DG.Tweening;
 using System;
 using TMPro;
 
+/// <summary>
+/// INTRO -> GAME MODE -> GAME SETTINGS -> TEAM SELECTION -> START GAME LOOP
+/// </summary>
+
 public class StartMatchManagerUI : MonoBehaviour
 {
     
@@ -16,24 +20,31 @@ public class StartMatchManagerUI : MonoBehaviour
     [SerializeField] private Transform m_GameTile;
     [SerializeField] private Transform m_GameTileEndPoint;
     [SerializeField] private Image m_BackgroundImage;
-    //
+    // START GAME
     [SerializeField] private GameObject m_StartGameOptions;
     [SerializeField] private List<Transform> m_StartGameOptionItems;
-    //
-    [SerializeField] private Button m_PlayButton;
-    //
+    // ANIMATIONS
+    [SerializeField] private Animation m_GameModeAnime;
     [SerializeField] private Animation m_SelectTeamsAnime;
     [SerializeField] private Animation m_SetupAnime;
-    //
+    // GAME MODE
+    [SerializeField] private Transform m_GameMode;
+
+    // DUEL
     [SerializeField] private Transform m_Duel;
     [SerializeField] private Animator m_TeamSettingsAxis;
     [SerializeField] private Animator m_TeamSettingsAllies;
     private CanvasGroup m_TeamSettingsCanvasGroupRef = new CanvasGroup();
     [SerializeField] private Image m_TeamSettingsBackground;
+
+    //
+    [SerializeField] private Button m_PlayButton;
     //
     [SerializeField] private Button m_ReadyButton;
     private TextMeshProUGUI m_ReadyText;
     //
+    [Header("CONFIG - Game Mode")]
+    [SerializeField] private GameModeController m_GameModeController;
     [Header("CONFIG - Duel")]
     [SerializeField] private DuelController m_DuelController;
 
@@ -123,7 +134,7 @@ public class StartMatchManagerUI : MonoBehaviour
                 {
                     if(m_CanPlaySetupAnime)
                     {
-                        m_SelectTeamsAnime.Play("select_teams_HIDE");
+                        m_SelectTeamsAnime.Play("signal_HIDE");
                         m_SetupAnime.Play();
 
                         m_Duel.DOScale(new Vector3(.7f, .7f, .7f), .5f);
@@ -182,11 +193,19 @@ public class StartMatchManagerUI : MonoBehaviour
         }
 
         m_GameTile.DOScale(0, .4f).OnComplete(() => {
-            m_SelectTeamsAnime.Play("select_teams");
+            m_GameModeAnime.Play("signal_SHOW");
         }); ;
         m_RectGameOptions.DOSizeDelta(new Vector2(m_RectGameOptions.sizeDelta.x, 787f), 1f).OnComplete(() => {
-            m_Duel.DOScale(1f, .3f);
+            m_GameMode.DOScale(1f, .4f).SetEase(Ease.InQuint);
         });
+    }
+
+    private void ShowTeamSelection()
+    {
+        m_SelectTeamsAnime.Play("signal_SHOW");
+
+
+        m_Duel.DOScale(1f, .3f);
     }
 
 
@@ -215,6 +234,7 @@ public class StartMatchManagerUI : MonoBehaviour
         m_BackgroundImage.color = new Color(1, 1, 1, 0);
 
         m_StartGameOptions.transform.localScale = Vector3.zero;
+        m_GameMode.localScale = Vector3.zero;
 
         m_StartGameOptionItems.ForEach((item) => {
             item.localScale = Vector3.zero;
