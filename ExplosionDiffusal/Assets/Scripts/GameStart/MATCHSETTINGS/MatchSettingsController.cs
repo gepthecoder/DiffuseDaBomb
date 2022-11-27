@@ -33,12 +33,27 @@ public class MatchSettingsController : MonoBehaviour
     private MatchSettingsStateType m_CurrentState = MatchSettingsStateType.None;
 
     [SerializeField] private Button m_NextButton;
+    [SerializeField] private Button m_PreviousButton;
 
     private MatchSettingsConfigData m_Data = new MatchSettingsConfigData();
 
     private void Awake()
     {
         DefaultSetup();
+
+        m_PreviousButton.onClick.AddListener(() => {
+            m_PreviousButton.interactable = false;
+
+            m_PreviousButton.transform.DOScale(1.15f, .25f).OnComplete(() => {
+                m_PreviousButton.transform.DOScale(0f, .77f).OnComplete(() => {
+
+                    GetMatchSettingsByType(m_CurrentState).OnHideItem();
+
+                    TriggerBehaviour(m_CurrentState - 1);
+                });
+            });
+
+        });
 
         m_NextButton.onClick.AddListener(() => {
           
@@ -53,6 +68,8 @@ public class MatchSettingsController : MonoBehaviour
                     if (m_CurrentState == MatchSettingsStateType.ScoreLimit)
                     {
                         // SHOW DUEL with small delay
+                        m_PreviousButton.transform.DOScale(0f, .77f);
+
                         StartCoroutine(OnMatchSettingsDoneDelay());
                     }
                     else
@@ -84,37 +101,31 @@ public class MatchSettingsController : MonoBehaviour
     {
         m_CurrentState = state;
 
-        switch (state)
+        // NEXT BUTTON
+        m_NextButton.transform.DOScale(1.15f, .77f).OnComplete(() => {
+            m_NextButton.transform.DOScale(1f, .25f).OnComplete(() => {
+                m_NextButton.interactable = true;
+            });
+        });
+
+        // PREVIOUS BUTTON
+        if (m_CurrentState == MatchSettingsStateType.GameTime)
         {
-            case MatchSettingsStateType.GameTime:
-                m_NextButton.transform.DOScale(1.15f, .77f).OnComplete(() => {
-                    m_NextButton.transform.DOScale(1f, .25f).OnComplete(() => {
-                        m_NextButton.interactable = true;
-                    });
+            m_PreviousButton.interactable = false;
+
+            m_PreviousButton.transform.DOScale(0f, .77f).OnComplete(() => {
+            });
+        } else
+        {
+            m_PreviousButton.transform.DOScale(1.15f, .77f).OnComplete(() => {
+                m_PreviousButton.transform.DOScale(1f, .25f).OnComplete(() => {
+                    m_PreviousButton.interactable = true;
                 });
-                GetMatchSettingsByType(state).OnShowItem();
-                break;
-            case MatchSettingsStateType.BombTime:
-                m_NextButton.transform.DOScale(1.15f, .77f).OnComplete(() => {
-                    m_NextButton.transform.DOScale(1f, .25f).OnComplete(() => {
-                        m_NextButton.interactable = true;
-                    });
-                });
-                GetMatchSettingsByType(state).OnShowItem();
-                break;
-            case MatchSettingsStateType.ScoreLimit:
-                m_NextButton.transform.DOScale(1.15f, .77f).OnComplete(() => {
-                    m_NextButton.transform.DOScale(1f, .25f).OnComplete(() => {
-                        m_NextButton.interactable = true;
-                    });
-                });
-                GetMatchSettingsByType(state).OnShowItem();
-                break;
-            case MatchSettingsStateType.None:
-                break;
-            default:
-                break;
+            });
         }
+
+        // SHOW MATCH SETTING BY TYPE
+        GetMatchSettingsByType(state).OnShowItem();
     }
 
     private MatchSettingsItem GetMatchSettingsByType(MatchSettingsStateType type)
