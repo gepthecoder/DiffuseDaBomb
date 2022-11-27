@@ -25,10 +25,12 @@ public class StartMatchManagerUI : MonoBehaviour
     [SerializeField] private List<Transform> m_StartGameOptionItems;
     // ANIMATIONS
     [SerializeField] private Animation m_GameModeAnime;
+    [SerializeField] private Animation m_MatchSettingsAnime;
     [SerializeField] private Animation m_SelectTeamsAnime;
     [SerializeField] private Animation m_SetupAnime;
     // GAME MODE
     [SerializeField] private Transform m_GameMode;
+    [SerializeField] private Transform m_MatchSettingsParent;
     [SerializeField] private Transform m_DuelParent;
     [Space(5)]
     // DUEL
@@ -46,12 +48,15 @@ public class StartMatchManagerUI : MonoBehaviour
     //
     [Header("CONFIG - Game Mode")]
     [SerializeField] private GameModeController m_GameModeController;
+    [Header("CONFIG - Match Settings")]
+    [SerializeField] private MatchSettingsController m_MatchSettingsController;
     [Header("CONFIG - Duel")]
     [SerializeField] private DuelController m_DuelController;
 
     [HideInInspector] public UnityEvent OnStartMatchButtonClickedEvent = new UnityEvent();
     [HideInInspector] public UnityEvent<Action> OnFadeOutEffectEvent = new UnityEvent<Action>();
     [HideInInspector] public UnityEvent<GameModeType> OnGameModeSelectedEvent = new UnityEvent<GameModeType>();
+    [HideInInspector] public UnityEvent<MatchSettingsConfigData> OnMatchSettingsSetEvent = new UnityEvent<MatchSettingsConfigData>();
 
     private RectTransform m_RectGameOptions;
     private StartMatchState m_CurrentState;
@@ -60,6 +65,12 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private void Awake()
     {
+
+        m_MatchSettingsController.OnSetMatchSettingsDoneEvent.AddListener((DATA) => {
+            OnMatchSettingsSetEvent?.Invoke(DATA);
+            TriggerBehaviour(StartMatchState.Duel);
+        });
+
         m_GameModeController.OnGameModeSelectedFinalEvent.AddListener((MODE) => {
             OnGameModeSelectedEvent?.Invoke(MODE);
             TriggerBehaviour(StartMatchState.MatchSettings);
@@ -139,6 +150,9 @@ public class StartMatchManagerUI : MonoBehaviour
                 break;
 
             case StartMatchState.MatchSettings:
+                StartCoroutine(ShowMatchSettingsInterfaceSequence());
+                break;
+            case StartMatchState.Duel:
                 StartCoroutine(ShowDuelInterfaceSequence());
                 break;
             case StartMatchState.TeamAConfig:
@@ -178,14 +192,28 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private IEnumerator ShowDuelInterfaceSequence()
     {
-        m_GameMode.gameObject.SetActive(false);
+        m_MatchSettingsParent.gameObject.SetActive(false);
         m_DuelParent.gameObject.SetActive(true);
 
-        m_GameModeAnime.Play("signal_HIDE");
+        m_MatchSettingsAnime.Play("signal_HIDE");
         yield return new WaitForSeconds(.15f);
         m_SelectTeamsAnime.Play("signal_SHOW");
         yield return new WaitForSeconds(.3f);
         m_Duel.DOScale(1f, .3f);
+    }
+
+    private IEnumerator ShowMatchSettingsInterfaceSequence()
+    {
+        m_GameMode.gameObject.SetActive(false);
+        m_MatchSettingsParent.gameObject.SetActive(true);
+
+        m_MatchSettingsController.TriggerBehaviour(MatchSettingsStateType.GameTime);
+
+        m_GameModeAnime.Play("signal_HIDE");
+        yield return new WaitForSeconds(.15f);
+        m_MatchSettingsAnime.Play("signal_SHOW");
+        yield return new WaitForSeconds(.3f);
+        m_MatchSettingsParent.DOScale(1f, .3f);
     }
 
     private IEnumerator ShowTeamConfig(StartMatchState teamConfig)

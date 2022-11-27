@@ -8,7 +8,7 @@ using System;
 public class GlobalConfig
 {
     public GameModeType __GAME_MODE_TYPE__;
-    //MatchSettings
+    public MatchSettingsConfigData __MATCH_SETTINGS__;
     public SettingsItemData __DUEL_SETTINGS__;
 
     public GlobalConfig(GameModeType type) {
@@ -20,11 +20,16 @@ public class GlobalConfig
         this.__DUEL_SETTINGS__ = data;
     }
 
+    public GlobalConfig(MatchSettingsConfigData data)
+    {
+        this.__MATCH_SETTINGS__ = data;
+    }
+
     public GlobalConfig() { }
 }
 
 
-public enum StartMatchState { Initial, PlayMatchMain, SettingsMain, MatchSettings, TeamAConfig, TeamBConfig, }
+public enum StartMatchState { Initial, PlayMatchMain, SettingsMain, MatchSettings, Duel, TeamAConfig, TeamBConfig, }
 
 public class StartMatchManager : MonoBehaviour
 {
@@ -54,6 +59,7 @@ public class StartMatchManager : MonoBehaviour
     {
         m_StartMatchManagerUI.OnStartMatchButtonClickedEvent.RemoveListener(StartMatch);
         m_StartMatchManagerUI.OnGameModeSelectedEvent.RemoveAllListeners();
+        m_DuelController.OnDuelObjectSelectedEvent.RemoveAllListeners();
     }
 
     private void Sub()
@@ -66,6 +72,10 @@ public class StartMatchManager : MonoBehaviour
 
         m_StartMatchManagerUI.OnGameModeSelectedEvent.AddListener((mode) => {
             m_GlobalConfigData.__GAME_MODE_TYPE__ = mode;
+        });
+
+        m_StartMatchManagerUI.OnMatchSettingsSetEvent.AddListener((DATA) => {
+            m_GlobalConfigData.__MATCH_SETTINGS__ = DATA;
         });
     }
 
