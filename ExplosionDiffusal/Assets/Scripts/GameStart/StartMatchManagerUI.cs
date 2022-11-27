@@ -57,6 +57,7 @@ public class StartMatchManagerUI : MonoBehaviour
     [HideInInspector] public UnityEvent<Action> OnFadeOutEffectEvent = new UnityEvent<Action>();
     [HideInInspector] public UnityEvent<GameModeType> OnGameModeSelectedEvent = new UnityEvent<GameModeType>();
     [HideInInspector] public UnityEvent<MatchSettingsConfigData> OnMatchSettingsSetEvent = new UnityEvent<MatchSettingsConfigData>();
+    [HideInInspector] public UnityEvent<DuelConfigData> OnTeamsSelectedEvent = new UnityEvent<DuelConfigData>();
 
     private RectTransform m_RectGameOptions;
     private StartMatchState m_CurrentState;
@@ -77,7 +78,7 @@ public class StartMatchManagerUI : MonoBehaviour
         });
 
 
-        m_DuelController.OnDuelConfigSetEvent.AddListener(() => {
+        m_DuelController.OnDuelConfigSetEvent.AddListener((DATA) => {
 
             m_ReadyButton.transform.DOScale(1f, 1f)
             .SetEase(Ease.InQuart)
@@ -92,6 +93,7 @@ public class StartMatchManagerUI : MonoBehaviour
                 });
             });
 
+            OnTeamsSelectedEvent?.Invoke(DATA);
         });
 
         m_ReadyButton.onClick.AddListener(() => {

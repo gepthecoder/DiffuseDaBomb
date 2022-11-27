@@ -70,6 +70,9 @@ public class MatchSettingsController : MonoBehaviour
                         // SHOW DUEL with small delay
                         m_PreviousButton.transform.DOScale(0f, .77f);
 
+                        // save config
+                        SaveConfig();
+
                         StartCoroutine(OnMatchSettingsDoneDelay());
                     }
                     else
@@ -82,11 +85,32 @@ public class MatchSettingsController : MonoBehaviour
         });
     }
 
+    private void SaveConfig()
+    {
+        m_MatchSettingsItems.ForEach((item) => {
+            switch (item.Type)
+            {
+                case MatchSettingsStateType.GameTime:
+                    m_Data.GameTimeInMinutes = item.m_Value;
+                    break;
+                case MatchSettingsStateType.BombTime:
+                    m_Data.BombTimeInMinutes = item.m_Value;
+                    break;
+                case MatchSettingsStateType.ScoreLimit:
+                    m_Data.ScoreLimit = item.m_Value;
+                    break;
+                case MatchSettingsStateType.None:
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
     private IEnumerator OnMatchSettingsDoneDelay()
     {
         yield return new WaitForSeconds(1f);
         OnSetMatchSettingsDoneEvent?.Invoke(m_Data);
-
     }
 
     private void DefaultSetup()
@@ -94,6 +118,7 @@ public class MatchSettingsController : MonoBehaviour
         m_MatchSettingsItems.ForEach((item) => {
             item.GetCanvasGroup().alpha = 0;
             item.GetCanvasGroup().interactable = false;
+            item.GetCanvasGroup().blocksRaycasts = false;
         });
     }
 

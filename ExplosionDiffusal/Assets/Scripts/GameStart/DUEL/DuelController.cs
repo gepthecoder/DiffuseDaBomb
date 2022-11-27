@@ -4,6 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public class DuelConfigData {
+    public SettingsItemData AxisConfigData;
+    public SettingsItemData AlliesConfigData;
+
+    public DuelConfigData() { }
+
+    public DuelConfigData(SettingsItemData axisData, SettingsItemData alliesData) { AxisConfigData = axisData; AlliesConfigData = alliesData; }
+}
+
 public class DuelController : MonoBehaviour
 {
     [SerializeField] private List<DuelObject> m_DuelObjects;
@@ -11,7 +20,9 @@ public class DuelController : MonoBehaviour
     private DuelObjectType m_CurrentSelectedTeam = DuelObjectType.None;
 
     [HideInInspector] public UnityEvent<DuelObjectType> OnDuelObjectSelectedEvent = new UnityEvent<DuelObjectType>();
-    [HideInInspector] public UnityEvent OnDuelConfigSetEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent<DuelConfigData> OnDuelConfigSetEvent = new UnityEvent<DuelConfigData>();
+
+    private DuelConfigData m_DuelConfigData = new DuelConfigData();
 
     private bool m_IsConfigReady = false;
 
@@ -41,7 +52,11 @@ public class DuelController : MonoBehaviour
             if (IsConfigReady())
             {
                 m_IsConfigReady = true;
-                OnDuelConfigSetEvent?.Invoke();
+
+                m_DuelConfigData.AxisConfigData = GetDuelObjByType(DuelObjectType.Attacker).m_ConfigData;
+                m_DuelConfigData.AlliesConfigData = GetDuelObjByType(DuelObjectType.Defender).m_ConfigData;
+
+                OnDuelConfigSetEvent?.Invoke(m_DuelConfigData);
             }
         });
     }

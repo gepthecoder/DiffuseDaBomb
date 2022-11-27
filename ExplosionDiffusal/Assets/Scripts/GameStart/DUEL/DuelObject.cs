@@ -23,7 +23,7 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
     public Image QuestionMark;
     public Image TeamNamePlaceHodler;
 
-    private SettingsItemData m_ConfigData = new SettingsItemData();
+    public SettingsItemData m_ConfigData = new SettingsItemData();
 
     private bool m_IsInteractable = true;
 

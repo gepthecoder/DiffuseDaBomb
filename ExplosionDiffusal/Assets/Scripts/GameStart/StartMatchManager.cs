@@ -9,13 +9,13 @@ public class GlobalConfig
 {
     public GameModeType __GAME_MODE_TYPE__;
     public MatchSettingsConfigData __MATCH_SETTINGS__;
-    public SettingsItemData __DUEL_SETTINGS__;
+    public DuelConfigData __DUEL_SETTINGS__;
 
     public GlobalConfig(GameModeType type) {
         this.__GAME_MODE_TYPE__ = type;
     }
 
-    public GlobalConfig(SettingsItemData data)
+    public GlobalConfig(DuelConfigData data)
     {
         this.__DUEL_SETTINGS__ = data;
     }
@@ -65,6 +65,7 @@ public class StartMatchManager : MonoBehaviour
     private void Sub()
     {
         m_StartMatchManagerUI.OnStartMatchButtonClickedEvent.AddListener(StartMatch);
+
         m_DuelController.OnDuelObjectSelectedEvent.AddListener((TYPE) => {
             m_StartMatchManagerUI.TriggerBehaviour(TYPE == DuelObjectType.Attacker ? 
                 StartMatchState.TeamAConfig : StartMatchState.TeamBConfig);
@@ -76,6 +77,10 @@ public class StartMatchManager : MonoBehaviour
 
         m_StartMatchManagerUI.OnMatchSettingsSetEvent.AddListener((DATA) => {
             m_GlobalConfigData.__MATCH_SETTINGS__ = DATA;
+        }); 
+        
+        m_StartMatchManagerUI.OnTeamsSelectedEvent.AddListener((DATA) => {
+            m_GlobalConfigData.__DUEL_SETTINGS__ = DATA;
         });
     }
 
