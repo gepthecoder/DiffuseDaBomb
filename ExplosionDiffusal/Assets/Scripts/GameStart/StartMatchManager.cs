@@ -29,7 +29,7 @@ public class GlobalConfig
 }
 
 
-public enum StartMatchState { Initial, PlayMatchMain, SettingsMain, MatchSettings, Duel, TeamAConfig, TeamBConfig, }
+public enum StartMatchState { Initial, ModeSelection, SettingsMain, MatchSettings, Duel, TeamAConfig, TeamBConfig, }
 
 public class StartMatchManager : MonoBehaviour
 {

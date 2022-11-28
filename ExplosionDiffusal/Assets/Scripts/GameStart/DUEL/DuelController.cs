@@ -24,8 +24,6 @@ public class DuelController : MonoBehaviour
 
     private DuelConfigData m_DuelConfigData = new DuelConfigData();
 
-    private bool m_IsConfigReady = false;
-
     private void Awake()
     {
         m_DuelObjects.ForEach((OBJECT) => { 
@@ -46,13 +44,8 @@ public class DuelController : MonoBehaviour
     {
         DuelObject duelObj = GetDuelObjByType(data.Type == SettingsItemType.Axis ? DuelObjectType.Attacker : DuelObjectType.Defender);
         duelObj.OnSettingsChanged(data, ()=> {
-            if (m_IsConfigReady)
-                return;
-
             if (IsConfigReady())
             {
-                m_IsConfigReady = true;
-
                 m_DuelConfigData.AxisConfigData = GetDuelObjByType(DuelObjectType.Attacker).m_ConfigData;
                 m_DuelConfigData.AlliesConfigData = GetDuelObjByType(DuelObjectType.Defender).m_ConfigData;
 

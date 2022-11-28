@@ -64,9 +64,10 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private bool m_CanPlaySetupAnime = true;
 
+    private bool m_CanShowDuelReadyButtonAnime = true;
+
     private void Awake()
     {
-
         m_MatchSettingsController.OnSetMatchSettingsDoneEvent.AddListener((DATA) => {
             OnMatchSettingsSetEvent?.Invoke(DATA);
             TriggerBehaviour(StartMatchState.Duel);
@@ -80,18 +81,24 @@ public class StartMatchManagerUI : MonoBehaviour
 
         m_DuelController.OnDuelConfigSetEvent.AddListener((DATA) => {
 
-            m_ReadyButton.transform.DOScale(1f, 1f)
-            .SetEase(Ease.InQuart)
-            .OnComplete(() => {
-                m_ReadyText.DOFade(1f, .5f)
-                .OnComplete(() => {
-                    m_ReadyButton.transform.DOScale(1.1f, .7f).SetEase(Ease.InQuart).OnComplete(() => {
-                        m_ReadyButton.transform.DOScale(1f, .7f).SetEase(Ease.InOutBack).OnComplete(() => {
-                            m_ReadyButton.interactable = true;
+            if(m_CanShowDuelReadyButtonAnime)
+            {
+                m_ReadyButton.transform.DOScale(1f, 1f)
+                 .SetEase(Ease.InQuart)
+                 .OnComplete(() => {
+                     m_ReadyText.DOFade(1f, .5f)
+                     .OnComplete(() => {
+                         m_ReadyButton.transform.DOScale(1.1f, .7f).SetEase(Ease.InQuart).OnComplete(() => {
+                             m_ReadyButton.transform.DOScale(1f, .7f).SetEase(Ease.InOutBack).OnComplete(() => {
+                                 m_ReadyButton.interactable = true;
+                             });
                         });
                     });
                 });
-            });
+
+                m_CanShowDuelReadyButtonAnime = false;
+            }
+         
 
             OnTeamsSelectedEvent?.Invoke(DATA);
         });
@@ -115,7 +122,9 @@ public class StartMatchManagerUI : MonoBehaviour
                                      m_TeamSettingsBackground.color.g,
                                          m_TeamSettingsBackground.color.b, 0), .6f).OnComplete(() => {
                                              m_Duel.DOScale(Vector3.one, .5f);
-                                             m_Duel.DOLocalMoveY(0, .5f).SetEase(Ease.InOutBack);
+                                             m_Duel.DOLocalMoveY(0, .5f).SetEase(Ease.InOutBack).OnComplete(() => { 
+                                                
+                                             });
                                          });
         });
 
@@ -127,7 +136,7 @@ public class StartMatchManagerUI : MonoBehaviour
             if (m_CurrentState != StartMatchState.Initial)
                 return;
 
-            TriggerBehaviour(StartMatchState.PlayMatchMain);
+            TriggerBehaviour(StartMatchState.ModeSelection);
         });
     }
 
@@ -143,24 +152,31 @@ public class StartMatchManagerUI : MonoBehaviour
         switch (state)
         {
             case StartMatchState.Initial:
+                Debug.Log($"<color=orange>StartMatchState</color><color=gold>Initial</color>");
                 OnFadeOutEffectEvent?.Invoke(() => {
                     SpawnLayout();
                 });
                 break;
-            case StartMatchState.PlayMatchMain:
-                StartCoroutine(ShowPlayMatchMainScene());
+            case StartMatchState.ModeSelection:
+                Debug.Log($"<color=orange>StartMatchState</color><color=gold>ModeSelection</color>");
+                StartCoroutine(ShowModeSelectionInterfaceSequence());
                 break;
 
             case StartMatchState.MatchSettings:
+                Debug.Log($"<color=orange>StartMatchState</color><color=gold>MatchSettings</color>");
                 StartCoroutine(ShowMatchSettingsInterfaceSequence());
                 break;
             case StartMatchState.Duel:
+                Debug.Log($"<color=orange>StartMatchState</color><color=gold>Duel</color>");
                 StartCoroutine(ShowDuelInterfaceSequence());
                 break;
             case StartMatchState.TeamAConfig:
             case StartMatchState.TeamBConfig:
                 {
-                    if(m_CanPlaySetupAnime)
+                    var log = state == StartMatchState.TeamAConfig ? "TeamAConfig" : "TeamBConfig";
+                    Debug.Log($"<color=orange>StartMatchState</color><color=gold>{log}</color>");
+
+                    if (m_CanPlaySetupAnime)
                     {
                         m_SelectTeamsAnime.Play("signal_HIDE");
                         m_SetupAnime.Play();
@@ -232,11 +248,10 @@ public class StartMatchManagerUI : MonoBehaviour
         settingShow?.Play("show");
         m_TeamSettingsCanvasGroupRef = settingShow?.GetComponent<CanvasGroup>();
         m_TeamSettingsCanvasGroupRef.blocksRaycasts = true;
-        yield break;
     }
 
 
-    private IEnumerator ShowPlayMatchMainScene()
+    private IEnumerator ShowModeSelectionInterfaceSequence()
     {
         foreach (var item in m_StartGameOptionItems)
         {
@@ -249,7 +264,7 @@ public class StartMatchManagerUI : MonoBehaviour
         m_GameTile.DOScale(0, .4f).OnComplete(() =>
         {
             m_GameModeAnime.Play("signal_SHOW");
-        }); ;
+        });
         m_RectGameOptions.DOSizeDelta(new Vector2(m_RectGameOptions.sizeDelta.x, 787f), 1f).OnComplete(() =>
         {
             m_GameMode.DOScale(1f, .77f).SetEase(Ease.InOutQuart);
