@@ -61,6 +61,8 @@ public class StartMatchManagerUI : MonoBehaviour
     [SerializeField] private MatchSettingsController m_MatchSettingsController;
     [Header("CONFIG - Duel")]
     [SerializeField] private DuelController m_DuelController;
+    [Header("Main Canvas")]
+    [SerializeField] private MainCanvas m_MainCanvas;
 
     [HideInInspector] public UnityEvent OnStartMatchButtonClickedEvent = new UnityEvent();
     [HideInInspector] public UnityEvent<Action> OnFadeOutEffectEvent = new UnityEvent<Action>();
@@ -137,10 +139,13 @@ public class StartMatchManagerUI : MonoBehaviour
                                             m_Duel.DOLocalMoveY(0, .5f).SetEase(Ease.InOutBack).OnComplete(() => {
                                                 m_VSCGroupAnime.Play("fadeOut");
 
+                                                m_MainCanvas.InitMainCanvas();
+
                                                 var axis = m_DuelController.GetDuelObjByType(DuelObjectType.Attacker);
                                                 var allies = m_DuelController.GetDuelObjByType(DuelObjectType.Defender);
 
                                                 axis.transform.DOScale(1.1f, .3f).OnComplete(() => {
+
                                                     axis.transform.DOScale(0f, 1.5f).OnComplete(() => { });
                                                     axis.transform.DOJump(m_AxisEndGoToPosition.position, 1f, 1, 1.5f);
                                                 });
@@ -149,6 +154,8 @@ public class StartMatchManagerUI : MonoBehaviour
                                                     allies.transform.DOScale(0f, 1.5f).OnComplete(() => { });
                                                     allies.transform.DOJump(m_AlliesEndGoToPosition.position, 1f, 1, 1.5f);
                                                 });
+
+                                                OnStartMatchButtonClickedEvent?.Invoke();
                                             });
                                         });
         });
@@ -226,6 +233,13 @@ public class StartMatchManagerUI : MonoBehaviour
                     {
                         StartCoroutine(ShowTeamConfig(m_CurrentState));
                     }
+                }
+                break;
+
+            case StartMatchState.WaitRoom:
+                {
+
+
                 }
                 break;
             default:

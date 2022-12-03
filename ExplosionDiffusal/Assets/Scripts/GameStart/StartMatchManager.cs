@@ -29,7 +29,7 @@ public class GlobalConfig
 }
 
 
-public enum StartMatchState { Initial, ModeSelection, SettingsMain, MatchSettings, Duel, TeamAConfig, TeamBConfig, }
+public enum StartMatchState { Initial, ModeSelection, SettingsMain, MatchSettings, Duel, TeamAConfig, TeamBConfig, WaitRoom, }
 
 public class StartMatchManager : MonoBehaviour
 {
@@ -99,10 +99,13 @@ public class StartMatchManager : MonoBehaviour
 
     private void ZoomInToCaseSeq()
     {
-        t_MainCamera.DOMove(t_CameraEndPosition.position, 3f)
-            .SetEase(Ease.InOutBack)
+        t_MainCamera.DORotate(t_CameraEndPosition.eulerAngles, 1.5f);
+
+        t_MainCamera.DOJump(t_CameraEndPosition.position, 1f, 1, 3f)
+            .SetEase(Ease.OutBack)
             .OnComplete(() => {
-                OnStartMatchEvent?.Invoke();
+                m_StartMatchManagerUI.TriggerBehaviour(StartMatchState.WaitRoom);
+                //OnStartMatchEvent?.Invoke();
             });
     }
 
