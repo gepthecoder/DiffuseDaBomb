@@ -69,7 +69,7 @@ public class MatchSettingsController : MonoBehaviour
                     {
                         // SHOW DUEL with small delay
                         m_PreviousButton.transform.DOScale(0f, .77f);
-
+                        m_PreviousButton.interactable = false;
                         // save config
                         SaveConfig();
 

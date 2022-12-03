@@ -20,14 +20,17 @@ public class StartMatchManagerUI : MonoBehaviour
     [SerializeField] private Transform m_GameTile;
     [SerializeField] private Transform m_GameTileEndPoint;
     [SerializeField] private Image m_BackgroundImage;
+    [Space(5)]
     // START GAME
     [SerializeField] private GameObject m_StartGameOptions;
     [SerializeField] private List<Transform> m_StartGameOptionItems;
+    [Space(5)]
     // ANIMATIONS
     [SerializeField] private Animation m_GameModeAnime;
     [SerializeField] private Animation m_MatchSettingsAnime;
     [SerializeField] private Animation m_SelectTeamsAnime;
     [SerializeField] private Animation m_SetupAnime;
+    [Space(5)]
     // GAME MODE
     [SerializeField] private Transform m_GameMode;
     [SerializeField] private Transform m_MatchSettingsParent;
@@ -39,7 +42,13 @@ public class StartMatchManagerUI : MonoBehaviour
     [SerializeField] private Animator m_TeamSettingsAllies;
     private CanvasGroup m_TeamSettingsCanvasGroupRef = new CanvasGroup();
     [SerializeField] private Image m_TeamSettingsBackground;
-
+    [Space(5)]
+    // END
+    [SerializeField] private Animator m_MidPanelCGroupAnime;
+    [SerializeField] private Animator m_StartGameOptionsCGroupAnime;
+    [SerializeField] private Animator m_VSCGroupAnime;
+    [SerializeField] private Transform m_AxisEndGoToPosition;
+    [SerializeField] private Transform m_AlliesEndGoToPosition;
     //
     [SerializeField] private Button m_PlayButton;
     //
@@ -120,12 +129,28 @@ public class StartMatchManagerUI : MonoBehaviour
             m_TeamSettingsBackground.DOColor(
                          new Color(m_TeamSettingsBackground.color.r,
                                      m_TeamSettingsBackground.color.g,
-                                         m_TeamSettingsBackground.color.b, 0), .6f).OnComplete(() => {
-                                             m_Duel.DOScale(Vector3.one, .5f);
-                                             m_Duel.DOLocalMoveY(0, .5f).SetEase(Ease.InOutBack).OnComplete(() => { 
-                                                
-                                             });
-                                         });
+                                        m_TeamSettingsBackground.color.b, 0), .6f).OnComplete(() => {
+                                            m_Duel.DOScale(Vector3.one, .5f);
+                                            m_SetupAnime.Play("signal_HIDE");
+                                            m_MidPanelCGroupAnime.Play("fadeOut");
+                                            m_StartGameOptionsCGroupAnime.Play("fadeOut");
+                                            m_Duel.DOLocalMoveY(0, .5f).SetEase(Ease.InOutBack).OnComplete(() => {
+                                                m_VSCGroupAnime.Play("fadeOut");
+
+                                                var axis = m_DuelController.GetDuelObjByType(DuelObjectType.Attacker);
+                                                var allies = m_DuelController.GetDuelObjByType(DuelObjectType.Defender);
+
+                                                axis.transform.DOScale(1.1f, .3f).OnComplete(() => {
+                                                    axis.transform.DOScale(0f, 1.5f).OnComplete(() => { });
+                                                    axis.transform.DOJump(m_AxisEndGoToPosition.position, 1f, 1, 1.5f);
+                                                });
+
+                                                allies.transform.DOScale(1.1f, .3f).OnComplete(() => {
+                                                    allies.transform.DOScale(0f, 1.5f).OnComplete(() => { });
+                                                    allies.transform.DOJump(m_AlliesEndGoToPosition.position, 1f, 1, 1.5f);
+                                                });
+                                            });
+                                        });
         });
 
         m_StartMatchButton.onClick.AddListener(() => {
