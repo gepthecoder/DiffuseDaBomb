@@ -126,8 +126,8 @@ public class GameManager : MonoBehaviour
 
     private void AddListeners()
     {
-        m_StartMatchManager.OnStartMatchEvent.AddListener(() => {
-            TriggerBehaviour(m_CurrentState);
+        m_StartMatchManager.OnStartMatchEvent.AddListener((gameState) => {
+            TriggerBehaviour(gameState);
         });
 
         m_BombManager.BombCaseOpeningEvent.AddListener(OnBombCaseOpeningEvent);

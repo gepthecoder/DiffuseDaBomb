@@ -6,6 +6,8 @@ using System;
 
 public class CameraManager : MonoBehaviour
 {
+    public static CameraManager Instance;
+
     [SerializeField] private Camera m_MainCam;
 
     private float m_InitialFieldOfView = 60f;
@@ -13,6 +15,16 @@ public class CameraManager : MonoBehaviour
 
     private Vector3 m_InitalCameraPosition = new Vector3(.14f, 7.78f, -5.61f);
     private Vector3 m_InitalCameraRotation = new Vector3(55f, 0, 0);
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public (Vector3, Vector3) GetInitalCameraPositionAndRotation()
+    {
+        return (m_InitalCameraPosition, m_InitalCameraRotation);
+    }
 
     public void ZoomInToTarget()
     {

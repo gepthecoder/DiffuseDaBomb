@@ -63,12 +63,11 @@ public class StartMatchManagerUI : MonoBehaviour
     [SerializeField] private DuelController m_DuelController;
     [Header("Main Canvas")]
     [SerializeField] private MainCanvas m_MainCanvas;
+    [Header("Start Match Canvas")]
+    [SerializeField] private Canvas m_StartMatchCanvas;
 
     [HideInInspector] public UnityEvent OnStartMatchButtonClickedEvent = new UnityEvent();
     [HideInInspector] public UnityEvent<Action> OnFadeOutEffectEvent = new UnityEvent<Action>();
-    [HideInInspector] public UnityEvent<GameModeType> OnGameModeSelectedEvent = new UnityEvent<GameModeType>();
-    [HideInInspector] public UnityEvent<MatchSettingsConfigData> OnMatchSettingsSetEvent = new UnityEvent<MatchSettingsConfigData>();
-    [HideInInspector] public UnityEvent<DuelConfigData> OnTeamsSelectedEvent = new UnityEvent<DuelConfigData>();
 
     private RectTransform m_RectGameOptions;
     private StartMatchState m_CurrentState;
@@ -77,15 +76,18 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private bool m_CanShowDuelReadyButtonAnime = true;
 
+    private GlobalConfig m_GlobalConfigData = new GlobalConfig();
+
+
     private void Awake()
     {
         m_MatchSettingsController.OnSetMatchSettingsDoneEvent.AddListener((DATA) => {
-            OnMatchSettingsSetEvent?.Invoke(DATA);
+            m_GlobalConfigData.__MATCH_SETTINGS__ = DATA;
             TriggerBehaviour(StartMatchState.Duel);
         });
 
         m_GameModeController.OnGameModeSelectedFinalEvent.AddListener((MODE) => {
-            OnGameModeSelectedEvent?.Invoke(MODE);
+            m_GlobalConfigData.__GAME_MODE_TYPE__ = MODE;
             TriggerBehaviour(StartMatchState.MatchSettings);
         });
 
@@ -109,9 +111,8 @@ public class StartMatchManagerUI : MonoBehaviour
 
                 m_CanShowDuelReadyButtonAnime = false;
             }
-         
 
-            OnTeamsSelectedEvent?.Invoke(DATA);
+            m_GlobalConfigData.__DUEL_SETTINGS__ = DATA;
         });
 
         m_ReadyButton.onClick.AddListener(() => {
@@ -139,7 +140,7 @@ public class StartMatchManagerUI : MonoBehaviour
                                             m_Duel.DOLocalMoveY(0, .5f).SetEase(Ease.InOutBack).OnComplete(() => {
                                                 m_VSCGroupAnime.Play("fadeOut");
 
-                                                m_MainCanvas.InitMainCanvas();
+                                                m_MainCanvas.InitMainCanvas(m_GlobalConfigData.__DUEL_SETTINGS__);
 
                                                 var axis = m_DuelController.GetDuelObjByType(DuelObjectType.Attacker);
                                                 var allies = m_DuelController.GetDuelObjByType(DuelObjectType.Defender);
@@ -233,13 +234,6 @@ public class StartMatchManagerUI : MonoBehaviour
                     {
                         StartCoroutine(ShowTeamConfig(m_CurrentState));
                     }
-                }
-                break;
-
-            case StartMatchState.WaitRoom:
-                {
-
-
                 }
                 break;
             default:
@@ -378,6 +372,12 @@ public class StartMatchManagerUI : MonoBehaviour
 
             yield return new WaitForSeconds(.15f);
         }
+    }
+
+    public void DisableStartMatchCanvas()
+    {
+        m_StartMatchCanvas.enabled = false;
+        m_StartMatchCanvas.gameObject.SetActive(false);
     }
 
 }
