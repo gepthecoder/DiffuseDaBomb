@@ -66,7 +66,7 @@ public class StartMatchManagerUI : MonoBehaviour
     [Header("Start Match Canvas")]
     [SerializeField] private Canvas m_StartMatchCanvas;
 
-    [HideInInspector] public UnityEvent OnStartMatchButtonClickedEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent<GlobalConfig> OnStartMatchButtonClickedEvent = new UnityEvent<GlobalConfig>();
     [HideInInspector] public UnityEvent<Action> OnFadeOutEffectEvent = new UnityEvent<Action>();
 
     private RectTransform m_RectGameOptions;
@@ -146,23 +146,22 @@ public class StartMatchManagerUI : MonoBehaviour
                                                 var allies = m_DuelController.GetDuelObjByType(DuelObjectType.Defender);
 
                                                 axis.transform.DOScale(1.1f, .3f).OnComplete(() => {
-
-                                                    axis.transform.DOScale(0f, 1.5f).OnComplete(() => { });
+                                                    axis.transform.DOScale(0f, 1f).OnComplete(() => { });
                                                     axis.transform.DOJump(m_AxisEndGoToPosition.position, 1f, 1, 1.5f);
                                                 });
 
                                                 allies.transform.DOScale(1.1f, .3f).OnComplete(() => {
-                                                    allies.transform.DOScale(0f, 1.5f).OnComplete(() => { });
+                                                    allies.transform.DOScale(0f, 1f).OnComplete(() => { });
                                                     allies.transform.DOJump(m_AlliesEndGoToPosition.position, 1f, 1, 1.5f);
                                                 });
 
-                                                OnStartMatchButtonClickedEvent?.Invoke();
+                                                OnStartMatchButtonClickedEvent?.Invoke(m_GlobalConfigData);
                                             });
                                         });
         });
 
         m_StartMatchButton.onClick.AddListener(() => {
-            OnStartMatchButtonClickedEvent?.Invoke();
+            //OnStartMatchButtonClickedEvent?.Invoke();
         });
 
         m_PlayButton.onClick.AddListener(() => {

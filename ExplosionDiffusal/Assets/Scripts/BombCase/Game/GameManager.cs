@@ -2,35 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Search and Destory Rules
+public class GlobalConfig
+{
+    public GameModeType __GAME_MODE_TYPE__;
+    public MatchSettingsConfigData __MATCH_SETTINGS__;
+    public DuelConfigData __DUEL_SETTINGS__;
 
-// Attacker Defender
+    public GlobalConfig(GameModeType type)
+    {
+        this.__GAME_MODE_TYPE__ = type;
+    }
 
-// Attacker -> Plant The Bomb 
+    public GlobalConfig(DuelConfigData data)
+    {
+        this.__DUEL_SETTINGS__ = data;
+    }
 
-// Defender Needs To Defuse it before Time Runs Out -> Defuse -> Victory: Defender
-// Defender Doesn't Defuse bomb in Time -> Victory: Attacker
+    public GlobalConfig(MatchSettingsConfigData data)
+    {
+        this.__MATCH_SETTINGS__ = data;
+    }
 
-// SCORE/TEAM system, history
+    public GlobalConfig() { }
+}
 
-// FLOW
-// Bomb Suitcase Starts Wobbling -> OnDown timer || Click
-// Bomb Opens -> Camera Zooms In -> Scene Transition
-// Circuit Board With Key Locks and Riddle ??
-
-// Keyboard || Keypad \\
-
-// Enter Code On Both (TODO: settings to select either or)
-
-// Bomb Is Planted
-
-public enum GameState { PreMatch, Initial, Planting, Defusing, Victory, }
+public enum GameState { PreMatch, Countdown, Initial, Planting, Defusing, Victory, }
 
 public class GameManager : MonoBehaviour
 {
     private GameState m_CurrentState = GameState.Initial;
 
     [SerializeField] private StartMatchManager m_StartMatchManager;
+    [SerializeField] private CountdownManager m_CountdownManager;
     [SerializeField] private BombManager m_BombManager;
     [SerializeField] private CameraManager m_CameraManager;
     [SerializeField] private UiManager m_UiManager;
@@ -38,6 +41,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private DefuseBombManager m_DefuseBombManager;
     [SerializeField] private SceneSetupManager m_SceneSetupManager;
     [SerializeField] private CodeManager m_CodeManager;
+
+    protected GlobalConfig ___Global_Config___;
 
     private void Start()
     {
@@ -59,6 +64,10 @@ public class GameManager : MonoBehaviour
             case GameState.PreMatch:
                 Debug.Log($"<color=red>GameState</color><color=gold>PreMatch</color>");
                 m_StartMatchManager.Init();
+                break;
+            case GameState.Countdown:
+                Debug.Log($"<color=red>GameState</color><color=gold>Countdown</color>");
+                m_CountdownManager.InitCountdown();
                 break;
             case GameState.Initial:
                 Debug.Log($"<color=red>GameState</color><color=gold>Initial</color>");
@@ -126,7 +135,10 @@ public class GameManager : MonoBehaviour
 
     private void AddListeners()
     {
-        m_StartMatchManager.OnStartMatchEvent.AddListener((gameState) => {
+        m_StartMatchManager.OnStartMatchEvent.AddListener((gameState, config) => {
+
+            ___Global_Config___ = config;
+
             TriggerBehaviour(gameState);
         });
 
@@ -173,5 +185,9 @@ public class GameManager : MonoBehaviour
         m_BombManager.BombCaseOpeningEvent.RemoveAllListeners();
         m_UiManager.OnFadeInEvent.RemoveAllListeners();
         m_CodeManager.OnSetCodeEvent.RemoveAllListeners();
+        m_StartMatchManager.OnStartMatchEvent.RemoveAllListeners();
+        m_CodeManager.OnValidateCodeEvent.RemoveAllListeners();
+        m_PlantBombManager.OnPlantBombDoneEvent.RemoveAllListeners();
+        m_DefuseBombManager.OnPlantBombDoneEvent.RemoveAllListeners();
     }
 }

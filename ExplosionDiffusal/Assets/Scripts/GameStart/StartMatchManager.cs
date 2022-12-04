@@ -3,32 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Events;
-using System;
-
-public class GlobalConfig
-{
-    public GameModeType __GAME_MODE_TYPE__;
-    public MatchSettingsConfigData __MATCH_SETTINGS__;
-    public DuelConfigData __DUEL_SETTINGS__;
-
-    public GlobalConfig(GameModeType type) {
-        this.__GAME_MODE_TYPE__ = type;
-    }
-
-    public GlobalConfig(DuelConfigData data)
-    {
-        this.__DUEL_SETTINGS__ = data;
-    }
-
-    public GlobalConfig(MatchSettingsConfigData data)
-    {
-        this.__MATCH_SETTINGS__ = data;
-    }
-
-    public GlobalConfig() { }
-}
-
-
 public enum StartMatchState { Initial, ModeSelection, SettingsMain, MatchSettings, Duel, TeamAConfig, TeamBConfig, }
 
 public class StartMatchManager : MonoBehaviour
@@ -40,7 +14,7 @@ public class StartMatchManager : MonoBehaviour
     [Space(5)]
     [SerializeField] private Transform t_CameraStartPosition;
 
-    [HideInInspector] public UnityEvent<GameState> OnStartMatchEvent = new UnityEvent<GameState>();
+    [HideInInspector] public UnityEvent<GameState, GlobalConfig> OnStartMatchEvent = new UnityEvent<GameState , GlobalConfig>();
 
     private void Awake()
     {
@@ -54,13 +28,15 @@ public class StartMatchManager : MonoBehaviour
 
     private void DeSub()
     {
-        m_StartMatchManagerUI.OnStartMatchButtonClickedEvent.RemoveListener(StartMatch);
+        m_StartMatchManagerUI.OnStartMatchButtonClickedEvent.RemoveAllListeners();
         m_DuelController.OnDuelObjectSelectedEvent.RemoveAllListeners();
     }
 
     private void Sub()
     {
-        m_StartMatchManagerUI.OnStartMatchButtonClickedEvent.AddListener(StartMatch);
+        m_StartMatchManagerUI.OnStartMatchButtonClickedEvent.AddListener((configData) => {
+            StartMatch(configData);
+        });
 
         m_DuelController.OnDuelObjectSelectedEvent.AddListener((TYPE) => {
             m_StartMatchManagerUI.TriggerBehaviour(TYPE == DuelObjectType.Attacker ? 
@@ -76,12 +52,12 @@ public class StartMatchManager : MonoBehaviour
         m_StartMatchManagerUI.TriggerBehaviour(StartMatchState.Initial);
     }
 
-    public void StartMatch()
+    public void StartMatch(GlobalConfig data)
     {
-        ZoomInToCaseSeq();
+        ZoomInToCaseSeq(data);
     }
 
-    private void ZoomInToCaseSeq()
+    private void ZoomInToCaseSeq(GlobalConfig data)
     {
         Vector3 camEndPos, camEndRot;
         (camEndPos, camEndRot) = CameraManager.Instance.GetInitalCameraPositionAndRotation();
@@ -92,7 +68,7 @@ public class StartMatchManager : MonoBehaviour
             .SetEase(Ease.OutBack)
             .OnComplete(() => {
                 m_StartMatchManagerUI.DisableStartMatchCanvas();
-                OnStartMatchEvent?.Invoke(GameState.Initial);
+                OnStartMatchEvent?.Invoke(GameState.Countdown, data);
             });
     }
 
