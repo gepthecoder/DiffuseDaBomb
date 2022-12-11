@@ -65,12 +65,16 @@ public class StartMatchManager : MonoBehaviour
         t_MainCamera.DORotate(camEndRot, 1.5f);
 
         t_MainCamera.DOJump(camEndPos, 1f, 1, 3f)
-            .SetEase(Ease.OutBack)
-            .OnComplete(() => {
-                m_StartMatchManagerUI.DisableStartMatchCanvas();
-                OnStartMatchEvent?.Invoke(GameState.Countdown, data);
-            });
+            .SetEase(Ease.OutBack);
+
+        StartCoroutine(InvokeCountdownStateOnDelay(1.5f, data));
     }
 
-   
+    private IEnumerator InvokeCountdownStateOnDelay(float delay, GlobalConfig data)
+    {
+        yield return new WaitForSeconds(delay);
+        OnStartMatchEvent?.Invoke(GameState.Countdown, data);
+        m_StartMatchManagerUI.DisableStartMatchCanvas();
+
+    }
 }

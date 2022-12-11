@@ -3,37 +3,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
+using UnityEngine.Events;
 
 public class CountdownObject : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI m_CountdownTimerText;
     [SerializeField] private Image m_Fill;
 
-    [SerializeField] private float m_TimeDuration;
+    [HideInInspector] public UnityEvent OnCountdownCompletedEvent = new UnityEvent();
+
+    private TimeSpan m_TimePlaying;
+    private bool m_TimerRunning;
 
     private float m_TimeRemaining;
+    private float m_InitialTime;
+
+    private void Start()
+    {
+        m_TimerRunning = false;
+    }
 
     public void StartCountdown(float timeRemaining)
     {
         m_TimeRemaining = timeRemaining;
+        m_InitialTime = m_TimeRemaining;
+
+        m_TimerRunning = true;
+
         StartCoroutine(CountDownAction());
     }
 
     private IEnumerator CountDownAction()
     {
-        while(m_TimeRemaining >= 0)
+        while(m_TimerRunning)
         {
-            m_CountdownTimerText.text = $"{m_TimeRemaining / 60:00} : {m_TimeRemaining % 60:00} : {m_TimeRemaining * 1000:00}";
-            m_Fill.fillAmount = Mathf.InverseLerp(0, m_TimeDuration, m_TimeRemaining);
-            m_TimeRemaining--;
-            yield return new WaitForSeconds(1f);
+            m_TimeRemaining -= Time.deltaTime;
+            m_Fill.fillAmount = Mathf.InverseLerp(0, m_InitialTime, m_TimeRemaining);
+            m_TimePlaying = TimeSpan.FromSeconds(m_TimeRemaining);
+            m_CountdownTimerText.text = m_TimePlaying.ToString("mm':'ss'.'ff");
+
+            if(m_TimeRemaining <= 0) { 
+                m_TimerRunning = false;
+                OnCountdownCompletedEvent?.Invoke();
+            }
+
+            yield return null;
         }
-        OnCountDownCompleted();
-        yield break;
+
+        yield return null;
     }
 
-    private void OnCountDownCompleted()
+    internal void Deinit()
     {
-        print("End");
+        gameObject.SetActive(false);
     }
 }

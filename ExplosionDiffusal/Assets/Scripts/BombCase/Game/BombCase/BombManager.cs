@@ -30,6 +30,7 @@ public class BombManager : MonoBehaviour
     private float m_OnDownTreshold = 3f;
     private bool m_OpenSuitcase = false;
     private bool m_OnDownStart = false;
+    private bool m_CanCheckBombInteraction = false;
     //--------------------------------------------\/--------------------------------------------\\
 
     private void Awake()
@@ -88,7 +89,10 @@ public class BombManager : MonoBehaviour
 
             BombCaseOpeningEvent?.Invoke();
         }
-        else { m_BombCase.TriggerBehaviour(state); }
+        else {
+            m_CanCheckBombInteraction = state == BombCaseState.Close ? true : false;
+            m_BombCase.TriggerBehaviour(state); 
+        }
     }
 
     private void TurnOnLightSmooth(bool on)
@@ -101,7 +105,7 @@ public class BombManager : MonoBehaviour
 
     private void CheckUserBombInteraction()
     {
-        if (m_CurrentBombCaseState != BombCaseState.Close)
+        if (m_CurrentBombCaseState != BombCaseState.Close || !m_CanCheckBombInteraction)
             return;
 
         if(m_IsSuitcaseOpeningEnabled)

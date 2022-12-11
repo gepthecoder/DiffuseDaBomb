@@ -12,6 +12,7 @@ public class MatchSettingsConfigData
 {
     public int GameTimeInMinutes;
     public int BombTimeInMinutes;
+    public int MatchStartTimeInMinutes; //TODO
     public int ScoreLimit;
 
     public MatchSettingsConfigData() { }

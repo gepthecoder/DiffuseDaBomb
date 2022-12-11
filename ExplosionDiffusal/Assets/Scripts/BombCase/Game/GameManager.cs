@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.Countdown:
                 Debug.Log($"<color=red>GameState</color><color=gold>Countdown</color>");
-                m_CountdownManager.InitCountdown();
+                m_CountdownManager.InitCountdown(25f/*___Global_Config___.__MATCH_SETTINGS__.MatchStartTimeInMinutes*/);
                 break;
             case GameState.Initial:
                 Debug.Log($"<color=red>GameState</color><color=gold>Initial</color>");
@@ -177,6 +177,10 @@ public class GameManager : MonoBehaviour
         m_DefuseBombManager.OnPlantBombDoneEvent.AddListener(() =>
         {
             TriggerBehaviour(GameState.Victory);
+        });
+
+        m_CountdownManager.OnCountdownCompletedEvent.AddListener(() => {
+            TriggerBehaviour(GameState.Initial);
         });
     }
 
