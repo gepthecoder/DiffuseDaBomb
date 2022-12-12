@@ -6,22 +6,23 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.Events;
 
-public enum MatchSettingsStateType { GameTime, BombTime, ScoreLimit, None, }
+public enum MatchSettingsStateType { GameTime, BombTime, StartMatchCountdownTime, ScoreLimit, None, }
 
 public class MatchSettingsConfigData
 {
     public int GameTimeInMinutes;
     public int BombTimeInMinutes;
-    public int MatchStartTimeInMinutes; //TODO
+    public int MatchStartTimeInMinutes;
     public int ScoreLimit;
 
     public MatchSettingsConfigData() { }
 
-    public MatchSettingsConfigData(int gT, int bT, int scoreLimit)
+    public MatchSettingsConfigData(int gT, int bT, int scoreLimit, int sMcT)
     {
         this.GameTimeInMinutes = gT;
         this.BombTimeInMinutes = bT;
         this.ScoreLimit = scoreLimit;
+        this.MatchStartTimeInMinutes = sMcT;
     }
 }
 
@@ -100,8 +101,10 @@ public class MatchSettingsController : MonoBehaviour
                 case MatchSettingsStateType.ScoreLimit:
                     m_Data.ScoreLimit = item.m_Value;
                     break;
-                case MatchSettingsStateType.None:
+                case MatchSettingsStateType.StartMatchCountdownTime:
+                    m_Data.MatchStartTimeInMinutes = item.m_Value;
                     break;
+                case MatchSettingsStateType.None:
                 default:
                     break;
             }
