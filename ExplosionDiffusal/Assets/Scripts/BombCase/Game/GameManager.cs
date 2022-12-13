@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.Countdown:
                 Debug.Log($"<color=red>GameState</color><color=gold>Countdown</color>");
-                m_CountdownManager.InitCountdown(___Global_Config___.__MATCH_SETTINGS__.MatchStartTimeInMinutes);
+                m_CountdownManager.InitCountdown(___Global_Config___.__MATCH_SETTINGS__);
                 break;
             case GameState.Initial:
                 Debug.Log($"<color=red>GameState</color><color=gold>Initial</color>");

@@ -12,7 +12,7 @@ public class MatchSettingsConfigData
 {
     public int GameTimeInMinutes;
     public int BombTimeInMinutes;
-    public int MatchStartTimeInMinutes;
+    public int MatchStartTimeInSeconds;
     public int ScoreLimit;
 
     public MatchSettingsConfigData() { }
@@ -22,7 +22,7 @@ public class MatchSettingsConfigData
         this.GameTimeInMinutes = gT;
         this.BombTimeInMinutes = bT;
         this.ScoreLimit = scoreLimit;
-        this.MatchStartTimeInMinutes = sMcT;
+        this.MatchStartTimeInSeconds = sMcT;
     }
 }
 
@@ -102,7 +102,7 @@ public class MatchSettingsController : MonoBehaviour
                     m_Data.ScoreLimit = item.m_Value;
                     break;
                 case MatchSettingsStateType.StartMatchCountdownTime:
-                    m_Data.MatchStartTimeInMinutes = item.m_Value;
+                    m_Data.MatchStartTimeInSeconds = item.m_Value;
                     break;
                 case MatchSettingsStateType.None:
                 default:

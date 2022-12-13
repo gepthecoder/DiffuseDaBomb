@@ -10,43 +10,79 @@ using UnityEngine.Events;
 public class CountdownManager : MonoBehaviour
 {
     [Header("Countdown")]
-    [SerializeField] private CountdownObject m_CountdownObject;
+    [SerializeField] private CountdownObject m_GameStartDelayCountdownObject;
+    [SerializeField] private CountdownObject m_GameTimeCountdownObject;
     [SerializeField] private Image m_TouchBlocker; // alpha to .65, raycast target on
 
-    [HideInInspector] public UnityEvent OnCountdownCompletedEvent = new UnityEvent(); 
+    [HideInInspector] public UnityEvent OnCountdownCompletedEvent = new UnityEvent();
+
+    private float m_CountdownTimeInSeconds_MatchStartDelay;
+    private float m_CountdownTimeInMinutes_GameTime;
 
     private void Awake()
     {
-        m_CountdownObject.OnCountdownCompletedEvent.AddListener(() => {
-            m_CountdownObject.transform.DOScale(1.077f, 1f);
-            m_CountdownObject.transform.DOLocalMoveY(370f, 1f).OnComplete(() => {
+        m_GameStartDelayCountdownObject.OnCountdownCompletedEvent.AddListener(() => {
+            m_GameStartDelayCountdownObject.transform.DOScale(1.077f, 1f);
+            m_GameStartDelayCountdownObject.transform.DOLocalMoveY(370f, 1f).OnComplete(() => {
                 m_TouchBlocker.DOFade(0f, 1f).OnComplete(() => {
                     m_TouchBlocker.raycastTarget = false;
                 });
-                m_CountdownObject.transform.DOScale(.5f, 1.5f);
-                m_CountdownObject.transform.DOLocalMoveY(800f, 1f).SetEase(Ease.InExpo).OnComplete(() => {
-                    m_CountdownObject.Deinit();
+                m_GameStartDelayCountdownObject.transform.DOScale(.5f, 1.5f);
+                m_GameStartDelayCountdownObject.transform.DOLocalMoveY(800f, 1f).SetEase(Ease.InExpo).OnComplete(() => {
+                    m_GameStartDelayCountdownObject.Deinit();
                     OnCountdownCompletedEvent?.Invoke();
+
+                    InitGameTimeCountdown(m_CountdownTimeInMinutes_GameTime * 60);
+                });
+            });
+        });
+
+        m_GameTimeCountdownObject.OnCountdownCompletedEvent.AddListener(() => {
+            print("Game Ended!");
+            // Emmit Victory State
+        });
+    }
+
+    private void OnDestroy()
+    {
+        m_GameStartDelayCountdownObject.OnCountdownCompletedEvent.RemoveAllListeners();
+        m_GameTimeCountdownObject.OnCountdownCompletedEvent.RemoveAllListeners();
+    }
+
+    public void InitCountdown(MatchSettingsConfigData data)
+    {
+        m_CountdownTimeInSeconds_MatchStartDelay = data.MatchStartTimeInSeconds;
+        m_CountdownTimeInMinutes_GameTime = data.GameTimeInMinutes;
+
+        InitGameStartDelayCountdown(m_CountdownTimeInSeconds_MatchStartDelay);
+    }
+
+    public void InitGameStartDelayCountdown(float countdownTimeInSeconds)
+    {
+        m_TouchBlocker.raycastTarget = true;
+        m_GameStartDelayCountdownObject.SetInitialCountDownTime(countdownTimeInSeconds);
+
+        m_TouchBlocker.DOFade(.65f, .77f).OnComplete(() =>
+        {
+            m_GameStartDelayCountdownObject.transform.DOScale(1.1f, 1f);
+            m_GameStartDelayCountdownObject.transform.DOLocalMoveY(370f, 1f).OnComplete(() =>
+            {
+                m_GameStartDelayCountdownObject.transform.DOScale(1f, .5f);
+                m_GameStartDelayCountdownObject.transform.DOLocalMoveY(450f, .5f).SetEase(Ease.InExpo).OnComplete(() =>
+                {
+                    m_GameStartDelayCountdownObject.StartCountdown(countdownTimeInSeconds);
                 });
             });
         });
     }
 
-    public void InitCountdown(float countdownTimeInSeconds)
+    public void InitGameTimeCountdown(float countdownTimeInSeconds)
     {
-        m_TouchBlocker.raycastTarget = true;
-        m_CountdownObject.SetInitialCountDownTime(countdownTimeInSeconds);
+        m_GameTimeCountdownObject.SetInitialCountDownTime(countdownTimeInSeconds);
 
-        m_TouchBlocker.DOFade(.65f, .77f).OnComplete(() =>
-        {
-            m_CountdownObject.transform.DOScale(1.1f, 1f);
-            m_CountdownObject.transform.DOLocalMoveY(370f, 1f).OnComplete(() =>
-            {
-                m_CountdownObject.transform.DOScale(1f, .5f);
-                m_CountdownObject.transform.DOLocalMoveY(450f, .5f).SetEase(Ease.InExpo).OnComplete(() =>
-                {
-                    m_CountdownObject.StartCountdown(countdownTimeInSeconds);
-                });
+        m_GameTimeCountdownObject.transform.DOScale(1.1f, .77f).OnComplete(() => {
+            m_GameTimeCountdownObject.transform.DOScale(1f, .25f).OnComplete(() => {
+                m_GameTimeCountdownObject.StartCountdown(countdownTimeInSeconds);
             });
         });
     }

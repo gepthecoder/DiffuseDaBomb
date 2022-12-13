@@ -45,7 +45,11 @@ public class CountdownObject : MonoBehaviour
         while(m_TimerRunning)
         {
             m_TimeRemaining -= Time.deltaTime;
-            m_Fill.fillAmount = Mathf.InverseLerp(0, m_InitialTime, m_TimeRemaining);
+
+            if(m_Fill)
+            {
+                m_Fill.fillAmount = Mathf.InverseLerp(0, m_InitialTime, m_TimeRemaining);
+            }
             m_TimePlaying = TimeSpan.FromSeconds(m_TimeRemaining);
             m_CountdownTimerText.text = m_TimePlaying.ToString("mm':'ss'.'ff");
 
