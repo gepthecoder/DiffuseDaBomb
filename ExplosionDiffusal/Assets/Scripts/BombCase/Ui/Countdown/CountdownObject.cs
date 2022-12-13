@@ -24,6 +24,12 @@ public class CountdownObject : MonoBehaviour
         m_TimerRunning = false;
     }
 
+    public void SetInitialCountDownTime(float timeRemaining)
+    {
+        TimeSpan ts = TimeSpan.FromSeconds(timeRemaining);
+        m_CountdownTimerText.text = ts.ToString("mm':'ss'.'ff");
+    }
+
     public void StartCountdown(float timeRemaining)
     {
         m_TimeRemaining = timeRemaining;

@@ -35,6 +35,8 @@ public class CountdownManager : MonoBehaviour
     public void InitCountdown(float countdownTimeInSeconds)
     {
         m_TouchBlocker.raycastTarget = true;
+        m_CountdownObject.SetInitialCountDownTime(countdownTimeInSeconds);
+
         m_TouchBlocker.DOFade(.65f, .77f).OnComplete(() =>
         {
             m_CountdownObject.transform.DOScale(1.1f, 1f);
