@@ -277,7 +277,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a619b3f7b0e19943a555d489772b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Type: 0
   m_CountdownTimerText: {fileID: 578044464}
+  m_CountdownTimerText_3D: {fileID: 0}
   m_Fill: {fileID: 0}
   OnCountdownCompletedEvent:
     m_PersistentCalls:
@@ -3115,6 +3117,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GameStartDelayCountdownObject: {fileID: 2067820084}
   m_GameTimeCountdownObject: {fileID: 14619466}
+  m_DefuseTimeCountdownObjects:
+  - {fileID: 1128873448}
+  - {fileID: 5561773722564146558}
   m_TouchBlocker: {fileID: 1947178620}
   OnCountdownCompletedEvent:
     m_PersistentCalls:
@@ -9928,6 +9933,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8245851257503065259}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1128873448 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1128873448, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8245851257503065259}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1128873447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a619b3f7b0e19943a555d489772b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1130036689
 GameObject:
   m_ObjectHideFlags: 0
@@ -16563,7 +16580,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a619b3f7b0e19943a555d489772b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Type: 0
   m_CountdownTimerText: {fileID: 1161272972}
+  m_CountdownTimerText_3D: {fileID: 0}
   m_Fill: {fileID: 232333781}
   OnCountdownCompletedEvent:
     m_PersistentCalls:
@@ -18185,11 +18204,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BombCase
       objectReference: {fileID: 0}
-    - target: {fileID: 8762281346659550913, guid: 9c38bb7e13f1a0b47a8c69e6420ed489,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c38bb7e13f1a0b47a8c69e6420ed489, type: 3}
 --- !u!1 &5561773722564146555 stripped
@@ -18210,6 +18224,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 5561773722564146554}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5561773722564146558 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6576901690461980694, guid: 9c38bb7e13f1a0b47a8c69e6420ed489,
+    type: 3}
+  m_PrefabInstance: {fileID: 5561773722564146554}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a619b3f7b0e19943a555d489772b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5698415813858550335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18678,31 +18704,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 168889629}
     m_Modifications:
-    - target: {fileID: 23772823692479558, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 2429762039595925639, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
-        type: 3}
-      propertyPath: m_margin.w
-      value: -13.948119
-      objectReference: {fileID: 0}
-    - target: {fileID: 2429762039595925639, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
-        type: 3}
-      propertyPath: m_margin.z
-      value: 1.6240416
-      objectReference: {fileID: 0}
-    - target: {fileID: 4201216167292762339, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -5.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 4201216167292762339, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 18.1
-      objectReference: {fileID: 0}
     - target: {fileID: 4731170267575069518, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
         type: 3}
       propertyPath: m_2dKeypad
@@ -18720,11 +18721,6 @@ PrefabInstance:
       objectReference: {fileID: 584573110}
     - target: {fileID: 4731170267575069518, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
         type: 3}
-      propertyPath: m_3dKeyboard
-      value: 
-      objectReference: {fileID: 755213144}
-    - target: {fileID: 4731170267575069518, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
-        type: 3}
       propertyPath: m_CameraManager
       value: 
       objectReference: {fileID: 1990051023}
@@ -18733,16 +18729,6 @@ PrefabInstance:
       propertyPath: m_HackingController
       value: 
       objectReference: {fileID: 610991256}
-    - target: {fileID: 8245851256841034980, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.05000019
-      objectReference: {fileID: 0}
-    - target: {fileID: 8245851256973007879, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.05000019
-      objectReference: {fileID: 0}
     - target: {fileID: 8245851257660954856, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
         type: 3}
       propertyPath: m_RootOrder
@@ -18802,11 +18788,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MultiComplexBomb
-      objectReference: {fileID: 0}
-    - target: {fileID: 8245851257660954857, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d2a8e07de03d8946bc7856b3a51a37e, type: 3}

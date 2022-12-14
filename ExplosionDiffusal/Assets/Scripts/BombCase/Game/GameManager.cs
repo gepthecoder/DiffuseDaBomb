@@ -107,6 +107,7 @@ public class GameManager : MonoBehaviour
                   },
                   () => {
                       m_BombManager.TriggerBombBehaviour(BombCaseState.Close);
+                      m_CountdownManager.SyncDefuseBombTime(CountdownObjectType.CircuitTimer3D, CountdownObjectType.BombCaseTimer3D);
                   }
               );
     }
@@ -156,6 +157,7 @@ public class GameManager : MonoBehaviour
                 m_SceneSetupManager.SetupScene(SceneType.Defusing);
                 m_UiManager.FadeOutScreen();
                 m_CameraManager.ZoomOutOfTarget();
+                m_CountdownManager.SyncDefuseBombTime(CountdownObjectType.BombCaseTimer3D, CountdownObjectType.CircuitTimer3D);
                 m_DefuseBombManager.TriggerDefuseBehaviour(DefuseBombState.Start);
             }
         });
@@ -171,6 +173,7 @@ public class GameManager : MonoBehaviour
 
         m_PlantBombManager.OnPlantBombDoneEvent.AddListener(() =>
         {
+            m_CountdownManager.InitDefuseBombTime(___Global_Config___.__MATCH_SETTINGS__.BombTimeInMinutes, CountdownObjectType.CircuitTimer3D);
             TriggerBehaviour(GameState.Defusing);
         });
 

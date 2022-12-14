@@ -6,9 +6,14 @@ using TMPro;
 using System;
 using UnityEngine.Events;
 
+public enum CountdownObjectType { Other2D, CircuitTimer3D, BombCaseTimer3D, }
+
 public class CountdownObject : MonoBehaviour
 {
+    public CountdownObjectType Type;
+
     [SerializeField] private TextMeshProUGUI m_CountdownTimerText;
+    [SerializeField] private TextMeshPro m_CountdownTimerText_3D;
     [SerializeField] private Image m_Fill;
 
     [HideInInspector] public UnityEvent OnCountdownCompletedEvent = new UnityEvent();
@@ -27,7 +32,14 @@ public class CountdownObject : MonoBehaviour
     public void SetInitialCountDownTime(float timeRemaining)
     {
         TimeSpan ts = TimeSpan.FromSeconds(timeRemaining);
-        m_CountdownTimerText.text = ts.ToString("mm':'ss'.'ff");
+        if (m_CountdownTimerText_3D)
+        {
+            m_CountdownTimerText_3D.text = ts.ToString("mm':'ss'.'ff");
+        }
+        if(m_CountdownTimerText)
+        {
+            m_CountdownTimerText.text = ts.ToString("mm':'ss'.'ff");
+        }
     }
 
     public void StartCountdown(float timeRemaining)
@@ -36,8 +48,12 @@ public class CountdownObject : MonoBehaviour
         m_InitialTime = m_TimeRemaining;
 
         m_TimerRunning = true;
-
         StartCoroutine(CountDownAction());
+    }
+
+    public float GetTimeRemaining()
+    {
+        return m_TimeRemaining;
     }
 
     private IEnumerator CountDownAction()
@@ -46,14 +62,32 @@ public class CountdownObject : MonoBehaviour
         {
             m_TimeRemaining -= Time.deltaTime;
 
-            if(m_Fill)
+            if (m_Fill)
             {
                 m_Fill.fillAmount = Mathf.InverseLerp(0, m_InitialTime, m_TimeRemaining);
             }
             m_TimePlaying = TimeSpan.FromSeconds(m_TimeRemaining);
-            m_CountdownTimerText.text = m_TimePlaying.ToString("mm':'ss'.'ff");
 
-            if(m_TimeRemaining <= 0) { 
+            if(m_CountdownTimerText)
+            {
+                m_CountdownTimerText.text = m_TimePlaying.ToString("mm':'ss'.'ff");
+            }
+
+            if(m_CountdownTimerText_3D)
+            {
+                m_CountdownTimerText_3D.text = m_TimePlaying.ToString("mm':'ss'.'ff");
+            }
+
+
+            if (m_TimeRemaining <= 0) {
+
+                m_TimeRemaining = 0;
+
+                if(m_CountdownTimerText)
+                    m_CountdownTimerText.text = "00:00.00";
+                if (m_CountdownTimerText_3D)
+                    m_CountdownTimerText_3D.text = "00:00.00";
+
                 m_TimerRunning = false;
                 OnCountdownCompletedEvent?.Invoke();
             }

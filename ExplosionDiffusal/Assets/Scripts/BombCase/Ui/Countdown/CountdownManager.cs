@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.Events;
+using System.Collections.Generic;
 // TODO: 
 // -> countdown timer can be set in settings
 // -> after the time runs out, hide the timer (shrinken to a visible position), touch blocker and go to initial game state
@@ -12,12 +13,14 @@ public class CountdownManager : MonoBehaviour
     [Header("Countdown")]
     [SerializeField] private CountdownObject m_GameStartDelayCountdownObject;
     [SerializeField] private CountdownObject m_GameTimeCountdownObject;
+    [SerializeField] private List<CountdownObject> m_DefuseTimeCountdownObjects;
     [SerializeField] private Image m_TouchBlocker; // alpha to .65, raycast target on
 
     [HideInInspector] public UnityEvent OnCountdownCompletedEvent = new UnityEvent();
 
     private float m_CountdownTimeInSeconds_MatchStartDelay;
     private float m_CountdownTimeInMinutes_GameTime;
+    private float m_CountdownTimeInMinutes_DefuseTime;
 
     private void Awake()
     {
@@ -39,7 +42,13 @@ public class CountdownManager : MonoBehaviour
 
         m_GameTimeCountdownObject.OnCountdownCompletedEvent.AddListener(() => {
             print("Game Ended!");
-            // Emmit Victory State
+            // TODO: Emmit Victory State
+        });
+
+        m_DefuseTimeCountdownObjects.ForEach((timer) => { 
+            timer.OnCountdownCompletedEvent.AddListener(() => {
+                // TODO: Emmit Bomb Has Exploded
+            });
         });
     }
 
@@ -47,6 +56,7 @@ public class CountdownManager : MonoBehaviour
     {
         m_GameStartDelayCountdownObject.OnCountdownCompletedEvent.RemoveAllListeners();
         m_GameTimeCountdownObject.OnCountdownCompletedEvent.RemoveAllListeners();
+        m_DefuseTimeCountdownObjects[0].OnCountdownCompletedEvent.RemoveAllListeners();
     }
 
     public void InitCountdown(MatchSettingsConfigData data)
@@ -57,7 +67,7 @@ public class CountdownManager : MonoBehaviour
         InitGameStartDelayCountdown(m_CountdownTimeInSeconds_MatchStartDelay);
     }
 
-    public void InitGameStartDelayCountdown(float countdownTimeInSeconds)
+    private void InitGameStartDelayCountdown(float countdownTimeInSeconds)
     {
         m_TouchBlocker.raycastTarget = true;
         m_GameStartDelayCountdownObject.SetInitialCountDownTime(countdownTimeInSeconds);
@@ -76,7 +86,7 @@ public class CountdownManager : MonoBehaviour
         });
     }
 
-    public void InitGameTimeCountdown(float countdownTimeInSeconds)
+    private void InitGameTimeCountdown(float countdownTimeInSeconds)
     {
         m_GameTimeCountdownObject.SetInitialCountDownTime(countdownTimeInSeconds);
 
@@ -85,5 +95,39 @@ public class CountdownManager : MonoBehaviour
                 m_GameTimeCountdownObject.StartCountdown(countdownTimeInSeconds);
             });
         });
+    }
+
+    public void InitDefuseBombTime(float countdownTimeInMinutes, CountdownObjectType type)
+    {
+        m_CountdownTimeInMinutes_DefuseTime = countdownTimeInMinutes;
+
+        m_DefuseTimeCountdownObjects.ForEach((timer) => {
+            if(timer.Type == type)
+            {
+                timer.StartCountdown(countdownTimeInMinutes * 60);
+            }
+        });
+    }
+
+    public void SyncDefuseBombTime(CountdownObjectType syncFrom, CountdownObjectType syncTo)
+    {
+        float timeRemaining = -1f;
+        CountdownObject syncObject = new CountdownObject();
+
+        m_DefuseTimeCountdownObjects.ForEach((timer) => {
+            if (timer.Type == syncFrom)
+            {
+                timeRemaining = timer.GetTimeRemaining();
+            }else if(timer.Type == syncTo) { syncObject = timer; }
+        });
+
+        if(timeRemaining != -1)
+        {
+            if(syncObject)
+            {
+                Debug.Log(timeRemaining);
+                syncObject.StartCountdown(timeRemaining);
+            }
+        }
     }
 }
