@@ -11,7 +11,6 @@ public class PlantBombActionHandler : MonoBehaviour
     [SerializeField] private GameObject m_3dKeypad;
     [Space(5)]
     [SerializeField] private List<GameObject> m_PlasticBombCoverObjects;
-    [SerializeField] private GameObject m_TnTimerObject;
     [Header("UI")]
     [SerializeField] private Keyboard m_2dKeyboard;
     [SerializeField] private Keypad m_2dKeypad;
@@ -97,8 +96,6 @@ public class PlantBombActionHandler : MonoBehaviour
                 }
                 break;
             case CodeEncryptionType.KeyPadEncryption:
-                m_TnTimerObject.SetActive(!activate);
-                break;
             default:
                 break;
         }

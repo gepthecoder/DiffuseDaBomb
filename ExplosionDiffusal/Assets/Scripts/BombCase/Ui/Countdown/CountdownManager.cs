@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.Events;
 using System.Collections.Generic;
+
 // TODO: 
 // -> countdown timer can be set in settings
 // -> after the time runs out, hide the timer (shrinken to a visible position), touch blocker and go to initial game state
@@ -97,14 +98,35 @@ public class CountdownManager : MonoBehaviour
         });
     }
 
-    public void InitDefuseBombTime(float countdownTimeInMinutes, CountdownObjectType type)
+    public void InitDefuseBombTime(float countdownTimeInMinutes, List<CountdownObjectType> types)
     {
         m_CountdownTimeInMinutes_DefuseTime = countdownTimeInMinutes;
 
         m_DefuseTimeCountdownObjects.ForEach((timer) => {
-            if(timer.Type == type)
+            types.ForEach((type) => {
+                if (timer.Type == type)
+                {
+                    timer.StartCountdown(countdownTimeInMinutes * 60);
+                }
+            });
+        });
+    }
+
+    public void SetDefuseBombTimeText(float countdownTimeInMinutes, CountdownObjectType type, bool forceClear = false)
+    {
+        m_CountdownTimeInMinutes_DefuseTime = countdownTimeInMinutes;
+
+        m_DefuseTimeCountdownObjects.ForEach((timer) => {
+            if (timer.Type == type)
             {
-                timer.StartCountdown(countdownTimeInMinutes * 60);
+                if(forceClear)
+                {
+                    timer.DeinitTimer();
+                }
+                else {
+                    timer.SetInitialCountDownTime(countdownTimeInMinutes * 60);
+                }
+                
             }
         });
     }
@@ -125,7 +147,6 @@ public class CountdownManager : MonoBehaviour
         {
             if(syncObject)
             {
-                Debug.Log(timeRemaining);
                 syncObject.StartCountdown(timeRemaining);
             }
         }

@@ -74,7 +74,6 @@ public class PlantBombHackingController : MonoBehaviour
 
         if (TaskDone())
         {
-            // TODO: EMIT EVENT to GAME MANAGER -> DEFUSING
             OnAllItemsHackedEvent?.Invoke(DATA);
             PlayButtonPressedSFX(AudioEffect.BombsPlanted);
         }

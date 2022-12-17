@@ -13,7 +13,6 @@ public class DefuseBombController : MonoBehaviour
     [SerializeField] private GameObject m_3dKeypad;
     [Space(5)]
     [SerializeField] private List<GameObject> m_PlasticBombCoverObjects;
-    [SerializeField] private GameObject m_TnTimerObject;
 
     private Dictionary<CodeEncryptionType, bool> m_TaskListInfo = new Dictionary<CodeEncryptionType, bool>()
             { { CodeEncryptionType.KeyboardEncryption, false }, { CodeEncryptionType.KeyPadEncryption, false } };
@@ -93,8 +92,6 @@ public class DefuseBombController : MonoBehaviour
                 }
                 break;
             case CodeEncryptionType.KeyPadEncryption:
-                m_TnTimerObject.SetActive(!activate);
-                break;
             default:
                 break;
         }

@@ -103,6 +103,7 @@ public class GameManager : MonoBehaviour
         m_UiManager.FadeInOutScreen(1f);
         m_CameraManager.ZoomInOutToBombCaseView(
                   () => {
+                      m_PlantBombManager.InitClockMotion(false);
                       m_SceneSetupManager.SetupScene(SceneType.Default);
                   },
                   () => {
@@ -157,7 +158,11 @@ public class GameManager : MonoBehaviour
                 m_SceneSetupManager.SetupScene(SceneType.Defusing);
                 m_UiManager.FadeOutScreen();
                 m_CameraManager.ZoomOutOfTarget();
+
                 m_CountdownManager.SyncDefuseBombTime(CountdownObjectType.BombCaseTimer3D, CountdownObjectType.CircuitTimer3D);
+                m_CountdownManager.SyncDefuseBombTime(CountdownObjectType.BombCaseTimer3D, CountdownObjectType.MagneticBombTimer3D);
+                m_PlantBombManager.InitClockMotion(true);
+
                 m_DefuseBombManager.TriggerDefuseBehaviour(DefuseBombState.Start);
             }
         });
@@ -173,17 +178,39 @@ public class GameManager : MonoBehaviour
 
         m_PlantBombManager.OnPlantBombDoneEvent.AddListener(() =>
         {
-            m_CountdownManager.InitDefuseBombTime(___Global_Config___.__MATCH_SETTINGS__.BombTimeInMinutes, CountdownObjectType.CircuitTimer3D);
+            m_CountdownManager.InitDefuseBombTime(___Global_Config___.__MATCH_SETTINGS__.BombTimeInMinutes, new List<CountdownObjectType>() { CountdownObjectType.CircuitTimer3D, CountdownObjectType.MagneticBombTimer3D });
+            m_PlantBombManager.InitClockMotion(true);
+
             TriggerBehaviour(GameState.Defusing);
         });
 
-        m_DefuseBombManager.OnPlantBombDoneEvent.AddListener(() =>
+        m_DefuseBombManager.OnDefuseBombDoneEvent.AddListener(() =>
         {
+            m_DefuseBombManager.InitClockMotion(false);
+
+            m_CountdownManager.SetDefuseBombTimeText(-1, CountdownObjectType.MagneticBombTimer3D, true);
+            m_CountdownManager.SetDefuseBombTimeText(-1, CountdownObjectType.CircuitTimer3D, true);
+
             TriggerBehaviour(GameState.Victory);
         });
 
         m_CountdownManager.OnCountdownCompletedEvent.AddListener(() => {
             TriggerBehaviour(GameState.Initial);
+        });
+
+        m_PlantBombManager.OnPlantBombEvent.AddListener((type) => {
+            m_CountdownManager.SetDefuseBombTimeText(___Global_Config___.__MATCH_SETTINGS__.BombTimeInMinutes,
+                type == CodeEncryptionType.KeyboardEncryption ? CountdownObjectType.MagneticBombTimer3D : CountdownObjectType.CircuitTimer3D );
+        });
+
+        m_DefuseBombManager.OnDefuseBombEvent.AddListener((type) => {
+
+            if(type == CodeEncryptionType.KeyboardEncryption)
+            {
+                m_DefuseBombManager.InitClockMotion(false);
+            }
+            m_CountdownManager.SetDefuseBombTimeText(-1,
+               type == CodeEncryptionType.KeyboardEncryption ? CountdownObjectType.MagneticBombTimer3D : CountdownObjectType.CircuitTimer3D, true);
         });
     }
 
@@ -195,6 +222,8 @@ public class GameManager : MonoBehaviour
         m_StartMatchManager.OnStartMatchEvent.RemoveAllListeners();
         m_CodeManager.OnValidateCodeEvent.RemoveAllListeners();
         m_PlantBombManager.OnPlantBombDoneEvent.RemoveAllListeners();
-        m_DefuseBombManager.OnPlantBombDoneEvent.RemoveAllListeners();
+        m_DefuseBombManager.OnDefuseBombDoneEvent.RemoveAllListeners();
+        m_PlantBombManager.OnPlantBombEvent.RemoveAllListeners();
+        m_DefuseBombManager.OnDefuseBombEvent.RemoveAllListeners();
     }
 }

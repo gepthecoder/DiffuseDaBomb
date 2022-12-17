@@ -1235,6 +1235,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a747feecf0f92e146b584389e89d23e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &163281989 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 163281989, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8245851257503065259}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163281986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61e634b917b2c3f4eace49a2bf9127cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &168889628
 GameObject:
   m_ObjectHideFlags: 0
@@ -3120,6 +3132,7 @@ MonoBehaviour:
   m_DefuseTimeCountdownObjects:
   - {fileID: 1128873448}
   - {fileID: 5561773722564146558}
+  - {fileID: 1686119246}
   m_TouchBlocker: {fileID: 1947178620}
   OnCountdownCompletedEvent:
     m_PersistentCalls:
@@ -4365,6 +4378,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefuseBombController: {fileID: 260719651}
+  m_ClockMotionController: {fileID: 163281989}
   m_Keyboard: {fileID: 8245851257503065266}
   m_Keypad: {fileID: 8245851257503065265}
   m_KeyboardUI: {fileID: 584573110}
@@ -4373,7 +4387,10 @@ MonoBehaviour:
   m_HighlightedObjects:
   - {fileID: 8245851257503065261}
   - {fileID: 8245851257503065260}
-  OnPlantBombDoneEvent:
+  OnDefuseBombDoneEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDefuseBombEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &482127896
@@ -7989,11 +8006,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HackingController: {fileID: 610991256}
   m_PlantBombActionHandler: {fileID: 163281988}
+  m_ClockMotionController: {fileID: 163281989}
   m_Lights: {fileID: 8245851257503065264}
   m_HighlightedObjects:
   - {fileID: 8245851257503065261}
   - {fileID: 8245851257503065260}
   OnPlantBombDoneEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlantBombEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &872623343 stripped
@@ -14043,6 +14064,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1679065304}
   m_CullTransparentMesh: 1
+--- !u!114 &1686119246 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 155130449182629880, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8245851257503065259}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a619b3f7b0e19943a555d489772b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1700705076
 GameObject:
   m_ObjectHideFlags: 0

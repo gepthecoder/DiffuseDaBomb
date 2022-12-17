@@ -6,7 +6,7 @@ using TMPro;
 using System;
 using UnityEngine.Events;
 
-public enum CountdownObjectType { Other2D, CircuitTimer3D, BombCaseTimer3D, }
+public enum CountdownObjectType { Other2D, CircuitTimer3D, BombCaseTimer3D, MagneticBombTimer3D, }
 
 public class CountdownObject : MonoBehaviour
 {
@@ -40,6 +40,22 @@ public class CountdownObject : MonoBehaviour
         {
             m_CountdownTimerText.text = ts.ToString("mm':'ss'.'ff");
         }
+    }
+
+    public void DeinitTimer()
+    {
+        m_TimeRemaining = 0;
+
+        if (m_CountdownTimerText_3D)
+        {
+            m_CountdownTimerText_3D.text = "XX:XX.XX";
+        }
+        if (m_CountdownTimerText)
+        {
+            m_CountdownTimerText.text = "XX:XX.XX";
+        }
+
+        StopAllCoroutines();
     }
 
     public void StartCountdown(float timeRemaining)
@@ -77,7 +93,6 @@ public class CountdownObject : MonoBehaviour
             {
                 m_CountdownTimerText_3D.text = m_TimePlaying.ToString("mm':'ss'.'ff");
             }
-
 
             if (m_TimeRemaining <= 0) {
 

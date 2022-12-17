@@ -11,6 +11,8 @@ public class PlantBombManager : MonoBehaviour
 {
     [SerializeField] private PlantBombHackingController m_HackingController;
     [SerializeField] private PlantBombActionHandler m_PlantBombActionHandler;
+    [Space(5)]
+    [SerializeField] private ClockMotionController m_ClockMotionController;
 
     [SerializeField] private Lights m_Lights;
 
@@ -19,6 +21,7 @@ public class PlantBombManager : MonoBehaviour
     private PlantBombState i_CurrentState = PlantBombState.Start;
 
     [HideInInspector] public UnityEvent OnPlantBombDoneEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent<CodeEncryptionType> OnPlantBombEvent = new UnityEvent<CodeEncryptionType>();
 
     private void Start()
     {
@@ -44,7 +47,8 @@ public class PlantBombManager : MonoBehaviour
             });
 
         m_HackingController.OnItemHackedEvent.AddListener(
-            (data) => { 
+            (data) => {
+                OnPlantBombEvent?.Invoke(data.CodeEncryption);
                 TriggerPlantBehaviour(PlantBombState.Start, new HackingItemData(data.CodeEncryption, true)); }    
             );
 
@@ -56,6 +60,7 @@ public class PlantBombManager : MonoBehaviour
                 TriggerPlantBehaviour(PlantBombState.Done, data);
             });
     }
+
     private void UnSubscribe()
     {
         m_HackingController.OnItemHackedEvent.RemoveAllListeners();
@@ -175,6 +180,18 @@ public class PlantBombManager : MonoBehaviour
                     }             
                 }
             }
+        }
+    }
+
+    public void InitClockMotion(bool enable)
+    {
+        if(enable)
+        {
+            m_ClockMotionController.EnableClockMotion();
+
+        } else
+        {
+            m_ClockMotionController.DisableClockMotion();
         }
     }
 }

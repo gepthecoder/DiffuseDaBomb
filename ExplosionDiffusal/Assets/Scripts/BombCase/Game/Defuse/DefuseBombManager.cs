@@ -10,6 +10,8 @@ public class DefuseBombManager : MonoBehaviour
 {
     [SerializeField] private DefuseBombController m_DefuseBombController;
     [Space(5)]
+    [SerializeField] private ClockMotionController m_ClockMotionController;
+    [Space(5)]
     [SerializeField] private ItemInteractor m_Keyboard;
     [SerializeField] private ItemInteractor m_Keypad;
     [Space(5)]
@@ -21,7 +23,8 @@ public class DefuseBombManager : MonoBehaviour
 
     private DefuseBombState i_CurrentState = DefuseBombState.Null;
 
-    [HideInInspector] public UnityEvent OnPlantBombDoneEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent OnDefuseBombDoneEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent<CodeEncryptionType> OnDefuseBombEvent = new UnityEvent<CodeEncryptionType>();
 
     private void Awake()
     {
@@ -48,6 +51,7 @@ public class DefuseBombManager : MonoBehaviour
         });
 
         m_DefuseBombController.OnItemHackedEvent.AddListener((data) => {
+            OnDefuseBombEvent?.Invoke(data.CodeEncryption);
             TriggerDefuseBehaviour(DefuseBombState.Start, new HackingItemData(data.CodeEncryption, true));
         });
 
@@ -98,7 +102,7 @@ public class DefuseBombManager : MonoBehaviour
                 break;
             case DefuseBombState.Done:
                 Debug.Log($"<color=blue>DefuseBombState</color><color=gold>Done</color>");
-                OnPlantBombDoneEvent?.Invoke();
+                OnDefuseBombDoneEvent?.Invoke();
                 break;
             case DefuseBombState.Null:
             default:
@@ -167,6 +171,19 @@ public class DefuseBombManager : MonoBehaviour
 
                 break;
             }
+        }
+    }
+
+    public void InitClockMotion(bool enable)
+    {
+        if (enable)
+        {
+            m_ClockMotionController.EnableClockMotion();
+
+        }
+        else
+        {
+            m_ClockMotionController.DisableClockMotion();
         }
     }
 }
