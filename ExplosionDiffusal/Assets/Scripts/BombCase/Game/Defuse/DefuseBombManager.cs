@@ -11,6 +11,7 @@ public class DefuseBombManager : MonoBehaviour
     [SerializeField] private DefuseBombController m_DefuseBombController;
     [Space(5)]
     [SerializeField] private ClockMotionController m_ClockMotionController;
+    [SerializeField] private LightsController m_LightsController;
     [Space(5)]
     [SerializeField] private ItemInteractor m_Keyboard;
     [SerializeField] private ItemInteractor m_Keypad;
@@ -47,10 +48,15 @@ public class DefuseBombManager : MonoBehaviour
     private void Subscribe()
     {
         m_DefuseBombController.OnAllItemsHackedEvent.AddListener((data) => {
+            m_LightsController.PlayLightAnimator(LightType.PlasticBomb, LightAction.Off);
             TriggerDefuseBehaviour(DefuseBombState.Done, data);
         });
 
         m_DefuseBombController.OnItemHackedEvent.AddListener((data) => {
+            if (data.CodeEncryption == CodeEncryptionType.KeyboardEncryption)
+            {
+                m_LightsController.PlayLightAnimator(LightType.PlasticBomb, LightAction.Off);
+            }
             OnDefuseBombEvent?.Invoke(data.CodeEncryption);
             TriggerDefuseBehaviour(DefuseBombState.Start, new HackingItemData(data.CodeEncryption, true));
         });
@@ -176,14 +182,6 @@ public class DefuseBombManager : MonoBehaviour
 
     public void InitClockMotion(bool enable)
     {
-        if (enable)
-        {
-            m_ClockMotionController.EnableClockMotion();
-
-        }
-        else
-        {
-            m_ClockMotionController.DisableClockMotion();
-        }
+        m_ClockMotionController.EnableClockMotion(ClockMotionType.MultiComplexClock, enable);
     }
 }

@@ -5,6 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class ClockMotionObject
 {
+    public ClockMotionType Type;
+
     public Animator m_LongPointerAnime;
     public Animator m_ShortPointerAnime;
 
@@ -13,27 +15,39 @@ public class ClockMotionObject
         m_LongPointerAnime.enabled = true;
         m_ShortPointerAnime.enabled = true;
 
+        Debug.Log($"EnableClockMotion: {Type}");
+        
         m_LongPointerAnime.Play("long");
         m_ShortPointerAnime.Play("short");
     }
 
     public void DisableClockMotion()
     {
+
+        Debug.Log($"DisableClockMotion: {Type}");
+
         m_LongPointerAnime.enabled = false;
         m_ShortPointerAnime.enabled = false;
     }
 }
 
+public enum ClockMotionType { BombCaseClock, MultiComplexClock }
+
 public class ClockMotionController : MonoBehaviour
 {
-    [SerializeField] private ClockMotionObject m_ClockMotionObject;
+    [SerializeField] private List<ClockMotionObject> m_ClockMotionObjects;
 
-    public void EnableClockMotion()
+    public void EnableClockMotion(ClockMotionType type, bool enable)
     {
-        m_ClockMotionObject.EnableClockMotion();
-    }
-    public void DisableClockMotion()
-    {
-        m_ClockMotionObject.DisableClockMotion();
+        m_ClockMotionObjects.ForEach((clock) =>
+        {
+            if(clock.Type == type)
+            {
+                if (enable)
+                    clock.EnableClockMotion();
+                else
+                    clock.DisableClockMotion();
+            }
+        });
     }
 }

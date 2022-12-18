@@ -31850,7 +31850,7 @@ GameObject:
   - component: {fileID: 8245851257491046979}
   - component: {fileID: 8245851257491046988}
   m_Layer: 0
-  m_Name: Plastic bomb prefab (1)
+  m_Name: Plastic bomb prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31866,7 +31866,8 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 8.03, y: -0.04, z: 0.22}
   m_LocalScale: {x: 0.025, y: 0.025, z: 0.025}
-  m_Children: []
+  m_Children:
+  - {fileID: 3586442263511212652}
   m_Father: {fileID: 8245851257168897933}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -34493,7 +34494,6 @@ GameObject:
   - component: {fileID: 8245851257660954856}
   - component: {fileID: 4731170267575069518}
   - component: {fileID: 9020784104556091190}
-  - component: {fileID: 163281989}
   m_Layer: 0
   m_Name: MultiComplexBomb
   m_TagString: Untagged
@@ -34538,7 +34538,6 @@ MonoBehaviour:
   - {fileID: 1752172701329167902}
   - {fileID: 2781184834118222654}
   - {fileID: 562280699724183772}
-  m_TnTimerObject: {fileID: 6727756988168367038}
   m_2dKeyboard: {fileID: 0}
   m_2dKeypad: {fileID: 0}
   m_HackingController: {fileID: 0}
@@ -34566,21 +34565,6 @@ MonoBehaviour:
   - {fileID: 8776817763942507571}
   m_TnTLights:
   - {fileID: 4015188919804676682}
---- !u!114 &163281989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8245851257660954857}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61e634b917b2c3f4eace49a2bf9127cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ClockMotionObject:
-    m_LongPointerAnime: {fileID: 576142056}
-    m_ShortPointerAnime: {fileID: 1177144925}
 --- !u!1 &8245851257669048469
 GameObject:
   m_ObjectHideFlags: 0
@@ -49185,15 +49169,90 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6415831177169447590}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &8245851257686221929 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3127391986875092687, guid: 98b0b2af459dca24fa60cc490e474a39,
+    type: 3}
+  m_PrefabInstance: {fileID: 6415831177169447590}
+  m_PrefabAsset: {fileID: 0}
 --- !u!108 &3314447809958665605 stripped
 Light:
   m_CorrespondingSourceObject: {fileID: 8428157735998584611, guid: 98b0b2af459dca24fa60cc490e474a39,
     type: 3}
   m_PrefabInstance: {fileID: 6415831177169447590}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &8245851257686221929 stripped
+--- !u!1001 &8245851256470677262
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8245851257491046989}
+    m_Modifications:
+    - target: {fileID: 4875916508719220066, guid: 035b455e2a7ccbb4288400378a186036,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875916508719220066, guid: 035b455e2a7ccbb4288400378a186036,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -28.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875916508719220066, guid: 035b455e2a7ccbb4288400378a186036,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 26.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875916508719220066, guid: 035b455e2a7ccbb4288400378a186036,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 13.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875916508719220066, guid: 035b455e2a7ccbb4288400378a186036,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875916508719220066, guid: 035b455e2a7ccbb4288400378a186036,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875916508719220066, guid: 035b455e2a7ccbb4288400378a186036,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875916508719220066, guid: 035b455e2a7ccbb4288400378a186036,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875916508719220066, guid: 035b455e2a7ccbb4288400378a186036,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875916508719220066, guid: 035b455e2a7ccbb4288400378a186036,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875916508719220066, guid: 035b455e2a7ccbb4288400378a186036,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5753787224399008392, guid: 035b455e2a7ccbb4288400378a186036,
+        type: 3}
+      propertyPath: m_Name
+      value: PlasticBombLights
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 035b455e2a7ccbb4288400378a186036, type: 3}
+--- !u!4 &3586442263511212652 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 3127391986875092687, guid: 98b0b2af459dca24fa60cc490e474a39,
+  m_CorrespondingSourceObject: {fileID: 4875916508719220066, guid: 035b455e2a7ccbb4288400378a186036,
     type: 3}
-  m_PrefabInstance: {fileID: 6415831177169447590}
+  m_PrefabInstance: {fileID: 8245851256470677262}
   m_PrefabAsset: {fileID: 0}

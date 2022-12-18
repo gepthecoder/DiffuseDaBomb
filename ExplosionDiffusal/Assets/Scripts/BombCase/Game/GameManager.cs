@@ -109,6 +109,8 @@ public class GameManager : MonoBehaviour
                   () => {
                       m_BombManager.TriggerBombBehaviour(BombCaseState.Close);
                       m_CountdownManager.SyncDefuseBombTime(CountdownObjectType.CircuitTimer3D, CountdownObjectType.BombCaseTimer3D);
+                      m_BombManager.InitClockMotion(true);
+                      m_PlantBombManager.InitLights(LightType.PlasticBomb, LightAction.Trip);
                   }
               );
     }
@@ -162,6 +164,7 @@ public class GameManager : MonoBehaviour
                 m_CountdownManager.SyncDefuseBombTime(CountdownObjectType.BombCaseTimer3D, CountdownObjectType.CircuitTimer3D);
                 m_CountdownManager.SyncDefuseBombTime(CountdownObjectType.BombCaseTimer3D, CountdownObjectType.MagneticBombTimer3D);
                 m_PlantBombManager.InitClockMotion(true);
+                m_PlantBombManager.InitLights(LightType.PlasticBomb, LightAction.Trip);
 
                 m_DefuseBombManager.TriggerDefuseBehaviour(DefuseBombState.Start);
             }
@@ -200,7 +203,7 @@ public class GameManager : MonoBehaviour
 
         m_PlantBombManager.OnPlantBombEvent.AddListener((type) => {
             m_CountdownManager.SetDefuseBombTimeText(___Global_Config___.__MATCH_SETTINGS__.BombTimeInMinutes,
-                type == CodeEncryptionType.KeyboardEncryption ? CountdownObjectType.MagneticBombTimer3D : CountdownObjectType.CircuitTimer3D );
+                type == CodeEncryptionType.KeyboardEncryption ? CountdownObjectType.MagneticBombTimer3D : CountdownObjectType.CircuitTimer3D);
         });
 
         m_DefuseBombManager.OnDefuseBombEvent.AddListener((type) => {

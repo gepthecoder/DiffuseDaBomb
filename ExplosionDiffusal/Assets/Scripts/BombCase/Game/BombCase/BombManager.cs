@@ -10,6 +10,8 @@ public enum BombCaseSubState { OnBombCasePressDown, OnBombCasePressUp, NonIntera
 
 public class BombManager : MonoBehaviour
 {
+    [SerializeField] private ClockMotionController m_ClockMotionController;
+    [Space(5)]
     [SerializeField] private bool m_IsSuitcaseOpeningEnabled = true;
     [Space(5)]
     [SerializeField] private BombOpeningUiManager m_BombOpeningUiManager;
@@ -177,5 +179,10 @@ public class BombManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void InitClockMotion(bool enable)
+    {
+        m_ClockMotionController.EnableClockMotion(ClockMotionType.BombCaseClock, enable);
     }
 }

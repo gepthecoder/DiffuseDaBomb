@@ -13,6 +13,7 @@ public class PlantBombManager : MonoBehaviour
     [SerializeField] private PlantBombActionHandler m_PlantBombActionHandler;
     [Space(5)]
     [SerializeField] private ClockMotionController m_ClockMotionController;
+    [SerializeField] private LightsController m_LightsController;
 
     [SerializeField] private Lights m_Lights;
 
@@ -49,6 +50,12 @@ public class PlantBombManager : MonoBehaviour
         m_HackingController.OnItemHackedEvent.AddListener(
             (data) => {
                 OnPlantBombEvent?.Invoke(data.CodeEncryption);
+
+                if(data.CodeEncryption == CodeEncryptionType.KeyboardEncryption)
+                {
+                    m_LightsController.PlayLightAnimator(LightType.PlasticBomb, LightAction.On);
+                }
+
                 TriggerPlantBehaviour(PlantBombState.Start, new HackingItemData(data.CodeEncryption, true)); }    
             );
 
@@ -56,6 +63,8 @@ public class PlantBombManager : MonoBehaviour
             (data) => {
                 m_Lights.EnableKeyboardLight(false);
                 m_Lights.EnableKeypadLight(false);
+
+                m_LightsController.PlayLightAnimator(LightType.PlasticBomb, LightAction.Trip);
 
                 TriggerPlantBehaviour(PlantBombState.Done, data);
             });
@@ -185,13 +194,11 @@ public class PlantBombManager : MonoBehaviour
 
     public void InitClockMotion(bool enable)
     {
-        if(enable)
-        {
-            m_ClockMotionController.EnableClockMotion();
+        m_ClockMotionController.EnableClockMotion(ClockMotionType.MultiComplexClock, enable);
+    }
 
-        } else
-        {
-            m_ClockMotionController.DisableClockMotion();
-        }
+    public void InitLights(LightType type, LightAction action)
+    {
+        m_LightsController.PlayLightAnimator(type, action);
     }
 }
