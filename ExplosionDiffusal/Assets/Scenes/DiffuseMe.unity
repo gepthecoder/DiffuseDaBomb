@@ -18934,11 +18934,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MultiComplexBomb
       objectReference: {fileID: 0}
-    - target: {fileID: 8245851257660954857, guid: 4d2a8e07de03d8946bc7856b3a51a37e,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d2a8e07de03d8946bc7856b3a51a37e, type: 3}
 --- !u!114 &8245851257503065260 stripped
