@@ -14,8 +14,6 @@ public class ClockMotionObject
     {
         m_LongPointerAnime.enabled = true;
         m_ShortPointerAnime.enabled = true;
-
-        Debug.Log($"EnableClockMotion: {Type}");
         
         m_LongPointerAnime.Play("long");
         m_ShortPointerAnime.Play("short");
@@ -23,9 +21,6 @@ public class ClockMotionObject
 
     public void DisableClockMotion()
     {
-
-        Debug.Log($"DisableClockMotion: {Type}");
-
         m_LongPointerAnime.enabled = false;
         m_ShortPointerAnime.enabled = false;
     }

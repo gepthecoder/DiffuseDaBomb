@@ -45,6 +45,7 @@ public class MatchSettingsController : MonoBehaviour
 
         m_PreviousButton.onClick.AddListener(() => {
             m_PreviousButton.interactable = false;
+            GetMatchSettingsByType(m_CurrentState).EnableArrowInteraction(false);
 
             m_PreviousButton.transform.DOScale(1.15f, .25f).OnComplete(() => {
                 m_PreviousButton.transform.DOScale(0f, .77f).OnComplete(() => {
@@ -60,6 +61,7 @@ public class MatchSettingsController : MonoBehaviour
         m_NextButton.onClick.AddListener(() => {
           
             m_NextButton.interactable = false;
+            GetMatchSettingsByType(m_CurrentState).EnableArrowInteraction(false);
 
             m_NextButton.transform.DOScale(1.15f, .25f).OnComplete(() => {
                 m_NextButton.transform.DOScale(0f, .77f).OnComplete(() => {

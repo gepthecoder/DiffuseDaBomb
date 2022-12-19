@@ -23,6 +23,8 @@ public class MatchSettingsItem : MonoBehaviour
     public int m_DefaultMinValue = 2;
     public int m_DefaultMaxValue = 500;
 
+    private bool m_CanInteractWithArrows = true;
+
     private void Awake()
     {
         m_Value = m_DefaultValue;
@@ -33,6 +35,9 @@ public class MatchSettingsItem : MonoBehaviour
         pointerDownLeftArrow.eventID = EventTriggerType.PointerDown;
 
         pointerDownLeftArrow.callback.AddListener((e) => {
+            if (!m_CanInteractWithArrows)
+                return;
+
             m_Value--;
             if (m_Value < m_DefaultMinValue) { m_Value = m_DefaultMinValue; }
 
@@ -50,6 +55,9 @@ public class MatchSettingsItem : MonoBehaviour
         pointerDownRightArrow.eventID = EventTriggerType.PointerDown;
 
         pointerDownRightArrow.callback.AddListener((e) => {
+            if (!m_CanInteractWithArrows)
+                return;
+
             m_Value++;
             if (m_Value > m_DefaultMaxValue) { m_Value = m_DefaultMaxValue; }
 
@@ -65,6 +73,7 @@ public class MatchSettingsItem : MonoBehaviour
 
     public void OnShowItem()
     {
+        EnableArrowInteraction(true);
         m_MatchSettingsItemAnimator.Play("show");
     }
 
@@ -76,6 +85,11 @@ public class MatchSettingsItem : MonoBehaviour
     public CanvasGroup GetCanvasGroup()
     {
         return m_MatchSettingsItemCGroup;
+    }
+
+    public void EnableArrowInteraction(bool enable)
+    {
+        m_CanInteractWithArrows = enable;
     }
 
 }
