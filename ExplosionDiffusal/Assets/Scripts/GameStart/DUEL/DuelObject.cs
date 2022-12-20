@@ -15,6 +15,7 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
     public DuelObjectType ID;
     [HideInInspector] public UnityEvent<DuelObjectType> OnDuelObjectSelected = new UnityEvent<DuelObjectType>();
 
+    [Header("Movable Components")]
     public Image Emblem;
     public TextMeshProUGUI TeamName;
     public TextMeshProUGUI TeamCount;
@@ -23,6 +24,11 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
     public Image QuestionMark;
     public Image TeamNamePlaceHodler;
 
+    [Header("Static Components")]
+    public Image TeamCountPlaceHodler;
+    public Image TeamEmblemShinePlaceHolder;
+
+    [Space(10)]
     public SettingsItemData m_ConfigData = new SettingsItemData();
 
     private bool m_IsInteractable = true;
@@ -101,5 +107,23 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
         else {
             return true;
         }
+    }
+
+    /// <summary>
+    /// Order: Emblem, TeamName, TeamCount
+    /// </summary>
+    /// <returns></returns>
+    public List<Transform> GetDuelObjectMovableComponents()
+    {
+        return new List<Transform>() { Emblem.transform, TeamName.transform, TeamCount.transform };
+    }
+
+    /// <summary>
+    /// Order: EmblemShine, TeamName Holder, TeamCount Holder
+    /// </summary>
+    /// <returns></returns>
+    public List<Image> GetDuelObjectStaticComponents()
+    {
+        return new List<Image>() { TeamEmblemShinePlaceHolder, TeamNamePlaceHodler, TeamCountPlaceHodler,  };
     }
 }

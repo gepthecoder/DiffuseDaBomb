@@ -9,21 +9,22 @@ public class MainCanvas : MonoBehaviour
     [SerializeField] private MainTeamHolder TeamAxisPlaceholder;
     [SerializeField] private MainTeamHolder TeamAlliesPlaceholder;
 
-    public void InitMainCanvas(DuelConfigData DATA)
+    public void InitMainCanvas(DuelConfigData DUEL_DATA, MatchSettingsConfigData MATCH_DATA)
     {
         gameObject.SetActive(true);
-
-        TeamAxisPlaceholder.InitMainTeamHolder(new MainTeamHolderData(DATA.AxisConfigData.TeamEmblem, "0", DATA.AxisConfigData.TeamName));
-        TeamAlliesPlaceholder.InitMainTeamHolder(new MainTeamHolderData(DATA.AlliesConfigData.TeamEmblem, "0", DATA.AlliesConfigData.TeamName));
-
-        StartCoroutine(WaitAndExecuteTeams());
+        TeamAxisPlaceholder.InitMainTeamHolder(new MainTeamHolderData(
+            DUEL_DATA.AxisConfigData.TeamEmblem, "0", DUEL_DATA.AxisConfigData.TeamName, DUEL_DATA.AxisConfigData.TeamCount.ToString(), MATCH_DATA.ScoreLimit.ToString()));
+        TeamAlliesPlaceholder.InitMainTeamHolder(new MainTeamHolderData(
+            DUEL_DATA.AlliesConfigData.TeamEmblem, "0", DUEL_DATA.AlliesConfigData.TeamName, DUEL_DATA.AlliesConfigData.TeamCount.ToString(), MATCH_DATA.ScoreLimit.ToString()));
     }
 
-    private IEnumerator WaitAndExecuteTeams()
+    public MainTeamHolder GetAxisTeamHolder()
     {
-        yield return new WaitForSeconds(1);
+        return TeamAxisPlaceholder;
+    }
 
-        TeamAxisPlaceholder.DoDoScaleIn();
-        TeamAlliesPlaceholder.DoDoScaleIn();
+    public MainTeamHolder GetAlliesTeamHolder()
+    {
+        return TeamAlliesPlaceholder;
     }
 }

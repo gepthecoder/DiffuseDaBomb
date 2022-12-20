@@ -47,8 +47,16 @@ public class StartMatchManagerUI : MonoBehaviour
     [SerializeField] private Animator m_MidPanelCGroupAnime;
     [SerializeField] private Animator m_StartGameOptionsCGroupAnime;
     [SerializeField] private Animator m_VSCGroupAnime;
-    [SerializeField] private Transform m_AxisEndGoToPosition;
-    [SerializeField] private Transform m_AlliesEndGoToPosition;
+    [Header("END GOTO POSITONS")]
+    [SerializeField] private Transform m_TeamNameAxisEndGoToPosition;
+    [SerializeField] private Transform m_TeamNameAlliesEndGoToPosition;
+    [Space(3)]
+    [SerializeField] private Transform m_TeamCountAxisEndGoToPosition;
+    [SerializeField] private Transform m_TeamCountAlliesEndGoToPosition;
+    [Space(3)]
+    [SerializeField] private Transform m_TeamEmblemAxisEndGoToPosition;
+    [SerializeField] private Transform m_TeamEmblemAlliesEndGoToPosition;
+    [Space(5)]
     //
     [SerializeField] private Button m_PlayButton;
     //
@@ -140,20 +148,26 @@ public class StartMatchManagerUI : MonoBehaviour
                                             m_Duel.DOLocalMoveY(0, .5f).SetEase(Ease.InOutBack).OnComplete(() => {
                                                 m_VSCGroupAnime.Play("fadeOut");
 
-                                                m_MainCanvas.InitMainCanvas(m_GlobalConfigData.__DUEL_SETTINGS__);
-
+                                                // Init Only Config Data
+                                                m_MainCanvas.InitMainCanvas(m_GlobalConfigData.__DUEL_SETTINGS__, m_GlobalConfigData.__MATCH_SETTINGS__);
+                                                // Get Seperate MOVABLE Components from each Duel Obj (Team Name, Team Emblem, Team Count) -> move with delays
                                                 var axis = m_DuelController.GetDuelObjByType(DuelObjectType.Attacker);
                                                 var allies = m_DuelController.GetDuelObjByType(DuelObjectType.Defender);
 
-                                                axis.transform.DOScale(1.1f, .3f).OnComplete(() => {
-                                                    axis.transform.DOScale(0f, 1f).OnComplete(() => { });
-                                                    axis.transform.DOJump(m_AxisEndGoToPosition.position, 1f, 1, 1.5f);
-                                                });
+                                                var axisMovableComponents = axis.GetDuelObjectMovableComponents();
+                                                var alliesMovableComponents = allies.GetDuelObjectMovableComponents();
+                                                // Get STATIC Components (Emblem Shine, TeamName&TeamCount Placeholders) -> alpha to 0
+                                                var axisStaticComponents = axis.GetDuelObjectStaticComponents();
+                                                var alliesStaticComponents = allies.GetDuelObjectStaticComponents();
+                                                // Main Canvas: Pop Up Seperate Static Elements on triggers
+                                                var axisTeamHolder = m_MainCanvas.GetAxisTeamHolder();
+                                                var alliesTeamHolder = m_MainCanvas.GetAlliesTeamHolder();
 
-                                                allies.transform.DOScale(1.1f, .3f).OnComplete(() => {
-                                                    allies.transform.DOScale(0f, 1f).OnComplete(() => { });
-                                                    allies.transform.DOJump(m_AlliesEndGoToPosition.position, 1f, 1, 1.5f);
-                                                });
+                                                // Da Sequence
+                                                StartCoroutine(StartDuelTransitionSequence(axisMovableComponents, axisStaticComponents, axisTeamHolder, 
+                                                    new List<Transform>() { m_TeamEmblemAxisEndGoToPosition, m_TeamNameAxisEndGoToPosition, m_TeamCountAxisEndGoToPosition }));
+                                                StartCoroutine(StartDuelTransitionSequence(alliesMovableComponents, alliesStaticComponents, alliesTeamHolder,
+                                                     new List<Transform>() { m_TeamEmblemAlliesEndGoToPosition, m_TeamNameAlliesEndGoToPosition, m_TeamCountAlliesEndGoToPosition }));
 
                                                 OnStartMatchButtonClickedEvent?.Invoke(m_GlobalConfigData);
                                             });
@@ -170,6 +184,38 @@ public class StartMatchManagerUI : MonoBehaviour
 
             TriggerBehaviour(StartMatchState.ModeSelection);
         });
+    }
+
+    private IEnumerator StartDuelTransitionSequence(List<Transform> movableComponents, List<Image> staticComponents, MainTeamHolder teamHolder, List<Transform> endGoToPositionsOrganized)
+    {
+        for (int i = 0; i < staticComponents.Count; i++)
+        {
+            staticComponents[i].DOFade(0f, .2f);
+        }
+
+        for (int i = 0; i < movableComponents.Count; i++)
+        {
+            movableComponents[i].DOScale(1.1f, .2f).OnComplete(() => {
+                movableComponents[i].DOScale(.5f, .5f);
+                movableComponents[i].DOJump(endGoToPositionsOrganized[i].position, 1f, 1, .77f);
+                if (i == 0) {
+                    movableComponents[i].GetComponent<Image>()?.DOFade(0f, .65f);
+                    teamHolder.DoDoScaleIn_Emblem(); 
+                }
+                if (i == 1)
+                {
+                    movableComponents[i].GetComponent<TextMeshProUGUI>().DOFade(0f, .65f);
+                    teamHolder.DoDoScaleIn_TeamName();
+                    teamHolder.DoDoScaleIn_ScoreText();
+                }
+                if (i == 2) {
+                    movableComponents[i].GetComponent<TextMeshProUGUI>().DOFade(0f, .65f);
+                    teamHolder.DoDoScaleIn_TeamCount(); 
+                }
+            });
+            yield return new WaitForSeconds(.2f);
+        }
+
     }
 
     private void Start()
