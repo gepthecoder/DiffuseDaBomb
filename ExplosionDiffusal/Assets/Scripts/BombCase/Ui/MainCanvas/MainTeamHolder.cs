@@ -31,8 +31,12 @@ public class MainTeamHolder : MonoBehaviour
     public Text TeamNameText;
     public Text TeamCountText;
 
+    private string scoreLimit;
+
     public void InitMainTeamHolder(MainTeamHolderData data)
     {
+        scoreLimit = data.ScoreLimit;
+
         LogoImage.sprite = data.LogoSprite;
         ScoreText.text = $"{data.Score}/{data.ScoreLimit}";
         TeamNameText.text = $"{data.TeamName}";
@@ -68,6 +72,14 @@ public class MainTeamHolder : MonoBehaviour
     {
         TeamCountText.transform.DOScale(1.15f, .77f).OnComplete(() => {
             TeamCountText.transform.DOScale(1f, .25f);
+        });
+    }
+
+    internal void IncreaseScore(int totalScore)
+    {
+        ScoreText.transform.DOScale(1.3f, .1f).SetEase(Ease.InExpo).OnComplete(() => {
+            ScoreText.text = $"{totalScore}/{scoreLimit}";
+            ScoreText.transform.DOScale(1f, .3f).SetEase(Ease.OutExpo);
         });
     }
 }

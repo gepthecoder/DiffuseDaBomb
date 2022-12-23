@@ -26,6 +26,7 @@ public class VictorySequenceComponents
     public CameraManager _CameraManager_;
     public VictoryUiManager _VictoryUiManager_;
     public SceneSetupManager _SceneSetupManager_;
+    public ScoreManager _ScoreManager_;
 }
 
 public class VictoryManager : MonoBehaviour
@@ -87,6 +88,12 @@ public class VictoryManager : MonoBehaviour
                 m_VictorySequenceComponents._CameraManager_.ShakeCamera(() => {
                     // WIN UI
                     m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
+
+                    bool isScoreLimit = false;
+                    m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit);
+
+                    // TODO: score limit reached case
+                    Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
                 });
             });
         } 

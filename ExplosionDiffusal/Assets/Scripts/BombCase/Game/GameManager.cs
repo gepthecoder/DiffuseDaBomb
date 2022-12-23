@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private SceneSetupManager m_SceneSetupManager;
     [SerializeField] private CodeManager m_CodeManager;
     [SerializeField] private VictoryManager m_VictoryManager;
+    [SerializeField] private ScoreManager m_ScoreManager;
 
     protected GlobalConfig ___Global_Config___;
 
@@ -68,6 +69,7 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.Countdown:
                 Debug.Log($"<color=red>GameState</color><color=gold>Countdown</color>");
+                m_ScoreManager.SetScoreLimit(___Global_Config___.__MATCH_SETTINGS__.ScoreLimit);
                 m_CountdownManager.InitCountdown(___Global_Config___.__MATCH_SETTINGS__);
                 break;
             case GameState.Initial:
@@ -238,5 +240,6 @@ public class GameManager : MonoBehaviour
         m_DefuseBombManager.OnDefuseBombDoneEvent.RemoveAllListeners();
         m_PlantBombManager.OnPlantBombEvent.RemoveAllListeners();
         m_DefuseBombManager.OnDefuseBombEvent.RemoveAllListeners();
+        m_CountdownManager.OnVictoryEvent.RemoveAllListeners();
     }
 }
