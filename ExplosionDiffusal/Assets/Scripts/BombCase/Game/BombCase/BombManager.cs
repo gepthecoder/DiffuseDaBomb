@@ -17,6 +17,7 @@ public class BombManager : MonoBehaviour
     [SerializeField] private BombOpeningUiManager m_BombOpeningUiManager;
     [SerializeField] private BombCase m_BombCase;
     [SerializeField] private List<Light> m_BombCaseLights;
+    [SerializeField] private List<Light> m_BombCaseCircuitLights;
 
     [HideInInspector] public UnityEvent BombCaseOpeningEvent;
 
@@ -97,12 +98,28 @@ public class BombManager : MonoBehaviour
         }
     }
 
+    public void ForceOpenBombBehaviour(Action action)
+    {
+        m_CurrentBombCaseState = BombCaseState.Open;
+
+        m_BombCase.TriggerBehaviour(m_CurrentBombCaseState, action);
+    }
+
     private void TurnOnLightSmooth(bool on)
     {
         foreach (var light in m_BombCaseLights)
         {
             light.DOIntensity(on ? 2f : 0f, 1.5f);
         }
+    }
+
+    public void TurnOffAllLights()
+    {
+        TurnOnLightSmooth(false);
+
+        m_BombCaseCircuitLights.ForEach((light) => {
+            light.enabled = false;
+        });
     }
 
     private void CheckUserBombInteraction()
@@ -184,5 +201,10 @@ public class BombManager : MonoBehaviour
     public void InitClockMotion(bool enable)
     {
         m_ClockMotionController.EnableClockMotion(ClockMotionType.BombCaseClock, enable);
+    }
+
+    public BombCaseState GetCurrentBombCaseState()
+    {
+        return m_CurrentBombCaseState;
     }
 }

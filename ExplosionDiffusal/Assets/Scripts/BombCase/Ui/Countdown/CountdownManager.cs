@@ -17,7 +17,8 @@ public class CountdownManager : MonoBehaviour
     [SerializeField] private List<CountdownObject> m_DefuseTimeCountdownObjects;
     [SerializeField] private Image m_TouchBlocker; // alpha to .65, raycast target on
 
-    [HideInInspector] public UnityEvent OnCountdownCompletedEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent OnCountdownCompletedEvent = new UnityEvent(); // Game Start Countdown
+    [HideInInspector] public UnityEvent<VictoryEventData> OnVictoryEvent = new UnityEvent<VictoryEventData>();
 
     private float m_CountdownTimeInSeconds_MatchStartDelay;
     private float m_CountdownTimeInMinutes_GameTime;
@@ -26,12 +27,12 @@ public class CountdownManager : MonoBehaviour
     private void Awake()
     {
         m_GameStartDelayCountdownObject.OnCountdownCompletedEvent.AddListener(() => {
-            m_GameStartDelayCountdownObject.transform.DOScale(1.077f, 1f);
+            m_GameStartDelayCountdownObject.transform.DOScale(.9f, 1f);
             m_GameStartDelayCountdownObject.transform.DOLocalMoveY(370f, 1f).OnComplete(() => {
                 m_TouchBlocker.DOFade(0f, 1f).OnComplete(() => {
                     m_TouchBlocker.raycastTarget = false;
                 });
-                m_GameStartDelayCountdownObject.transform.DOScale(.5f, 1.5f);
+                m_GameStartDelayCountdownObject.transform.DOScale(.2f, 1.5f);
                 m_GameStartDelayCountdownObject.transform.DOLocalMoveY(800f, 1f).SetEase(Ease.InExpo).OnComplete(() => {
                     m_GameStartDelayCountdownObject.Deinit();
                     OnCountdownCompletedEvent?.Invoke();
@@ -42,13 +43,16 @@ public class CountdownManager : MonoBehaviour
         });
 
         m_GameTimeCountdownObject.OnCountdownCompletedEvent.AddListener(() => {
-            print("Game Ended!");
+            print("Game Time Ended!");
             // TODO: Emmit Victory State
+            OnVictoryEvent?.Invoke(new VictoryEventData(Team.None, VictoryType.GameTimeEnded));
         });
 
         m_DefuseTimeCountdownObjects.ForEach((timer) => { 
             timer.OnCountdownCompletedEvent.AddListener(() => {
                 // TODO: Emmit Bomb Has Exploded
+                Debug.Log("Explodeeeee!");
+                OnVictoryEvent?.Invoke(new VictoryEventData(Team.Axis, VictoryType.BombExploded));
             });
         });
     }
@@ -57,7 +61,9 @@ public class CountdownManager : MonoBehaviour
     {
         m_GameStartDelayCountdownObject.OnCountdownCompletedEvent.RemoveAllListeners();
         m_GameTimeCountdownObject.OnCountdownCompletedEvent.RemoveAllListeners();
-        m_DefuseTimeCountdownObjects[0].OnCountdownCompletedEvent.RemoveAllListeners();
+        m_DefuseTimeCountdownObjects.ForEach((timer) => {
+            timer.OnCountdownCompletedEvent.RemoveAllListeners();
+        });
     }
 
     public void InitCountdown(MatchSettingsConfigData data)
@@ -75,11 +81,11 @@ public class CountdownManager : MonoBehaviour
 
         m_TouchBlocker.DOFade(.65f, .77f).OnComplete(() =>
         {
-            m_GameStartDelayCountdownObject.transform.DOScale(1.1f, 1f);
+            m_GameStartDelayCountdownObject.transform.DOScale(.9f, .8f);
             m_GameStartDelayCountdownObject.transform.DOLocalMoveY(370f, 1f).OnComplete(() =>
             {
-                m_GameStartDelayCountdownObject.transform.DOScale(1f, .5f);
-                m_GameStartDelayCountdownObject.transform.DOLocalMoveY(450f, .5f).SetEase(Ease.InExpo).OnComplete(() =>
+                m_GameStartDelayCountdownObject.transform.DOScale(.85f, .5f);
+                m_GameStartDelayCountdownObject.transform.DOLocalMoveY(460f, .5f).SetEase(Ease.InExpo).OnComplete(() =>
                 {
                     m_GameStartDelayCountdownObject.StartCountdown(countdownTimeInSeconds);
                 });

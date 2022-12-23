@@ -70,4 +70,11 @@ public class CameraManager : MonoBehaviour
             });
 
     }
+
+    public void ShakeCamera(Action onCamSeqFinnished)
+    {
+        m_MainCam.DOShakePosition(3f, 1.5f, 5).OnComplete(() => {
+            onCamSeqFinnished();
+        });
+    }
 }

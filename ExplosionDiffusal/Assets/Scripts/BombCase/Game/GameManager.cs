@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private DefuseBombManager m_DefuseBombManager;
     [SerializeField] private SceneSetupManager m_SceneSetupManager;
     [SerializeField] private CodeManager m_CodeManager;
+    [SerializeField] private VictoryManager m_VictoryManager;
 
     protected GlobalConfig ___Global_Config___;
 
@@ -55,7 +56,7 @@ public class GameManager : MonoBehaviour
         RemoveListeners();
     }
 
-    private void TriggerBehaviour(GameState state)
+    private void TriggerBehaviour(GameState state, VictoryEventData data = null)
     {
         m_CurrentState = state;
 
@@ -87,7 +88,12 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.Victory:
                 Debug.Log($"<color=red>GameState</color><color=gold>Victory</color>");
-
+                if(data != null)
+                {
+                    // TODO: check for score limit reached - Bomb Defuse / Explosion!
+                    Debug.Log($"{data._WinningTeam_} WON ROUND by {data._VictoryType_}");
+                    m_VictoryManager.InitVictory(new VictoryEventData(data._WinningTeam_, data._VictoryType_, m_BombManager.GetCurrentBombCaseState(), data._WinningTeam_ == Team.Axis ? ___Global_Config___.__DUEL_SETTINGS__.AxisConfigData.TeamName : ___Global_Config___.__DUEL_SETTINGS__.AlliesConfigData.TeamName));
+                }
                 break;
             default:
                 break;
@@ -194,7 +200,7 @@ public class GameManager : MonoBehaviour
             m_CountdownManager.SetDefuseBombTimeText(-1, CountdownObjectType.MagneticBombTimer3D, true);
             m_CountdownManager.SetDefuseBombTimeText(-1, CountdownObjectType.CircuitTimer3D, true);
 
-            TriggerBehaviour(GameState.Victory);
+            TriggerBehaviour(GameState.Victory, new VictoryEventData(Team.Allies, VictoryType.BombDefused));
         });
 
         m_CountdownManager.OnCountdownCompletedEvent.AddListener(() => {
@@ -214,6 +220,10 @@ public class GameManager : MonoBehaviour
             }
             m_CountdownManager.SetDefuseBombTimeText(-1,
                type == CodeEncryptionType.KeyboardEncryption ? CountdownObjectType.MagneticBombTimer3D : CountdownObjectType.CircuitTimer3D, true);
+        });
+
+        m_CountdownManager.OnVictoryEvent.AddListener((victoryDATA) => {
+            TriggerBehaviour(GameState.Victory, new VictoryEventData(victoryDATA._WinningTeam_, victoryDATA._VictoryType_));
         });
     }
 

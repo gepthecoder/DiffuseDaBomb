@@ -150,16 +150,17 @@ public class StartMatchManagerUI : MonoBehaviour
 
                                                 // Init Only Config Data
                                                 m_MainCanvas.InitMainCanvas(m_GlobalConfigData.__DUEL_SETTINGS__, m_GlobalConfigData.__MATCH_SETTINGS__);
-                                                // Get Seperate MOVABLE Components from each Duel Obj (Team Name, Team Emblem, Team Count) -> move with delays
+                                                
+                                                // Get Objects
                                                 var axis = m_DuelController.GetDuelObjByType(DuelObjectType.Attacker);
                                                 var allies = m_DuelController.GetDuelObjByType(DuelObjectType.Defender);
 
                                                 var axisMovableComponents = axis.GetDuelObjectMovableComponents();
                                                 var alliesMovableComponents = allies.GetDuelObjectMovableComponents();
-                                                // Get STATIC Components (Emblem Shine, TeamName&TeamCount Placeholders) -> alpha to 0
+
                                                 var axisStaticComponents = axis.GetDuelObjectStaticComponents();
                                                 var alliesStaticComponents = allies.GetDuelObjectStaticComponents();
-                                                // Main Canvas: Pop Up Seperate Static Elements on triggers
+
                                                 var axisTeamHolder = m_MainCanvas.GetAxisTeamHolder();
                                                 var alliesTeamHolder = m_MainCanvas.GetAlliesTeamHolder();
 

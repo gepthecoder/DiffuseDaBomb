@@ -38,7 +38,11 @@ public class BombOpeningUiManager : MonoBehaviour
     {
         m_BombOpeningSlider.value = value;
         bitVal = !bitVal;
-        m_BombOpeningSlider.transform.DOBlendablePunchRotation(new Vector3(0, 0, bitVal ? -3 : 3), value / m_BombOpeningSlider.maxValue);
+        float duration = value / m_BombOpeningSlider.maxValue;
+        if (duration > 0)
+        {
+            m_BombOpeningSlider.transform.DOBlendablePunchRotation(new Vector3(0, 0, bitVal ? -3 : 3), value / m_BombOpeningSlider.maxValue);
+        }
     }
 
     public void SetupSlider(float onDownTreshold)
