@@ -77,9 +77,9 @@ public class MainTeamHolder : MonoBehaviour
 
     internal void IncreaseScore(int totalScore)
     {
-        ScoreText.transform.DOScale(1.3f, .1f).SetEase(Ease.InExpo).OnComplete(() => {
+        ScoreText.transform.DOScale(2f, 1f).SetEase(Ease.InExpo).OnComplete(() => {
             ScoreText.text = $"{totalScore}/{scoreLimit}";
-            ScoreText.transform.DOScale(1f, .3f).SetEase(Ease.OutExpo);
+            ScoreText.transform.DOScale(1f, .5f).SetEase(Ease.OutExpo);
         });
     }
 }

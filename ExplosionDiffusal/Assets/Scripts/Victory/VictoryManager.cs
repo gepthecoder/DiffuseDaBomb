@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using UnityEngine.Events;
 
 public enum Team { Axis, Allies, None }
 public enum VictoryType { BombExploded, BombDefused, GameTimeEnded, }
@@ -33,6 +34,21 @@ public class VictoryManager : MonoBehaviour
 {
     [SerializeField] private VictorySequenceComponents m_VictorySequenceComponents;
     [SerializeField] private BombExplosionController m_BombExplosionController;
+
+    [HideInInspector] public UnityEvent OnVictoryShownEvent = new UnityEvent();
+
+    private void Awake()
+    {
+        m_VictorySequenceComponents._VictoryUiManager_.OnVictoryShownEvent.AddListener(() => {
+            // Invoke GameManager to trigger repair state
+            OnVictoryShownEvent?.Invoke();
+        });
+    }
+
+    private void OnDestroy()
+    {
+        m_VictorySequenceComponents._VictoryUiManager_.OnVictoryShownEvent.RemoveAllListeners();
+    }
 
     public void InitVictory(VictoryEventData data)
     {

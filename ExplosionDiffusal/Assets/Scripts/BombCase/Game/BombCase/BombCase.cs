@@ -6,6 +6,8 @@ using System;
 
 public class BombCase : MonoBehaviour
 {
+    [SerializeField] private Animator m_FixPartsAnimator;
+    [Space(5)]
     [SerializeField] private Transform m_TopCasePart;
     [SerializeField] private Transform m_BombTransform;
 
@@ -56,7 +58,7 @@ public class BombCase : MonoBehaviour
     }
     private void CloseBombCase()
     {
-        m_TopCasePart.DOLocalRotate(new Vector3(0f, 0f, 0f), 2f).SetEase(Ease.OutSine).OnComplete(() => {  });
+        m_TopCasePart.DOLocalRotate(Vector3.zero, 2f).SetEase(Ease.OutSine).OnComplete(() => {  });
     }
     private void WobbleBombCase()
     {
@@ -92,4 +94,23 @@ public class BombCase : MonoBehaviour
         }
     }
 
+    private bool _isFixing = false;
+    public void PlayFixBombPartsAnimation(bool play)
+    {
+        if(_isFixing != play)
+            m_FixPartsAnimator?.SetTrigger(play ? "start" : "stop");
+        
+        _isFixing = play;
+    }
+
+    public void RotateTopCase(float normal)
+    {
+        m_TopCasePart.DOLocalRotate(
+            normal >= .5f ? 
+            Vector3.zero : 
+            new Vector3(0f, m_CaseOpenedValue, 0f), 2.5f)
+            .SetEase(normal >= .5f ? 
+                Ease.OutSine : 
+                Ease.OutExpo);
+    }
 }

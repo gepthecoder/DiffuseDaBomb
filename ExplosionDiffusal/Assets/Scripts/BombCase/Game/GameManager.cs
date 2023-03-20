@@ -26,7 +26,7 @@ public class GlobalConfig
     public GlobalConfig() { }
 }
 
-public enum GameState { PreMatch, Countdown, Initial, Planting, Defusing, Victory, }
+public enum GameState { PreMatch, Countdown, Initial, Planting, Defusing, Victory, Repair, }
 
 public class GameManager : MonoBehaviour
 {
@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CodeManager m_CodeManager;
     [SerializeField] private VictoryManager m_VictoryManager;
     [SerializeField] private ScoreManager m_ScoreManager;
+    [SerializeField] private RepairBombManager m_RepairBombManager;
 
     protected GlobalConfig ___Global_Config___;
 
@@ -95,6 +96,12 @@ public class GameManager : MonoBehaviour
                     // TODO: check for score limit reached - Bomb Defuse / Explosion!
                     Debug.Log($"{data._WinningTeam_} WON ROUND by {data._VictoryType_}");
                     m_VictoryManager.InitVictory(new VictoryEventData(data._WinningTeam_, data._VictoryType_, m_BombManager.GetCurrentBombCaseState(), data._WinningTeam_ == Team.Axis ? ___Global_Config___.__DUEL_SETTINGS__.AxisConfigData.TeamName : ___Global_Config___.__DUEL_SETTINGS__.AlliesConfigData.TeamName));
+                }
+                break;
+            case GameState.Repair:
+                Debug.Log($"<color=red>GameState</color><color=gold>Repair</color>");
+                {
+                    m_RepairBombManager.Init();
                 }
                 break;
             default:
@@ -227,6 +234,14 @@ public class GameManager : MonoBehaviour
         m_CountdownManager.OnVictoryEvent.AddListener((victoryDATA) => {
             TriggerBehaviour(GameState.Victory, new VictoryEventData(victoryDATA._WinningTeam_, victoryDATA._VictoryType_));
         });
+
+        m_VictoryManager.OnVictoryShownEvent.AddListener(() => {
+            TriggerBehaviour(GameState.Repair);
+        });
+
+        m_RepairBombManager.OnBombRepairCompleted.AddListener(() => {
+            TriggerBehaviour(GameState.Initial);
+        });
     }
 
     private void RemoveListeners()
@@ -241,5 +256,7 @@ public class GameManager : MonoBehaviour
         m_PlantBombManager.OnPlantBombEvent.RemoveAllListeners();
         m_DefuseBombManager.OnDefuseBombEvent.RemoveAllListeners();
         m_CountdownManager.OnVictoryEvent.RemoveAllListeners();
+        m_VictoryManager.OnVictoryShownEvent.RemoveAllListeners();
+        m_RepairBombManager.OnBombRepairCompleted.RemoveAllListeners();
     }
 }
