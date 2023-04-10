@@ -101,6 +101,7 @@ public class GameManager : MonoBehaviour
             case GameState.Repair:
                 Debug.Log($"<color=red>GameState</color><color=gold>Repair</color>");
                 {
+                    m_CountdownManager.DeinitCountdownObjects();
                     m_RepairBombManager.Init();
                 }
                 break;
@@ -240,6 +241,13 @@ public class GameManager : MonoBehaviour
         });
 
         m_RepairBombManager.OnBombRepairCompleted.AddListener(() => {
+            // PUT EVERYTHING AS IT WAS IN THE BEGINING
+            m_PlantBombManager.Deinit();
+            m_DefuseBombManager.ResetBombDefuseSettings();
+            m_CodeManager.Deinit();
+            m_CountdownManager.ResetCountDownObjects();
+            m_VictoryManager.ResetBombAfterMathEffect();
+
             TriggerBehaviour(GameState.Initial);
         });
     }

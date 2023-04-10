@@ -76,13 +76,18 @@ public class PlantBombHackingController : MonoBehaviour
         {
             OnAllItemsHackedEvent?.Invoke(DATA);
             PlayButtonPressedSFX(AudioEffect.BombsPlanted);
+
+            // reset
+            m_TaskListInfo[CodeEncryptionType.KeyboardEncryption] = false;
+            m_TaskListInfo[CodeEncryptionType.KeyPadEncryption] = false;
         }
         else
         {
-            m_CurrentSelected = ClickableType.None;
             OnItemHackedEvent?.Invoke(DATA);
             PlayButtonPressedSFX(AudioEffect.Success);
         }
+
+        m_CurrentSelected = ClickableType.None;
     }
 
     private bool TaskDone()

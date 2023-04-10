@@ -97,10 +97,15 @@ public class RepairBombManager : MonoBehaviour
         // Hide Button
         m_IsInitialized = false;
         m_RepairBombButton.interactable = false;
-
+        
         m_RepairBombParent.DOScale(1.1f, .25f).SetEase(Ease.InOutBack)
             .OnComplete(() => {
-                m_RepairBombParent.DOScale(0, .5f);
+                m_RepairBombParent.DOScale(0, .5f).OnComplete(() => {
+                    // reset
+                    m_OnDownTimer = 0;
+                    m_RepairBombFillImage.fillAmount = 0f;
+                });
+               
             });
     }
 

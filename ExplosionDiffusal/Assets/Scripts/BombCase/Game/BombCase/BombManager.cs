@@ -105,7 +105,7 @@ public class BombManager : MonoBehaviour
         m_BombCase.TriggerBehaviour(m_CurrentBombCaseState, action);
     }
 
-    private void TurnOnLightSmooth(bool on)
+    public void TurnOnLightSmooth(bool on)
     {
         foreach (var light in m_BombCaseLights)
         {
@@ -119,6 +119,13 @@ public class BombManager : MonoBehaviour
 
         m_BombCaseCircuitLights.ForEach((light) => {
             light.enabled = false;
+        });
+    }
+
+    public void TurnOnAllCircuitLights(bool on)
+    {
+        m_BombCaseCircuitLights.ForEach((light) => {
+            light.enabled = on;
         });
     }
 

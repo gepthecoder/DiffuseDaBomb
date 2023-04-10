@@ -113,8 +113,19 @@ public class CountdownObject : MonoBehaviour
         yield return null;
     }
 
-    internal void Deinit()
+    public void Deinit()
     {
         gameObject.SetActive(false);
+    }
+
+    public void Default()
+    {
+        gameObject.SetActive(true);
+        
+        if(m_CountdownTimerText)
+            m_CountdownTimerText.text = "";
+
+        if (m_CountdownTimerText_3D)
+            m_CountdownTimerText_3D.text = "";
     }
 }

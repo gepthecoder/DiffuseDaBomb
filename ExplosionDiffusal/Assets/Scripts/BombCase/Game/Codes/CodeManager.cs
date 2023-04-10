@@ -47,6 +47,13 @@ public class CodeManager : MonoBehaviour
         return false;
     }
 
+    public void Deinit()
+    {
+        codes.ForEach((code) => {
+            code.ResetBombCode();
+        });
+    }
+
     private Code GetCodeByEncryption(CodeEncryptionType encryption)
     {
         foreach (var code in codes)

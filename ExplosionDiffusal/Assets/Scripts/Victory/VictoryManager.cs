@@ -100,7 +100,7 @@ public class VictoryManager : MonoBehaviour
                     m_VictorySequenceComponents._BombManager_.InitClockMotion(false);
                     m_VictorySequenceComponents._SceneSetupManager_.EnableBombCoverUps(true);
                 });
-                // Shake Cam 
+                // Shake Cam
                 m_VictorySequenceComponents._CameraManager_.ShakeCamera(() => {
                     // WIN UI
                     m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
@@ -117,5 +117,10 @@ public class VictoryManager : MonoBehaviour
 
 
         yield break;
+    }
+
+    public void ResetBombAfterMathEffect()
+    {
+        m_BombExplosionController.ResetAfterMathFlyingObject();
     }
 }

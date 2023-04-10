@@ -37,4 +37,10 @@ public class Code : MonoBehaviour
 
         return __BOMB__CODE__;
     }
+
+    public void ResetBombCode()
+    {
+        __BOMB__CODE__ = string.Empty;
+        __isCodeSet__ = false;
+    }
 }

@@ -6,6 +6,12 @@ using System;
 
 public class BombExplosionController : MonoBehaviour
 {
+    public struct AfterMathObjectMap
+    {
+        public GameObject obj;
+        public Vector3 pos;
+    }
+
     [Header("Bomb Explosive")]
     [SerializeField] private Explosive m_Explosive;
     [SerializeField] private List<Transform> m_ExplosionPositions;
@@ -16,12 +22,15 @@ public class BombExplosionController : MonoBehaviour
 
     private List<GameObject> m_TempExplosionsList = new List<GameObject>();
 
-    private List<Vector3> m_AfterMathInitialPositions = new List<Vector3>();
+    private List<AfterMathObjectMap> m_AfterMathMapper = new List<AfterMathObjectMap>();
 
     private void Awake()
     {
         m_AfterMathFlyingObjects.ForEach((obj) => {
-            m_AfterMathInitialPositions.Add(obj.transform.localPosition);
+            AfterMathObjectMap map;
+            map.obj = obj;
+            map.pos = obj.transform.localPosition;
+            m_AfterMathMapper.Add(map);
         });
     }
 
@@ -61,16 +70,12 @@ public class BombExplosionController : MonoBehaviour
         m_Smoke.SmokeIt(true);
     }
 
-    private IEnumerator FixBombEffect()
+    public void ResetAfterMathFlyingObject()
     {
-        for (int i = 0; i < m_AfterMathFlyingObjects.Count; i++)
+        foreach (var map in m_AfterMathMapper)
         {
-            m_AfterMathFlyingObjects[i].transform.DOJump(m_AfterMathInitialPositions[i], 1, 1, 1f)
-                .OnComplete(() => {
-                    m_AfterMathFlyingObjects[i].SetActive(false);
-                });
-
-            yield return new WaitForSeconds(.01f);
+            map.obj.transform.localPosition = map.pos;
+            map.obj.SetActive(false);
         }
     }
 }

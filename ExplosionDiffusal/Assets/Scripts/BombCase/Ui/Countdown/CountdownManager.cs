@@ -66,6 +66,20 @@ public class CountdownManager : MonoBehaviour
         });
     }
 
+    public void DeinitCountdownObjects()
+    {
+        m_DefuseTimeCountdownObjects.ForEach((timer) => {
+            timer.Deinit();
+        });
+    }
+
+    public void ResetCountDownObjects()
+    {
+        m_DefuseTimeCountdownObjects.ForEach((timer) => {
+            timer.Default();
+        });
+    }
+
     public void InitCountdown(MatchSettingsConfigData data)
     {
         m_CountdownTimeInSeconds_MatchStartDelay = data.MatchStartTimeInSeconds;
@@ -132,7 +146,6 @@ public class CountdownManager : MonoBehaviour
                 else {
                     timer.SetInitialCountDownTime(countdownTimeInMinutes * 60);
                 }
-                
             }
         });
     }

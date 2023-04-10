@@ -10,6 +10,8 @@ public class LightObjectAnimator
 {
     public LightType _Type;
     [SerializeField] private Animator _Animator;
+    [SerializeField] private Light _LightSource;
+
 
     public void PlayAnimation(LightAction action)
     {
@@ -29,6 +31,11 @@ public class LightObjectAnimator
         }
     }
 
+    public void ForceTurnOffLightSource()
+    {
+        _LightSource.intensity = 0;
+    }
+
 }
 
 public class LightsController : MonoBehaviour
@@ -41,6 +48,16 @@ public class LightsController : MonoBehaviour
             if (lightSource._Type == type) {
                 lightSource.PlayAnimation(action);
             } 
+        });
+    }
+
+    public void ForceStopLightSource(LightType type)
+    {
+        LightAnimators.ForEach((LIGHT) => { 
+            if(LIGHT._Type == type)
+            {
+                LIGHT.ForceTurnOffLightSource();
+            }
         });
     }
 }

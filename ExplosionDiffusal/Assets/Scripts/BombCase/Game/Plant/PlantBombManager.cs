@@ -201,4 +201,22 @@ public class PlantBombManager : MonoBehaviour
     {
         m_LightsController.PlayLightAnimator(type, action);
     }
+
+    public void Deinit()
+    {
+        HighlightElements(true);
+
+        InitClockMotion(false);
+        InitLights(LightType.PlasticBomb, LightAction.Off);
+
+        m_Lights.EnableKeyboardLight(true);
+        m_Lights.EnableKeypadLight(true);
+
+        m_Lights.LightUpBombs(false, CodeEncryptionType.KeyboardEncryption);
+        m_Lights.LightUpBombs(false, CodeEncryptionType.KeyPadEncryption);
+
+        m_LightsController.ForceStopLightSource(LightType.PlasticBomb);
+
+        m_PlantBombActionHandler.ActivateBombEffect(true, CodeEncryptionType.KeyboardEncryption);
+    }
 }

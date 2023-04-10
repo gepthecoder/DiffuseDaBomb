@@ -136,6 +136,20 @@ public class DefuseBombManager : MonoBehaviour
         }
     }
 
+    public void ResetBombDefuseSettings()
+    {
+        m_Keyboard._Clickable.CanClick = true;
+        m_Keypad._Clickable.CanClick = true;
+
+        m_Keyboard._Highlighter.CanHiglight = true;
+        m_Keyboard._Highlighter.HighlightMe();
+        m_Keypad._Highlighter.CanHiglight = true;
+        m_Keypad._Highlighter.HighlightMe();
+
+        m_KeyboardUI.ClearCode();
+        m_KeypadUI.ClearCode();
+    }
+
     private void SetupInitialBombDefuseSettings()
     {
         m_Keyboard._Clickable.CanClick = true;
