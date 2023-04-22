@@ -23,6 +23,7 @@ public class DefuseBombManager : MonoBehaviour
     [SerializeField] private List<Highlighter> m_HighlightedObjects;
 
     private DefuseBombState i_CurrentState = DefuseBombState.Null;
+    private ClickableType m_CurrentSelectedEncryptor = ClickableType.None;
 
     [HideInInspector] public UnityEvent OnDefuseBombDoneEvent = new UnityEvent();
     [HideInInspector] public UnityEvent<CodeEncryptionType> OnDefuseBombEvent = new UnityEvent<CodeEncryptionType>();
@@ -49,6 +50,9 @@ public class DefuseBombManager : MonoBehaviour
     {
         m_DefuseBombController.OnAllItemsHackedEvent.AddListener((data) => {
             m_LightsController.PlayLightAnimator(LightType.PlasticBomb, LightAction.Off);
+
+            m_CurrentSelectedEncryptor = ClickableType.None;
+
             TriggerDefuseBehaviour(DefuseBombState.Done, data);
         });
 
@@ -57,6 +61,9 @@ public class DefuseBombManager : MonoBehaviour
             {
                 m_LightsController.PlayLightAnimator(LightType.PlasticBomb, LightAction.Off);
             }
+
+            m_CurrentSelectedEncryptor = ClickableType.None;
+
             OnDefuseBombEvent?.Invoke(data.CodeEncryption);
             TriggerDefuseBehaviour(DefuseBombState.Start, new HackingItemData(data.CodeEncryption, true));
         });
@@ -65,16 +72,24 @@ public class DefuseBombManager : MonoBehaviour
             if (data.gState != GameState.Defusing)
                 return;
 
+            m_CurrentSelectedEncryptor = ClickableType.None;
+
             m_DefuseBombController.OnHackingItemDeselected();
-            TriggerDefuseBehaviour(DefuseBombState.Start, new HackingItemData(data.CodeEncryption, false));
+
+            DefuseBombState goToState = data.ForceCloseMultiComplexBomb ? DefuseBombState.Null : DefuseBombState.Start;
+            TriggerDefuseBehaviour(goToState, new HackingItemData(data.CodeEncryption, false));
         });
 
         m_KeypadUI.OnEncryptorClose.AddListener((data) => {
             if (data.gState != GameState.Defusing)
                 return;
 
+            m_CurrentSelectedEncryptor = ClickableType.None;
+
             m_DefuseBombController.OnHackingItemDeselected();
-            TriggerDefuseBehaviour(DefuseBombState.Start, new HackingItemData(data.CodeEncryption, false));
+
+            DefuseBombState goToState = data.ForceCloseMultiComplexBomb ? DefuseBombState.Null : DefuseBombState.Start;
+            TriggerDefuseBehaviour(goToState, new HackingItemData(data.CodeEncryption, false));
         });
     }
 
@@ -91,12 +106,16 @@ public class DefuseBombManager : MonoBehaviour
         {
             case DefuseBombState.Start:
                 Debug.Log($"<color=blue>DefuseBombState</color><color=gold>Start</color>");
-                if(data != null){ break; } else {
+                if(data != null){
+                    break; 
+                } 
+                else {
                     SetupInitialBombDefuseSettings();
                 }
                 break;
             case DefuseBombState.Hacking:
                 Debug.Log($"<color=blue>DefuseBombState</color><color=gold>Hacking</color>: {data.SelectedType}");
+                m_CurrentSelectedEncryptor = data.SelectedType;
                 m_DefuseBombController.OnHackingItemSelected(data);
                 break;
             case DefuseBombState.Success:
@@ -109,6 +128,7 @@ public class DefuseBombManager : MonoBehaviour
             case DefuseBombState.Done:
                 Debug.Log($"<color=blue>DefuseBombState</color><color=gold>Done</color>");
                 OnDefuseBombDoneEvent?.Invoke();
+                TriggerDefuseBehaviour(DefuseBombState.Null);
                 break;
             case DefuseBombState.Null:
             default:
@@ -148,6 +168,11 @@ public class DefuseBombManager : MonoBehaviour
 
         m_KeyboardUI.ClearCode();
         m_KeypadUI.ClearCode();
+
+        m_CurrentSelectedEncryptor = ClickableType.None;
+
+        m_KeyboardUI.EnableDefusalCodesUi(false);
+        m_KeypadUI.EnableDefusalCodesUi(false);
     }
 
     private void SetupInitialBombDefuseSettings()
@@ -168,6 +193,8 @@ public class DefuseBombManager : MonoBehaviour
 
         m_KeyboardUI.InitializeBombDefusalCodes();
         m_KeypadUI.InitializeBombDefusalCodes();
+
+        m_CurrentSelectedEncryptor = ClickableType.None;
     }
 
     private void HighlightByType(bool highlight, CodeEncryptionType type)
@@ -197,5 +224,27 @@ public class DefuseBombManager : MonoBehaviour
     public void InitClockMotion(bool enable)
     {
         m_ClockMotionController.EnableClockMotion(ClockMotionType.MultiComplexClock, enable);
+    }
+
+    public void TryForceCloseEncryptor(out bool success)
+    {
+        if (m_CurrentSelectedEncryptor == ClickableType.None)
+        {
+            TriggerDefuseBehaviour(DefuseBombState.Null);
+            success = false;
+            return;
+        }
+
+        if (m_CurrentSelectedEncryptor == ClickableType.Keyboard)
+        {
+            m_KeyboardUI.OnEncryptorClose?.Invoke(new HackingItemData(CodeEncryptionType.KeyboardEncryption, GameState.Defusing, true));
+        }
+
+        else if (m_CurrentSelectedEncryptor == ClickableType.Keypad)
+        {
+            m_KeypadUI.OnEncryptorClose?.Invoke(new HackingItemData(CodeEncryptionType.KeyPadEncryption, GameState.Defusing, true));
+        }
+
+        success = true;
     }
 }

@@ -28,6 +28,7 @@ public class VictorySequenceComponents
     public VictoryUiManager _VictoryUiManager_;
     public SceneSetupManager _SceneSetupManager_;
     public ScoreManager _ScoreManager_;
+    public DefuseBombManager _DefuseBombManager_;
 }
 
 public class VictoryManager : MonoBehaviour
@@ -36,6 +37,7 @@ public class VictoryManager : MonoBehaviour
     [SerializeField] private BombExplosionController m_BombExplosionController;
 
     [HideInInspector] public UnityEvent OnVictoryShownEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent<Action> OnZoomOutOfComplex = new UnityEvent<Action>();
 
     private void Awake()
     {
@@ -62,15 +64,13 @@ public class VictoryManager : MonoBehaviour
                 *******************************************************************************
                 *                               BOMB EXPLODES                                 *
                 *******************************************************************************
-                - Case 1: 
-                    Closed Bomb Case State - bomb case is closed - circuit not visible
-                - Case 2:
+                - Case 01: 
+                    Closed Bomb Case State - bomb case is closed - circuit not visible v/
+                - Case 02:
                     MultiComplex Bomb State - bomb case is opened - circuit is visible
-
-                ?? Joined Behaviour:
                     
 
-                ?? Special Cases:
+                ?? Special Cases: when you are in keyboard/pad substate
 
                 
          */
@@ -91,30 +91,30 @@ public class VictoryManager : MonoBehaviour
 
     private IEnumerator BombExplosionSequence(VictoryEventData data)
     {
+        // CASE 01
         if(data._BombState_ == BombCaseState.Close)
         {
             m_VictorySequenceComponents._BombManager_.ForceOpenBombBehaviour(() => {
-                // Explode Bomb
-                m_BombExplosionController.ExplodeBomb(() => {
-                    m_VictorySequenceComponents._BombManager_.TurnOffAllLights();
-                    m_VictorySequenceComponents._BombManager_.InitClockMotion(false);
-                    m_VictorySequenceComponents._SceneSetupManager_.EnableBombCoverUps(true);
-                });
-                // Shake Cam
-                m_VictorySequenceComponents._CameraManager_.ShakeCamera(() => {
-                    // WIN UI
-                    m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
-
-                    bool isScoreLimit = false;
-                    m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit);
-
-                    // TODO: score limit reached case
-                    Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
-                });
+                ExplodeBomb(data);
             });
-        } 
-        else { }
+        }
 
+        // CASE 02
+        else if (data._BombState_ == BombCaseState.Open || data._BombState_ == BombCaseState.Hacking) 
+        {
+            bool isSubState;
+            m_VictorySequenceComponents._DefuseBombManager_.TryForceCloseEncryptor(out isSubState);
+
+            if(isSubState)
+            {
+                yield return new WaitForSeconds(2f);    
+            }
+
+            OnZoomOutOfComplex?.Invoke(() => {
+                ExplodeBomb(data);
+            });
+            
+        }
 
         yield break;
     }
@@ -122,5 +122,26 @@ public class VictoryManager : MonoBehaviour
     public void ResetBombAfterMathEffect()
     {
         m_BombExplosionController.ResetAfterMathFlyingObject();
+    }
+
+    private void ExplodeBomb(VictoryEventData data)
+    {
+        // Explode Bomb
+        m_BombExplosionController.ExplodeBomb(() => {
+            m_VictorySequenceComponents._BombManager_.TurnOffAllLights();
+            m_VictorySequenceComponents._BombManager_.InitClockMotion(false);
+            m_VictorySequenceComponents._SceneSetupManager_.EnableBombCoverUps(true);
+        });
+        // Shake Cam
+        m_VictorySequenceComponents._CameraManager_.ShakeCamera(() => {
+            // WIN UI
+            m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
+
+            bool isScoreLimit = false;
+            m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit);
+
+            // TODO: score limit reached case
+            Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
+        });
     }
 }

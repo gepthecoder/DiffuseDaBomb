@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using DG.Tweening;
 using System;
 
-public enum PlantBombState { Start, Hacking, Success, Done } 
+public enum PlantBombState { Start, Hacking, Success, Done, Null, } 
 
 public class PlantBombManager : MonoBehaviour
 {
@@ -103,7 +103,7 @@ public class PlantBombManager : MonoBehaviour
                             m_Lights.LightEffectByType(CodeEncryptionType.KeyboardEncryption);
                         }
                     }           
-                } 
+                }
                 else
                 {
                     m_PlantBombActionHandler.SetMainStateForEncryptors(GameState.Planting);
@@ -126,7 +126,9 @@ public class PlantBombManager : MonoBehaviour
             case PlantBombState.Done:
                 Debug.Log("<color=green>PlantBombState</color><color=gold>Done</color>");
                 OnPlantBombDoneEvent?.Invoke();
+                TriggerPlantBehaviour(PlantBombState.Null);
                 break;
+            case PlantBombState.Null:
             default:
                 break;
         }

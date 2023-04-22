@@ -24,6 +24,8 @@ public class CountdownManager : MonoBehaviour
     private float m_CountdownTimeInMinutes_GameTime;
     private float m_CountdownTimeInMinutes_DefuseTime;
 
+    private bool m_VictoryInitialized = false;
+
     private void Awake()
     {
         m_GameStartDelayCountdownObject.OnCountdownCompletedEvent.AddListener(() => {
@@ -50,7 +52,11 @@ public class CountdownManager : MonoBehaviour
 
         m_DefuseTimeCountdownObjects.ForEach((timer) => { 
             timer.OnCountdownCompletedEvent.AddListener(() => {
-                // TODO: Emmit Bomb Has Exploded
+                if (m_VictoryInitialized)
+                    return;
+
+                m_VictoryInitialized = true;
+
                 Debug.Log("Explodeeeee!");
                 OnVictoryEvent?.Invoke(new VictoryEventData(Team.Axis, VictoryType.BombExploded));
             });
@@ -78,6 +84,8 @@ public class CountdownManager : MonoBehaviour
         m_DefuseTimeCountdownObjects.ForEach((timer) => {
             timer.Default();
         });
+
+        m_VictoryInitialized = false;
     }
 
     public void InitCountdown(MatchSettingsConfigData data)

@@ -238,6 +238,19 @@ public class GameManager : MonoBehaviour
 
         m_VictoryManager.OnVictoryShownEvent.AddListener(() => {
             TriggerBehaviour(GameState.Repair);
+        }); 
+        
+        m_VictoryManager.OnZoomOutOfComplex.AddListener((callback) => {
+            // Move To BombCase view
+            m_UiManager.FadeInOutScreen(1f);
+            m_CameraManager.ZoomInOutToBombCaseView(
+                      () => {
+                          m_SceneSetupManager.SetupScene(SceneType.Default);
+                      },
+                      () => {
+                          callback?.Invoke();
+                      }
+                  );
         });
 
         m_RepairBombManager.OnBombRepairCompleted.AddListener(() => {
@@ -265,6 +278,7 @@ public class GameManager : MonoBehaviour
         m_DefuseBombManager.OnDefuseBombEvent.RemoveAllListeners();
         m_CountdownManager.OnVictoryEvent.RemoveAllListeners();
         m_VictoryManager.OnVictoryShownEvent.RemoveAllListeners();
+        m_VictoryManager.OnZoomOutOfComplex.RemoveAllListeners();
         m_RepairBombManager.OnBombRepairCompleted.RemoveAllListeners();
     }
 }

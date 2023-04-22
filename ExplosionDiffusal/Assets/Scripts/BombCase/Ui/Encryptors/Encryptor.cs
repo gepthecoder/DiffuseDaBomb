@@ -12,6 +12,11 @@ public abstract class Encryptor : MonoBehaviour {
     public UnityEvent<HackingItemData> OnEncryptorClose = new UnityEvent<HackingItemData>();
 
     public GameObject BombDefusalCodesUi;
+
+    public void EnableDefusalCodesUi(bool enable)
+    {
+        BombDefusalCodesUi.SetActive(enable);
+    }
 }
 
 public static class Extensions

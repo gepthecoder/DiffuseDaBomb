@@ -47,16 +47,18 @@ public class DefuseBombController : MonoBehaviour
 
         if(TaskDone())
         {
-            // TODO: EMIT EVENT to GAME MANAGER -> VICTORY
             OnAllItemsHackedEvent?.Invoke(data);
-            AudioManager.INSTANCE.PlayButtonPressedSFX(AudioEffect.BombsDefused);
+            // reset
+            m_TaskListInfo[CodeEncryptionType.KeyboardEncryption] = false;
+            m_TaskListInfo[CodeEncryptionType.KeyPadEncryption] = false;
         }
         else
         {
-            m_CurrentSelected = ClickableType.None;
             OnItemHackedEvent?.Invoke(data);
-            AudioManager.INSTANCE.PlayButtonPressedSFX(AudioEffect.BombsDefused);
         }
+
+        AudioManager.INSTANCE.PlayButtonPressedSFX(AudioEffect.BombsDefused);
+        m_CurrentSelected = ClickableType.None;
 
         ActivateBombEffect(true, data.CodeEncryption);
         Deinit3dViews(data.CodeEncryption);

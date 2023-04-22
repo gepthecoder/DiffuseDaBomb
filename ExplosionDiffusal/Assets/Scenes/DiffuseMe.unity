@@ -2031,8 +2031,13 @@ MonoBehaviour:
     _VictoryUiManager_: {fileID: 81699116}
     _SceneSetupManager_: {fileID: 615690728}
     _ScoreManager_: {fileID: 1963048191}
+    _DefuseBombManager_: {fileID: 469874479}
+    _PlantBombActionHandler_: {fileID: 163281988}
   m_BombExplosionController: {fileID: 1050965669}
   OnVictoryShownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnZoomOutOfComplex:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &230059987
