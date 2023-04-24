@@ -49,8 +49,7 @@ public class DefuseBombController : MonoBehaviour
         {
             OnAllItemsHackedEvent?.Invoke(data);
             // reset
-            m_TaskListInfo[CodeEncryptionType.KeyboardEncryption] = false;
-            m_TaskListInfo[CodeEncryptionType.KeyPadEncryption] = false;
+            ResetTaskInfo();
         }
         else
         {
@@ -67,6 +66,12 @@ public class DefuseBombController : MonoBehaviour
     public void OnHackingItemDeselected()
     {
         m_CurrentSelected = ClickableType.None;
+    }
+
+    public void ResetTaskInfo()
+    {
+        m_TaskListInfo[CodeEncryptionType.KeyboardEncryption] = false;
+        m_TaskListInfo[CodeEncryptionType.KeyPadEncryption] = false;
     }
 
     private bool TaskDone()

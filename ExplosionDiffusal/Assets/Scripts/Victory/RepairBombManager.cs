@@ -81,8 +81,10 @@ public class RepairBombManager : MonoBehaviour
         m_RepairBombFillImage.fillAmount = Mathf.Lerp(currentFillAmount, norValue, .2f);
     }
 
-    internal void Init()
+    internal void Init(VictoryType vType)
     {
+        m_RepairHelper.Init(vType);
+
         // Show Button
         m_RepairBombParent.DOScale(1.1f, .5f).SetEase(Ease.InExpo)
         .OnComplete(() => {

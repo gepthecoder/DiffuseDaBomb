@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour
                 Debug.Log($"<color=red>GameState</color><color=gold>Repair</color>");
                 {
                     m_CountdownManager.DeinitCountdownObjects();
-                    m_RepairBombManager.Init();
+                    m_RepairBombManager.Init(data._VictoryType_);
                 }
                 break;
             default:
@@ -209,6 +209,7 @@ public class GameManager : MonoBehaviour
 
             m_CountdownManager.SetDefuseBombTimeText(-1, CountdownObjectType.MagneticBombTimer3D, true);
             m_CountdownManager.SetDefuseBombTimeText(-1, CountdownObjectType.CircuitTimer3D, true);
+            m_CountdownManager.SetDefuseBombTimeText(-1, CountdownObjectType.BombCaseMagnetic3D, true);
 
             TriggerBehaviour(GameState.Victory, new VictoryEventData(Team.Allies, VictoryType.BombDefused));
         });
@@ -236,8 +237,8 @@ public class GameManager : MonoBehaviour
             TriggerBehaviour(GameState.Victory, new VictoryEventData(victoryDATA._WinningTeam_, victoryDATA._VictoryType_));
         });
 
-        m_VictoryManager.OnVictoryShownEvent.AddListener(() => {
-            TriggerBehaviour(GameState.Repair);
+        m_VictoryManager.OnVictoryShownEvent.AddListener((data) => {
+            TriggerBehaviour(GameState.Repair, data);
         }); 
         
         m_VictoryManager.OnZoomOutOfComplex.AddListener((callback) => {

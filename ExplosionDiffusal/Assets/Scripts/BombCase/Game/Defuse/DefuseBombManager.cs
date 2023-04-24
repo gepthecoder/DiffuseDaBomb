@@ -173,6 +173,8 @@ public class DefuseBombManager : MonoBehaviour
 
         m_KeyboardUI.EnableDefusalCodesUi(false);
         m_KeypadUI.EnableDefusalCodesUi(false);
+
+        m_DefuseBombController.ResetTaskInfo();
     }
 
     private void SetupInitialBombDefuseSettings()

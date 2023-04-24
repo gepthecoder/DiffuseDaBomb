@@ -6,7 +6,7 @@ using TMPro;
 using System;
 using UnityEngine.Events;
 
-public enum CountdownObjectType { Other2D, CircuitTimer3D, BombCaseTimer3D, MagneticBombTimer3D, }
+public enum CountdownObjectType { Other2D, CircuitTimer3D, BombCaseTimer3D, MagneticBombTimer3D, BombCaseMagnetic3D }
 
 public class CountdownObject : MonoBehaviour
 {

@@ -36,14 +36,14 @@ public class VictoryManager : MonoBehaviour
     [SerializeField] private VictorySequenceComponents m_VictorySequenceComponents;
     [SerializeField] private BombExplosionController m_BombExplosionController;
 
-    [HideInInspector] public UnityEvent OnVictoryShownEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent<VictoryEventData> OnVictoryShownEvent = new UnityEvent<VictoryEventData>();
     [HideInInspector] public UnityEvent<Action> OnZoomOutOfComplex = new UnityEvent<Action>();
 
     private void Awake()
     {
-        m_VictorySequenceComponents._VictoryUiManager_.OnVictoryShownEvent.AddListener(() => {
+        m_VictorySequenceComponents._VictoryUiManager_.OnVictoryShownEvent.AddListener((data) => {
             // Invoke GameManager to trigger repair state
-            OnVictoryShownEvent?.Invoke();
+            OnVictoryShownEvent?.Invoke(data);
         });
     }
 
@@ -57,22 +57,26 @@ public class VictoryManager : MonoBehaviour
         /*
             FLOW:
                 - WIN ROUND CONDITION MET!
-                    - BOMB EXPLODES SUBFLOW
-                    - BOMB DEFUSED SUBFLOW
+                    - BOMB EXPLODES SUBFLOW     v/
+                    - BOMB DEFUSED SUBFLOW      
+                    - ROUND TIME ENDED SUBFLOW  
                     - GAME TIME ENDED / SCORE LIMIT REACHED SUBFLOW:
        
                 *******************************************************************************
                 *                               BOMB EXPLODES                                 *
                 *******************************************************************************
                 - Case 01: 
-                    Closed Bomb Case State - bomb case is closed - circuit not visible v/
+                    Closed Bomb Case State - bomb case is closed - circuit not visible  v/
                 - Case 02:
-                    MultiComplex Bomb State - bomb case is opened - circuit is visible
+                    MultiComplex Bomb State - bomb case is opened - circuit is visible  v/
+                    ?? Special Cases: when you are in keyboard/pad substate             v/
                     
-
-                ?? Special Cases: when you are in keyboard/pad substate
-
+                *******************************************************************************
+                *                               BOMB DEFUSED                                  *
+                *******************************************************************************
                 
+                - Case 01:
+                    Indicate Bomb Defused - UI POP UP - Victory - Repair (slightly different case)
          */
 
         switch (data._VictoryType_)
@@ -81,12 +85,35 @@ public class VictoryManager : MonoBehaviour
                 StartCoroutine(BombExplosionSequence(data));
                 break;
             case VictoryType.BombDefused:
+                StartCoroutine(BombDefusedSequence(data));
                 break;
             case VictoryType.GameTimeEnded:
                 break;
             default:
                 break;
         }
+    }
+
+    private IEnumerator BombDefusedSequence(VictoryEventData data)
+    {
+        m_VictorySequenceComponents._SceneSetupManager_.EnableBombCoverUps(true);
+
+        yield return new WaitForSeconds(2f);
+
+        m_VictorySequenceComponents._VictoryUiManager_.PlayBombDefusedAnime();
+
+        yield return new WaitForSeconds(1f);
+
+        OnZoomOutOfComplex?.Invoke(() => {
+            m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
+
+            bool isScoreLimit = false; // TODO
+            m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit);
+
+            Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
+        });
+
+        yield break;
     }
 
     private IEnumerator BombExplosionSequence(VictoryEventData data)

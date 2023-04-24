@@ -57,11 +57,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
-  m_Name: Changa-Bold SDF
+  m_Name: Changa-Bold SDF outline
   m_EditorClassIdentifier: 
-  hashCode: -1626306693
+  hashCode: 764609627
   material: {fileID: 6447333859754382329}
-  materialHashCode: -516073989
+  materialHashCode: 2058682011
   m_Version: 1.1.0
   m_SourceFontFileGUID: 58529310243d0497ea50d86df41c60da
   m_SourceFontFile_EditorRef: {fileID: 0}
@@ -2667,7 +2667,7 @@ Material:
     - _OutlineSoftness: 0
     - _OutlineUVSpeedX: 0
     - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 0
+    - _OutlineWidth: 0.144
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
     - _ScaleRatioA: 0.8333333

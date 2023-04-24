@@ -103,13 +103,15 @@ public class BombCase : MonoBehaviour
         _isFixing = play;
     }
 
-    public void RotateTopCase(float normal)
+    public void RotateTopCase(float normal, VictoryType type)
     {
+        float threshold = type == VictoryType.BombExploded ? .5f : .7f;
+
         m_TopCasePart.DOLocalRotate(
-            normal >= .5f ? 
+            normal >= threshold ? 
             Vector3.zero : 
             new Vector3(0f, m_CaseOpenedValue, 0f), 2.5f)
-            .SetEase(normal >= .5f ? 
+            .SetEase(normal >= threshold ? 
                 Ease.OutSine : 
                 Ease.OutExpo);
     }

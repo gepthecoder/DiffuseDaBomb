@@ -75,7 +75,8 @@ public class CountdownManager : MonoBehaviour
     public void DeinitCountdownObjects()
     {
         m_DefuseTimeCountdownObjects.ForEach((timer) => {
-            timer.Deinit();
+            if(timer.Type != CountdownObjectType.BombCaseMagnetic3D)
+                timer.Deinit();
         });
     }
 
