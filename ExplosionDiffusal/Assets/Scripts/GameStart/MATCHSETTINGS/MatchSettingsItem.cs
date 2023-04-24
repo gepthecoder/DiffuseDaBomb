@@ -22,6 +22,7 @@ public class MatchSettingsItem : MonoBehaviour
     public int m_DefaultValue = 5;
     public int m_DefaultMinValue = 2;
     public int m_DefaultMaxValue = 500;
+    public bool m_EvenNumbers = false;
 
     private bool m_CanInteractWithArrows = true;
 
@@ -38,7 +39,11 @@ public class MatchSettingsItem : MonoBehaviour
             if (!m_CanInteractWithArrows)
                 return;
 
-            m_Value--;
+            if(m_EvenNumbers)
+                m_Value -= 2;
+            else
+                m_Value--;
+
             if (m_Value < m_DefaultMinValue) { m_Value = m_DefaultMinValue; }
 
             m_ValueText.transform.DOLocalMoveY(-80f, .15f).SetEase(Ease.InFlash)
@@ -58,7 +63,11 @@ public class MatchSettingsItem : MonoBehaviour
             if (!m_CanInteractWithArrows)
                 return;
 
-            m_Value++;
+            if (m_EvenNumbers)
+                m_Value += 2;
+            else
+                m_Value++; 
+            
             if (m_Value > m_DefaultMaxValue) { m_Value = m_DefaultMaxValue; }
 
             m_ValueText.transform.DOLocalMoveY(-80, .15f).SetEase(Ease.InFlash)

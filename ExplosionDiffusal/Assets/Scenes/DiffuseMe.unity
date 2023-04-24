@@ -11413,9 +11413,10 @@ MonoBehaviour:
   m_RightButton: {fileID: 105844441}
   m_ValueText: {fileID: 1829915474}
   m_Value: 0
-  m_DefaultValue: 7
-  m_DefaultMinValue: 1
-  m_DefaultMaxValue: 20
+  m_DefaultValue: 8
+  m_DefaultMinValue: 2
+  m_DefaultMaxValue: 100
+  m_EvenNumbers: 1
 --- !u!95 &1063176301
 Animator:
   serializedVersion: 3
@@ -13750,6 +13751,7 @@ MonoBehaviour:
   m_DefaultValue: 20
   m_DefaultMinValue: 1
   m_DefaultMaxValue: 1200
+  m_EvenNumbers: 0
 --- !u!225 &1270157344
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -17263,9 +17265,10 @@ MonoBehaviour:
   m_RightButton: {fileID: 1733493437}
   m_ValueText: {fileID: 625902913}
   m_Value: 0
-  m_DefaultValue: 30
-  m_DefaultMinValue: 5
-  m_DefaultMaxValue: 500
+  m_DefaultValue: 40
+  m_DefaultMinValue: 4
+  m_DefaultMaxValue: 1000
+  m_EvenNumbers: 1
 --- !u!95 &1707972260
 Animator:
   serializedVersion: 3
@@ -17861,6 +17864,7 @@ MonoBehaviour:
   m_DefaultValue: 5
   m_DefaultMinValue: 1
   m_DefaultMaxValue: 30
+  m_EvenNumbers: 0
 --- !u!95 &1758531287
 Animator:
   serializedVersion: 3
