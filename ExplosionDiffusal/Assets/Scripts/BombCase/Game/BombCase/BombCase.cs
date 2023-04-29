@@ -44,12 +44,15 @@ public class BombCase : MonoBehaviour
             case BombCaseState.Hacking:
                 Debug.Log("<color=yellow>BombCaseState</color><color=gold>Hacking</color>");
                 break;
+            case BombCaseState.Null:
+                Debug.Log("<color=yellow>BombCaseState</color><color=gold>Null</color>");
+                break;
             default:
                 break;
         }
     }
 
-    private void OpenBombCase(Action callback)
+    public void OpenBombCase(Action callback)
     {
         m_TopCasePart.DOLocalRotate(new Vector3(0f, m_CaseOpenedValue, 0f), 1.5f).SetEase(Ease.OutExpo).OnComplete(() => 
         {

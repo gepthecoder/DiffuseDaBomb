@@ -211,7 +211,7 @@ public class GameManager : MonoBehaviour
             m_CountdownManager.SetDefuseBombTimeText(-1, CountdownObjectType.CircuitTimer3D, true);
             m_CountdownManager.SetDefuseBombTimeText(-1, CountdownObjectType.BombCaseMagnetic3D, true);
 
-            TriggerBehaviour(GameState.Victory, new VictoryEventData(Team.Allies, VictoryType.BombDefused));
+            TriggerBehaviour(GameState.Victory, new VictoryEventData(Team.Axis, VictoryType.BombDefused));
         });
 
         m_CountdownManager.OnCountdownCompletedEvent.AddListener(() => {
@@ -261,6 +261,7 @@ public class GameManager : MonoBehaviour
             m_CodeManager.Deinit();
             m_CountdownManager.ResetCountDownObjects();
             m_VictoryManager.ResetBombAfterMathEffect();
+            m_BombManager.ResetSparks();
 
             TriggerBehaviour(GameState.Initial);
         });

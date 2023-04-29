@@ -15,6 +15,7 @@ public class CountdownObject : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_CountdownTimerText;
     [SerializeField] private TextMeshPro m_CountdownTimerText_3D;
     [SerializeField] private Image m_Fill;
+    [SerializeField] private TextMeshProUGUI m_RoundNumberText;
 
     [HideInInspector] public UnityEvent OnCountdownCompletedEvent = new UnityEvent();
 
@@ -127,5 +128,15 @@ public class CountdownObject : MonoBehaviour
 
         if (m_CountdownTimerText_3D)
             m_CountdownTimerText_3D.text = "";
+    }
+
+    public void TryUpdateRoundNumber(int currentRound, int totalRounds)
+    {
+        if(m_RoundNumberText != null)
+        {
+            m_RoundNumberText.text = 
+                string.Format("<size=40><u>Round</u>\n</size><size=77>{0}</size><size=40>/</size><size=77>{1}</size>", 
+                currentRound, totalRounds);
+        }
     }
 }

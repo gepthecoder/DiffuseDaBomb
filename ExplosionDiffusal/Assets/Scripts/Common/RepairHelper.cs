@@ -19,16 +19,21 @@ public class RepairHelper : MonoBehaviour
     private VictoryType m_vType;
     private bool m_IsInited = false;
 
-    public void RepairBomb(float repairStatusValue)
+    public void RepairBomb(float repairStatusValue) // 0 - 1 
     {
         if (!m_IsInited)
             return;
 
         m_BombCase?.RotateTopCase(repairStatusValue, m_vType);
 
-        if (m_vType == VictoryType.BombDefused)
+        if (m_vType == VictoryType.BombDefused || m_vType == VictoryType.RoundTimeEnded)
         {
             m_BombCase?.PlayFixBombPartsAnimation(repairStatusValue >= m_RepairPartsTimeLimitLong);
+
+            if(m_vType == VictoryType.RoundTimeEnded)
+            {
+                m_BombManager.SetSparkSpeed(repairStatusValue);
+            }
         }
         else if(m_vType == VictoryType.BombExploded)
         {

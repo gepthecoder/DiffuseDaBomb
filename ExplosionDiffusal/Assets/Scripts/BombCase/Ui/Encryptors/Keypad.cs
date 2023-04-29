@@ -125,6 +125,14 @@ public class Keypad : Encryptor
         }
     }
 
+    public void ClearCode2()
+    {
+        m_CharacterCounter = 0;
+        m_CurrentString = "";
+        m_InputField.clearText();
+        m_CanShowEnterCode = true; m_EnterCodeText.SetActive(m_CanShowEnterCode);
+    }
+
     private void PlayButtonPressedSFX(AudioEffect fx)
     {
         AudioManager.INSTANCE.PlayButtonPressedSFX(fx);

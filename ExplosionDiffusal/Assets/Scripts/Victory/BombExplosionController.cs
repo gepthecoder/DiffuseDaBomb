@@ -15,6 +15,8 @@ public class BombExplosionController : MonoBehaviour
     [Header("Bomb Explosive")]
     [SerializeField] private Explosive m_Explosive;
     [SerializeField] private List<Transform> m_ExplosionPositions;
+    [Header("Sparks")]
+    [SerializeField] private Sparks m_Sparks;
     [Header("Bomb AfterMath")]
     [SerializeField] private List<GameObject> m_AfterMathFlyingObjects;
     [SerializeField] private List<Transform> m_FlyingObjectsPaths;
@@ -43,6 +45,9 @@ public class BombExplosionController : MonoBehaviour
 
     private IEnumerator ExplodeBombSequence()
     {
+        // INITIATE EXPLOSION WITH SPARKS
+        StartCoroutine(m_Sparks.EnableSparksWDelay(false, 1f));
+        
         // SPAWN EXPLOSIVES
         m_ExplosionPositions.ForEach((pos) => {
             GameObject explosive = Instantiate(m_Explosive.gameObject, pos.localPosition, Quaternion.identity);

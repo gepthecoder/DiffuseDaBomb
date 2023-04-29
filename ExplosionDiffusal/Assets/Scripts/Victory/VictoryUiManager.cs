@@ -14,6 +14,8 @@ public class VictoryUiManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_TeamNameWinText;
     [Header("Bomb Defused")]
     [SerializeField] private Animator m_BombDefusedVFX;
+    [Header("Round Time Limit Reached")]
+    [SerializeField] private Animator m_RoundTimeLimitVFX;
 
 
     [HideInInspector] public UnityEvent<VictoryEventData> OnVictoryShownEvent = new UnityEvent<VictoryEventData>();
@@ -42,5 +44,10 @@ public class VictoryUiManager : MonoBehaviour
     public void PlayBombDefusedAnime()
     {
         m_BombDefusedVFX.Play("BD");
+    }
+
+    public void PlayRoundTimeLimitReachedAnime()
+    {
+        m_RoundTimeLimitVFX.Play("RTLR");
     }
 }

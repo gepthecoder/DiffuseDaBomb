@@ -25,8 +25,6 @@ public class Smoke : MonoBehaviour
 
     public void SetSmokeAlpha(float value)
     {
-        print($"SetSmokeAlpha : {value}");
-
         float DIVIDED = value / 2;
         float INVERSED = Mathf.InverseLerp(.5f, 0f, DIVIDED);
         float alpha = INVERSED / 2;

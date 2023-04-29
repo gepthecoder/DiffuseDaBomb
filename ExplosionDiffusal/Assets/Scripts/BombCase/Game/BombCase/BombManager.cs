@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using DG.Tweening;
 using System;
 
-public enum BombCaseState { Close, Open, Hacking, }
+public enum BombCaseState { Close, Open, Hacking, Null }
 public enum BombCaseSubState { OnBombCasePressDown, OnBombCasePressUp, NonInteractive, }
 
 public class BombManager : MonoBehaviour
@@ -18,6 +18,8 @@ public class BombManager : MonoBehaviour
     [SerializeField] private BombCase m_BombCase;
     [SerializeField] private List<Light> m_BombCaseLights;
     [SerializeField] private List<Light> m_BombCaseCircuitLights;
+    [Space(5)]
+    [SerializeField] private Sparks m_Sparks;
 
     [HideInInspector] public UnityEvent BombCaseOpeningEvent;
 
@@ -129,6 +131,17 @@ public class BombManager : MonoBehaviour
         });
     }
 
+    public void DisableBombInteractionAndWobbleEffect()
+    {
+        m_CanCheckBombInteraction = false;
+        m_BombCase.TriggerBehaviour(BombCaseState.Null);
+
+        if(m_CurrentBombCaseState == BombCaseState.Close)
+        {
+            m_BombCase.OpenBombCase(() => { });
+        }
+    }
+
     private void CheckUserBombInteraction()
     {
         if (m_CurrentBombCaseState != BombCaseState.Close || !m_CanCheckBombInteraction)
@@ -213,5 +226,20 @@ public class BombManager : MonoBehaviour
     public BombCaseState GetCurrentBombCaseState()
     {
         return m_CurrentBombCaseState;
+    }
+
+    public void IgniteSparks()
+    {
+        m_Sparks.IgniteSparkSystem();
+    }
+
+    public void ResetSparks()
+    {
+        m_Sparks.ResetSparks();
+    }
+
+    public void SetSparkSpeed(float speed)
+    {
+        m_Sparks.SetIgniteSpeed(speed);
     }
 }

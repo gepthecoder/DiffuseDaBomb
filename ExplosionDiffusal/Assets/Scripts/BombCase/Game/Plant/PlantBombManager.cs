@@ -20,6 +20,7 @@ public class PlantBombManager : MonoBehaviour
     [SerializeField] private List<Highlighter> m_HighlightedObjects;
 
     private PlantBombState i_CurrentState = PlantBombState.Start;
+    private ClickableType m_CurrentSelectedEncryptor = ClickableType.None;
 
     [HideInInspector] public UnityEvent OnPlantBombDoneEvent = new UnityEvent();
     [HideInInspector] public UnityEvent<CodeEncryptionType> OnPlantBombEvent = new UnityEvent<CodeEncryptionType>();
@@ -44,6 +45,8 @@ public class PlantBombManager : MonoBehaviour
                 if (data.gState != GameState.Planting)
                     return;
 
+                m_CurrentSelectedEncryptor = ClickableType.None;
+
                 TriggerPlantBehaviour(PlantBombState.Start, new HackingItemData(data.CodeEncryption, false));
             });
 
@@ -56,6 +59,8 @@ public class PlantBombManager : MonoBehaviour
                     m_LightsController.PlayLightAnimator(LightType.PlasticBomb, LightAction.On);
                 }
 
+                m_CurrentSelectedEncryptor = ClickableType.None;
+
                 TriggerPlantBehaviour(PlantBombState.Start, new HackingItemData(data.CodeEncryption, true)); }    
             );
 
@@ -65,6 +70,8 @@ public class PlantBombManager : MonoBehaviour
                 m_Lights.EnableKeypadLight(false);
 
                 m_LightsController.PlayLightAnimator(LightType.PlasticBomb, LightAction.Trip);
+
+                m_CurrentSelectedEncryptor = ClickableType.None;
 
                 TriggerPlantBehaviour(PlantBombState.Done, data);
             });
@@ -114,6 +121,7 @@ public class PlantBombManager : MonoBehaviour
                 break;
             case PlantBombState.Hacking:
                 Debug.Log($"<color=green>PlantBombState</color><color=gold>Hacking</color>: {data.SelectedType}");
+                m_CurrentSelectedEncryptor = data.SelectedType;
                 m_HackingController.OnHackingItemSelected(data);
                 break;
             case PlantBombState.Success:
@@ -219,6 +227,30 @@ public class PlantBombManager : MonoBehaviour
 
         m_LightsController.ForceStopLightSource(LightType.PlasticBomb);
 
+        m_CurrentSelectedEncryptor = ClickableType.None;
+
         m_PlantBombActionHandler.ActivateBombEffect(true, CodeEncryptionType.KeyboardEncryption);
+    }
+
+    public void TryForceCloseEncryptor(out bool success)
+    {
+        if (m_CurrentSelectedEncryptor == ClickableType.None)
+        {
+            TriggerPlantBehaviour(PlantBombState.Null);
+            success = false;
+            return;
+        }
+
+        if (m_CurrentSelectedEncryptor == ClickableType.Keyboard)
+        {
+            m_PlantBombActionHandler.GetKeyboardEncryptor().OnEncryptorClose?.Invoke(new HackingItemData(CodeEncryptionType.KeyboardEncryption, GameState.Planting, true));
+        }
+
+        else if (m_CurrentSelectedEncryptor == ClickableType.Keypad)
+        {
+            m_PlantBombActionHandler.GetKeypadEncryptor().OnEncryptorClose?.Invoke(new HackingItemData(CodeEncryptionType.KeyPadEncryption, GameState.Planting, true));
+        }
+
+        success = true;
     }
 }

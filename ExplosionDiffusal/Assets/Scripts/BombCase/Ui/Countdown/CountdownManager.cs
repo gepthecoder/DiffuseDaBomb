@@ -13,7 +13,7 @@ public class CountdownManager : MonoBehaviour
 {
     [Header("Countdown")]
     [SerializeField] private CountdownObject m_GameStartDelayCountdownObject;
-    [SerializeField] private CountdownObject m_GameTimeCountdownObject;
+    [SerializeField] private CountdownObject m_RoundTimeCountdownObject;
     [SerializeField] private List<CountdownObject> m_DefuseTimeCountdownObjects;
     [SerializeField] private Image m_TouchBlocker; // alpha to .65, raycast target on
 
@@ -23,6 +23,9 @@ public class CountdownManager : MonoBehaviour
     private float m_CountdownTimeInSeconds_MatchStartDelay;
     private float m_CountdownTimeInMinutes_GameTime;
     private float m_CountdownTimeInMinutes_DefuseTime;
+    private float m_CountDownTimeInMinutes_RoundTime; 
+
+    private int m_NumberOfRounds;
 
     private bool m_VictoryInitialized = false;
 
@@ -39,15 +42,15 @@ public class CountdownManager : MonoBehaviour
                     m_GameStartDelayCountdownObject.Deinit();
                     OnCountdownCompletedEvent?.Invoke();
 
-                    InitGameTimeCountdown(m_CountdownTimeInMinutes_GameTime * 60);
+                    InitRoundTimeCountdown(m_CountDownTimeInMinutes_RoundTime * 60);
                 });
             });
         });
 
-        m_GameTimeCountdownObject.OnCountdownCompletedEvent.AddListener(() => {
-            print("Game Time Ended!");
+        m_RoundTimeCountdownObject.OnCountdownCompletedEvent.AddListener(() => {
+            print("Round Time Ended!");
             // TODO: Emmit Victory State
-            OnVictoryEvent?.Invoke(new VictoryEventData(Team.None, VictoryType.GameTimeEnded));
+            OnVictoryEvent?.Invoke(new VictoryEventData(Team.Axis, VictoryType.RoundTimeEnded));
         });
 
         m_DefuseTimeCountdownObjects.ForEach((timer) => { 
@@ -58,7 +61,7 @@ public class CountdownManager : MonoBehaviour
                 m_VictoryInitialized = true;
 
                 Debug.Log("Explodeeeee!");
-                OnVictoryEvent?.Invoke(new VictoryEventData(Team.Axis, VictoryType.BombExploded));
+                OnVictoryEvent?.Invoke(new VictoryEventData(Team.Allies, VictoryType.BombExploded));
             });
         });
     }
@@ -66,7 +69,7 @@ public class CountdownManager : MonoBehaviour
     private void OnDestroy()
     {
         m_GameStartDelayCountdownObject.OnCountdownCompletedEvent.RemoveAllListeners();
-        m_GameTimeCountdownObject.OnCountdownCompletedEvent.RemoveAllListeners();
+        m_RoundTimeCountdownObject.OnCountdownCompletedEvent.RemoveAllListeners();
         m_DefuseTimeCountdownObjects.ForEach((timer) => {
             timer.OnCountdownCompletedEvent.RemoveAllListeners();
         });
@@ -93,6 +96,9 @@ public class CountdownManager : MonoBehaviour
     {
         m_CountdownTimeInSeconds_MatchStartDelay = data.MatchStartTimeInSeconds;
         m_CountdownTimeInMinutes_GameTime = data.GameTimeInMinutes;
+        m_NumberOfRounds = data.ScoreLimit;
+
+        m_CountDownTimeInMinutes_RoundTime = (int)(m_CountdownTimeInMinutes_GameTime / m_NumberOfRounds);
 
         InitGameStartDelayCountdown(m_CountdownTimeInSeconds_MatchStartDelay);
     }
@@ -116,13 +122,22 @@ public class CountdownManager : MonoBehaviour
         });
     }
 
-    private void InitGameTimeCountdown(float countdownTimeInSeconds)
+    private void InitRoundTimeCountdown(float countdownTimeInSeconds)
     {
-        m_GameTimeCountdownObject.SetInitialCountDownTime(countdownTimeInSeconds);
+        m_RoundTimeCountdownObject.SetInitialCountDownTime(countdownTimeInSeconds);
+        m_RoundTimeCountdownObject.TryUpdateRoundNumber(1, m_NumberOfRounds);
 
-        m_GameTimeCountdownObject.transform.DOScale(1.1f, .77f).OnComplete(() => {
-            m_GameTimeCountdownObject.transform.DOScale(1f, .25f).OnComplete(() => {
-                m_GameTimeCountdownObject.StartCountdown(countdownTimeInSeconds);
+        m_RoundTimeCountdownObject.transform.DOScale(1.1f, .77f).OnComplete(() => {
+            m_RoundTimeCountdownObject.transform.DOScale(1f, .25f).OnComplete(() => {
+                m_RoundTimeCountdownObject.StartCountdown(countdownTimeInSeconds);
+            });
+        });
+    }
+
+    public void DeinitRoundTimeCountdown()
+    {
+        m_RoundTimeCountdownObject.transform.DOScale(1.1f, .5f).OnComplete(() => {
+            m_RoundTimeCountdownObject.transform.DOScale(0f, 1f).OnComplete(() => {
             });
         });
     }

@@ -6,7 +6,7 @@ using System;
 using UnityEngine.Events;
 
 public enum Team { Axis, Allies, None }
-public enum VictoryType { BombExploded, BombDefused, GameTimeEnded, }
+public enum VictoryType { BombExploded, BombDefused, GameTimeEnded, RoundTimeEnded }
 
 public class VictoryEventData
 {
@@ -29,12 +29,14 @@ public class VictorySequenceComponents
     public SceneSetupManager _SceneSetupManager_;
     public ScoreManager _ScoreManager_;
     public DefuseBombManager _DefuseBombManager_;
+    public PlantBombManager _PlantBombManager_;
+    public BombExplosionController _BombExplosionController_;
+    public CountdownManager _CountdownManager_;
 }
 
 public class VictoryManager : MonoBehaviour
 {
     [SerializeField] private VictorySequenceComponents m_VictorySequenceComponents;
-    [SerializeField] private BombExplosionController m_BombExplosionController;
 
     [HideInInspector] public UnityEvent<VictoryEventData> OnVictoryShownEvent = new UnityEvent<VictoryEventData>();
     [HideInInspector] public UnityEvent<Action> OnZoomOutOfComplex = new UnityEvent<Action>();
@@ -58,7 +60,7 @@ public class VictoryManager : MonoBehaviour
             FLOW:
                 - WIN ROUND CONDITION MET!
                     - BOMB EXPLODES SUBFLOW     v/
-                    - BOMB DEFUSED SUBFLOW      
+                    - BOMB DEFUSED SUBFLOW      v/
                     - ROUND TIME ENDED SUBFLOW  
                     - GAME TIME ENDED / SCORE LIMIT REACHED SUBFLOW:
        
@@ -76,7 +78,14 @@ public class VictoryManager : MonoBehaviour
                 *******************************************************************************
                 
                 - Case 01:
-                    Indicate Bomb Defused - UI POP UP - Victory - Repair (slightly different case)
+                    Indicate Bomb Defused - UI POP UP - Victory - Repair (slightly different case) v/
+
+                *******************************************************************************
+                *                             ROUND TIME ENDED                                *
+                *******************************************************************************
+                
+                - Case 01:
+                    Indicate Round Time Elapsed - UI POP UP - Resolve SubStates - Victory - Repair
          */
 
         switch (data._VictoryType_)
@@ -87,11 +96,57 @@ public class VictoryManager : MonoBehaviour
             case VictoryType.BombDefused:
                 StartCoroutine(BombDefusedSequence(data));
                 break;
-            case VictoryType.GameTimeEnded:
+            case VictoryType.RoundTimeEnded:
+                StartCoroutine(RoundTimeEndedSequence(data));
                 break;
+            case VictoryType.GameTimeEnded:
             default:
                 break;
         }
+    }
+
+    private IEnumerator RoundTimeEndedSequence(VictoryEventData data)
+    {
+        m_VictorySequenceComponents._SceneSetupManager_.EnableBombCoverUps(true);
+        m_VictorySequenceComponents._BombManager_.DisableBombInteractionAndWobbleEffect();
+        m_VictorySequenceComponents._BombManager_.IgniteSparks();
+
+        m_VictorySequenceComponents._VictoryUiManager_.PlayRoundTimeLimitReachedAnime();
+
+        yield return new WaitForSeconds(2f);
+
+        // CASE 02
+        if (data._BombState_ == BombCaseState.Open || data._BombState_ == BombCaseState.Hacking)
+        {
+            bool isDefuseSubState;
+            m_VictorySequenceComponents._DefuseBombManager_.TryForceCloseEncryptor(out isDefuseSubState);
+            bool isPlantSubState;
+            m_VictorySequenceComponents._PlantBombManager_.TryForceCloseEncryptor(out isPlantSubState);
+
+            if (isDefuseSubState || isPlantSubState)
+            {
+                yield return new WaitForSeconds(2f);
+            }
+
+            OnZoomOutOfComplex?.Invoke(() => {
+            });
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        // WIN UI
+        m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
+
+        bool isScoreLimit = false;
+        m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit);
+
+        // TODO: score limit reached case
+        Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
+
+
+        yield return new WaitForSeconds(1f);
+
+        m_VictorySequenceComponents._CountdownManager_.DeinitRoundTimeCountdown();
     }
 
     private IEnumerator BombDefusedSequence(VictoryEventData data)
@@ -148,13 +203,13 @@ public class VictoryManager : MonoBehaviour
 
     public void ResetBombAfterMathEffect()
     {
-        m_BombExplosionController.ResetAfterMathFlyingObject();
+        m_VictorySequenceComponents._BombExplosionController_.ResetAfterMathFlyingObject();
     }
 
     private void ExplodeBomb(VictoryEventData data)
     {
         // Explode Bomb
-        m_BombExplosionController.ExplodeBomb(() => {
+        m_VictorySequenceComponents._BombExplosionController_.ExplodeBomb(() => {
             m_VictorySequenceComponents._BombManager_.TurnOffAllLights();
             m_VictorySequenceComponents._BombManager_.InitClockMotion(false);
             m_VictorySequenceComponents._SceneSetupManager_.EnableBombCoverUps(true);

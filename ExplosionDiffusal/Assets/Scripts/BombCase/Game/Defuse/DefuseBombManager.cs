@@ -167,7 +167,7 @@ public class DefuseBombManager : MonoBehaviour
         m_Keypad._Highlighter.HighlightMe();
 
         m_KeyboardUI.ClearCode();
-        m_KeypadUI.ClearCode();
+        m_KeypadUI.ClearCode2();
 
         m_CurrentSelectedEncryptor = ClickableType.None;
 
