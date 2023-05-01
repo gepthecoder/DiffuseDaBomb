@@ -159,6 +159,8 @@ public class GameManager : MonoBehaviour
 
             ___Global_Config___ = config;
 
+            RoundManager.instance.SetMaxRounds(___Global_Config___.__MATCH_SETTINGS__.ScoreLimit);
+
             TriggerBehaviour(gameState);
         });
 
@@ -255,13 +257,20 @@ public class GameManager : MonoBehaviour
         });
 
         m_RepairBombManager.OnBombRepairCompleted.AddListener(() => {
-            // PUT EVERYTHING AS IT WAS IN THE BEGINING
+            // N E W  R O U N D
+
+            RoundManager.instance.NewRound();
+
+            // RESET
             m_PlantBombManager.Deinit();
             m_DefuseBombManager.ResetBombDefuseSettings();
             m_CodeManager.Deinit();
             m_CountdownManager.ResetCountDownObjects();
             m_VictoryManager.ResetBombAfterMathEffect();
             m_BombManager.ResetSparks();
+
+            // SHOW RTIMER
+            m_CountdownManager.InitRoundTimeCountdown();
 
             TriggerBehaviour(GameState.Initial);
         });

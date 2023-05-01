@@ -42,7 +42,7 @@ public class CountdownManager : MonoBehaviour
                     m_GameStartDelayCountdownObject.Deinit();
                     OnCountdownCompletedEvent?.Invoke();
 
-                    InitRoundTimeCountdown(m_CountDownTimeInMinutes_RoundTime * 60);
+                    InitRoundTimeCountdown();
                 });
             });
         });
@@ -122,10 +122,13 @@ public class CountdownManager : MonoBehaviour
         });
     }
 
-    private void InitRoundTimeCountdown(float countdownTimeInSeconds)
+    // MAIN COUNTDOWN
+    public void InitRoundTimeCountdown()
     {
+        float countdownTimeInSeconds = m_CountDownTimeInMinutes_RoundTime * 60;
+
         m_RoundTimeCountdownObject.SetInitialCountDownTime(countdownTimeInSeconds);
-        m_RoundTimeCountdownObject.TryUpdateRoundNumber(1, m_NumberOfRounds);
+        m_RoundTimeCountdownObject.TryUpdateRoundNumber(RoundManager.instance.GetCurrentRound(), m_NumberOfRounds);
 
         m_RoundTimeCountdownObject.transform.DOScale(1.1f, .77f).OnComplete(() => {
             m_RoundTimeCountdownObject.transform.DOScale(1f, .25f).OnComplete(() => {
@@ -133,14 +136,27 @@ public class CountdownManager : MonoBehaviour
             });
         });
     }
-
     public void DeinitRoundTimeCountdown()
     {
         m_RoundTimeCountdownObject.transform.DOScale(1.1f, .5f).OnComplete(() => {
             m_RoundTimeCountdownObject.transform.DOScale(0f, 1f).OnComplete(() => {
+                // RESET
+                DeinitMainBombTimer();
             });
         });
     }
+
+    public void InitMainBombTimer(float bombTime)
+    {
+        m_RoundTimeCountdownObject.InitMainBombTimer(bombTime);
+    }
+
+    public void DeinitMainBombTimer()
+    {
+        m_RoundTimeCountdownObject.DeinitMainTimerAlaDefault();
+    }
+
+    //
 
     public void InitDefuseBombTime(float countdownTimeInMinutes, List<CountdownObjectType> types)
     {
@@ -154,6 +170,8 @@ public class CountdownManager : MonoBehaviour
                 }
             });
         });
+
+        InitMainBombTimer(countdownTimeInMinutes * 60);
     }
 
     public void SetDefuseBombTimeText(float countdownTimeInMinutes, CountdownObjectType type, bool forceClear = false)

@@ -85,7 +85,7 @@ public class VictoryManager : MonoBehaviour
                 *******************************************************************************
                 
                 - Case 01:
-                    Indicate Round Time Elapsed - UI POP UP - Resolve SubStates - Victory - Repair
+                    Indicate Round Time Elapsed - UI POP UP - Resolve SubStates - Victory - Sparks - Repair v/
          */
 
         switch (data._VictoryType_)
@@ -109,7 +109,6 @@ public class VictoryManager : MonoBehaviour
     {
         m_VictorySequenceComponents._SceneSetupManager_.EnableBombCoverUps(true);
         m_VictorySequenceComponents._BombManager_.DisableBombInteractionAndWobbleEffect();
-        m_VictorySequenceComponents._BombManager_.IgniteSparks();
 
         m_VictorySequenceComponents._VictoryUiManager_.PlayRoundTimeLimitReachedAnime();
 
@@ -143,6 +142,8 @@ public class VictoryManager : MonoBehaviour
         // TODO: score limit reached case
         Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
 
+        m_VictorySequenceComponents._BombManager_.IgniteSparks();
+
 
         yield return new WaitForSeconds(1f);
 
@@ -168,7 +169,9 @@ public class VictoryManager : MonoBehaviour
             Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
         });
 
-        yield break;
+        yield return new WaitForSeconds(2f);
+
+        m_VictorySequenceComponents._CountdownManager_.DeinitRoundTimeCountdown();
     }
 
     private IEnumerator BombExplosionSequence(VictoryEventData data)
@@ -198,7 +201,9 @@ public class VictoryManager : MonoBehaviour
             
         }
 
-        yield break;
+        yield return new WaitForSeconds(2f);
+
+        m_VictorySequenceComponents._CountdownManager_.DeinitRoundTimeCountdown();
     }
 
     public void ResetBombAfterMathEffect()

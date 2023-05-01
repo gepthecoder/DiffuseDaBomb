@@ -2269,18 +2269,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 234077425}
   m_CullTransparentMesh: 1
---- !u!114 &245218327 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6602424248563313454, guid: bfd33f72322b72245bbbb38170ef86ae,
-    type: 3}
-  m_PrefabInstance: {fileID: 1981964407}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &258848101 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 258848101, guid: 9c38bb7e13f1a0b47a8c69e6420ed489,
@@ -8972,6 +8960,7 @@ Transform:
   - {fileID: 228674883}
   - {fileID: 1963048190}
   - {fileID: 1236651362}
+  - {fileID: 1407383096}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -14671,6 +14660,49 @@ MonoBehaviour:
   OnGameModeSelectedFinalEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1407383095
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1407383096}
+  - component: {fileID: 1407383097}
+  m_Layer: 0
+  m_Name: RoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1407383096
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407383095}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 813278500}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1407383097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407383095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2de87601a7321c843a428845d359f9e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1409834218
 GameObject:
   m_ObjectHideFlags: 0
@@ -19807,30 +19839,40 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4910257871398965419, guid: bfd33f72322b72245bbbb38170ef86ae,
+    - target: {fileID: 1476961084083528694, guid: bfd33f72322b72245bbbb38170ef86ae,
         type: 3}
-      propertyPath: m_RoundNumberText
-      value: 
-      objectReference: {fileID: 245218327}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.00015258789
+      objectReference: {fileID: 0}
+    - target: {fileID: 1476961084083528694, guid: bfd33f72322b72245bbbb38170ef86ae,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.000015258789
+      objectReference: {fileID: 0}
     - target: {fileID: 5471142684426605575, guid: bfd33f72322b72245bbbb38170ef86ae,
         type: 3}
       propertyPath: m_Name
       value: RoundTimeCountdown
       objectReference: {fileID: 0}
-    - target: {fileID: 6496183054051898553, guid: bfd33f72322b72245bbbb38170ef86ae,
+    - target: {fileID: 5471142684426605575, guid: bfd33f72322b72245bbbb38170ef86ae,
         type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -0.00034332275
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6602424248563313454, guid: bfd33f72322b72245bbbb38170ef86ae,
+    - target: {fileID: 7538751908916824699, guid: bfd33f72322b72245bbbb38170ef86ae,
         type: 3}
-      propertyPath: m_text
-      value: <size=40><u>Round</u>\n</size><size=77>{0}</size><size=40>/</size><size=77>{1}</size>
+      propertyPath: m_LocalScale.x
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6602424248563313454, guid: bfd33f72322b72245bbbb38170ef86ae,
+    - target: {fileID: 7538751908916824699, guid: bfd33f72322b72245bbbb38170ef86ae,
         type: 3}
-      propertyPath: m_fontSize
-      value: 69.8
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7538751908916824699, guid: bfd33f72322b72245bbbb38170ef86ae,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bfd33f72322b72245bbbb38170ef86ae, type: 3}
@@ -20875,6 +20917,7 @@ MonoBehaviour:
   m_CountdownTimerText_3D: {fileID: 0}
   m_Fill: {fileID: 232333781}
   m_RoundNumberText: {fileID: 0}
+  m_BombNumberText: {fileID: 0}
   OnCountdownCompletedEvent:
     m_PersistentCalls:
       m_Calls: []

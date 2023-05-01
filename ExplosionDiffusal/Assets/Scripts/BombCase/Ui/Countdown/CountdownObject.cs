@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEngine.Events;
+using DG.Tweening;
 
 public enum CountdownObjectType { Other2D, CircuitTimer3D, BombCaseTimer3D, MagneticBombTimer3D, BombCaseMagnetic3D }
 
@@ -16,6 +17,7 @@ public class CountdownObject : MonoBehaviour
     [SerializeField] private TextMeshPro m_CountdownTimerText_3D;
     [SerializeField] private Image m_Fill;
     [SerializeField] private TextMeshProUGUI m_RoundNumberText;
+    [SerializeField] private TextMeshProUGUI m_BombNumberText;
 
     [HideInInspector] public UnityEvent OnCountdownCompletedEvent = new UnityEvent();
 
@@ -24,6 +26,11 @@ public class CountdownObject : MonoBehaviour
 
     private float m_TimeRemaining;
     private float m_InitialTime;
+
+    // Round & Bomb Time Positions
+
+    private const float m_DefaultY = -20;
+    private const float m_HideY = -200;
 
     private void Start()
     {
@@ -59,13 +66,13 @@ public class CountdownObject : MonoBehaviour
         StopAllCoroutines();
     }
 
-    public void StartCountdown(float timeRemaining)
+    public void StartCountdown(float timeRemaining, bool isBombTimer = false)
     {
         m_TimeRemaining = timeRemaining;
         m_InitialTime = m_TimeRemaining;
 
         m_TimerRunning = true;
-        StartCoroutine(CountDownAction());
+        StartCoroutine(CountDownAction(isBombTimer));
     }
 
     public float GetTimeRemaining()
@@ -73,7 +80,7 @@ public class CountdownObject : MonoBehaviour
         return m_TimeRemaining;
     }
 
-    private IEnumerator CountDownAction()
+    private IEnumerator CountDownAction(bool isMainBombTimer)
     {
         while(m_TimerRunning)
         {
@@ -85,27 +92,48 @@ public class CountdownObject : MonoBehaviour
             }
             m_TimePlaying = TimeSpan.FromSeconds(m_TimeRemaining);
 
-            if(m_CountdownTimerText)
+            if(isMainBombTimer)
             {
-                m_CountdownTimerText.text = m_TimePlaying.ToString("mm':'ss'.'ff");
-            }
+                if(m_BombNumberText)
+                {
+                    m_BombNumberText.text = m_TimePlaying.ToString("mm':'ss'.'ff");
+                }
 
-            if(m_CountdownTimerText_3D)
+            }else
             {
-                m_CountdownTimerText_3D.text = m_TimePlaying.ToString("mm':'ss'.'ff");
+                if (m_CountdownTimerText)
+                {
+                    m_CountdownTimerText.text = m_TimePlaying.ToString("mm':'ss'.'ff");
+                }
+
+                if (m_CountdownTimerText_3D)
+                {
+                    m_CountdownTimerText_3D.text = m_TimePlaying.ToString("mm':'ss'.'ff");
+                }
             }
+          
 
             if (m_TimeRemaining <= 0) {
 
                 m_TimeRemaining = 0;
 
-                if(m_CountdownTimerText)
-                    m_CountdownTimerText.text = "00:00.00";
-                if (m_CountdownTimerText_3D)
-                    m_CountdownTimerText_3D.text = "00:00.00";
+                if (isMainBombTimer)
+                {
+                    m_BombNumberText.text = "XX:XX.XX";
+                }
+                else
+                {
+
+                    if (m_CountdownTimerText)
+                        m_CountdownTimerText.text = "00:00.00";
+                    if (m_CountdownTimerText_3D)
+                        m_CountdownTimerText_3D.text = "00:00.00";
+                }
 
                 m_TimerRunning = false;
-                OnCountdownCompletedEvent?.Invoke();
+
+                if(!isMainBombTimer)
+                    OnCountdownCompletedEvent?.Invoke();
             }
 
             yield return null;
@@ -138,5 +166,51 @@ public class CountdownObject : MonoBehaviour
                 string.Format("<size=40><u>Round</u>\n</size><size=77>{0}</size><size=40>/</size><size=77>{1}</size>", 
                 currentRound, totalRounds);
         }
+    }
+
+    public void InitMainBombTimer(float bombTime)
+    {
+        // deinit ala stop the round time timer
+        DeinitTimer();
+
+        // start bomb timer
+        StartCountdown(bombTime, true);
+
+        StartCoroutine(TakeOverSeq());
+    }
+
+    private IEnumerator TakeOverSeq()
+    {
+        // move rtimer down the axis while showing btimer
+        m_CountdownTimerText.transform.DOLocalMoveY(m_DefaultY + 20f, .77f).SetEase(Ease.InExpo).OnComplete(() => {
+            m_CountdownTimerText.transform.DOScale(0f, 2f);
+            m_CountdownTimerText.transform.DOLocalMoveY(m_HideY, 1.5f).SetEase(Ease.InOutBack);
+        });
+
+        yield return new WaitForSeconds(1.2f);
+
+        m_BombNumberText.transform.DOScale(1f, 1f);
+        m_BombNumberText.transform.DOLocalMoveY(m_DefaultY + 20f, 1f).SetEase(Ease.InExpo).OnComplete(() => {
+            m_BombNumberText.transform.DOLocalMoveY(m_DefaultY, .5f).SetEase(Ease.InOutBack);
+            m_BombNumberText.color = Color.red;
+        });
+    }
+
+    public void DeinitMainTimerAlaDefault()
+    {
+
+        m_CountdownTimerText.transform.localPosition = new Vector2(
+            m_CountdownTimerText.transform.localPosition.x,
+            m_DefaultY
+        );
+        m_CountdownTimerText.transform.localScale = Vector3.one;
+
+        m_BombNumberText.transform.localPosition = new Vector2(
+             m_BombNumberText.transform.localPosition.x,
+             m_HideY
+         );
+        m_BombNumberText.transform.localScale = Vector3.zero;
+
+        m_BombNumberText.color = Color.white;
     }
 }
