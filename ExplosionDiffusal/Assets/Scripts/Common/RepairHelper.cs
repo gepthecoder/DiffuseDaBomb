@@ -29,11 +29,7 @@ public class RepairHelper : MonoBehaviour
         if (m_vType == VictoryType.BombDefused || m_vType == VictoryType.RoundTimeEnded)
         {
             m_BombCase?.PlayFixBombPartsAnimation(repairStatusValue >= m_RepairPartsTimeLimitLong);
-
-            if(m_vType == VictoryType.RoundTimeEnded)
-            {
-                m_BombManager.SetSparkSpeed(repairStatusValue);
-            }
+            m_BombManager?.SetSparkSpeed(repairStatusValue);
         }
         else if(m_vType == VictoryType.BombExploded)
         {
@@ -46,7 +42,7 @@ public class RepairHelper : MonoBehaviour
 
     public void SetSmokeAlpha(float val)
     {
-        m_Smoke.SetSmokeAlpha(val);
+        m_Smoke?.SetSmokeAlpha(val);
     }
 
     public void Init(VictoryType vType)

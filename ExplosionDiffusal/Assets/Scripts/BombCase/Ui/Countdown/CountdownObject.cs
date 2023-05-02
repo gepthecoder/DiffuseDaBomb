@@ -62,6 +62,10 @@ public class CountdownObject : MonoBehaviour
         {
             m_CountdownTimerText.text = "XX:XX.XX";
         }
+        if(m_BombNumberText)
+        {
+            m_BombNumberText.text = "XX:XX.XX";
+        }
 
         StopAllCoroutines();
     }

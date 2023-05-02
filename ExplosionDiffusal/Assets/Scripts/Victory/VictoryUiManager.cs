@@ -43,11 +43,11 @@ public class VictoryUiManager : MonoBehaviour
 
     public void PlayBombDefusedAnime()
     {
-        m_BombDefusedVFX.Play("BD");
+        m_BombDefusedVFX.Play("POPUP");
     }
 
     public void PlayRoundTimeLimitReachedAnime()
     {
-        m_RoundTimeLimitVFX.Play("RTLR");
+        m_RoundTimeLimitVFX.Play("POPUP");
     }
 }

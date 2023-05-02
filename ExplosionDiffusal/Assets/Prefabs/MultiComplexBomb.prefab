@@ -6920,7 +6920,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
+  - {fileID: 4651807214185899712, guid: d93fa07028e439643a212864faed3ddf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6964,8 +6964,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d93fa07028e439643a212864faed3ddf, type: 2}
+  m_sharedMaterial: {fileID: 4651807214185899712, guid: d93fa07028e439643a212864faed3ddf,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -7050,6 +7051,8 @@ MonoBehaviour:
   m_CountdownTimerText: {fileID: 0}
   m_CountdownTimerText_3D: {fileID: 5656705128714757274}
   m_Fill: {fileID: 0}
+  m_RoundNumberText: {fileID: 0}
+  m_BombNumberText: {fileID: 0}
   OnCountdownCompletedEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -15847,7 +15850,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6727756988168367038}
   m_LocalRotation: {x: 0.21027572, y: 0.67511785, z: -0.21027572, w: 0.67511785}
-  m_LocalPosition: {x: 0, y: 0, z: 0.38}
+  m_LocalPosition: {x: 0, y: 0, z: 0.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4973232751440744467}
@@ -15856,7 +15859,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -3.12, y: 4.76}
-  m_SizeDelta: {x: 8.63, y: 3.1}
+  m_SizeDelta: {x: 8.07, y: 2.927}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &9118756301289123966
 MeshRenderer:
@@ -15877,7 +15880,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
+  - {fileID: 4651807214185899712, guid: d93fa07028e439643a212864faed3ddf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15921,8 +15924,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d93fa07028e439643a212864faed3ddf, type: 2}
+  m_sharedMaterial: {fileID: 4651807214185899712, guid: d93fa07028e439643a212864faed3ddf,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -15949,8 +15953,8 @@ MonoBehaviour:
   m_fontSize: 15.42
   m_fontSizeBase: 15.42
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 0
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 2
@@ -16007,6 +16011,8 @@ MonoBehaviour:
   m_CountdownTimerText: {fileID: 0}
   m_CountdownTimerText_3D: {fileID: 7698436398972062637}
   m_Fill: {fileID: 0}
+  m_RoundNumberText: {fileID: 0}
+  m_BombNumberText: {fileID: 0}
   OnCountdownCompletedEvent:
     m_PersistentCalls:
       m_Calls: []

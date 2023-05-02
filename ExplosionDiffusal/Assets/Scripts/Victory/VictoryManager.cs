@@ -167,6 +167,8 @@ public class VictoryManager : MonoBehaviour
             m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit);
 
             Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
+
+            m_VictorySequenceComponents._BombManager_.IgniteSparks();
         });
 
         yield return new WaitForSeconds(2f);
