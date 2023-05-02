@@ -162,6 +162,8 @@ public class CountdownManager : MonoBehaviour
     {
         m_CountdownTimeInMinutes_DefuseTime = countdownTimeInMinutes;
 
+        InitMainBombTimer(countdownTimeInMinutes * 60);
+
         m_DefuseTimeCountdownObjects.ForEach((timer) => {
             types.ForEach((type) => {
                 if (timer.Type == type)
@@ -171,7 +173,6 @@ public class CountdownManager : MonoBehaviour
             });
         });
 
-        InitMainBombTimer(countdownTimeInMinutes * 60);
     }
 
     public void SetDefuseBombTimeText(float countdownTimeInMinutes, CountdownObjectType type, bool forceClear = false)
@@ -198,13 +199,12 @@ public class CountdownManager : MonoBehaviour
         CountdownObject syncObject = new CountdownObject();
 
         m_DefuseTimeCountdownObjects.ForEach((timer) => {
-            if (timer.Type == syncFrom)
-            {
-                timeRemaining = timer.GetTimeRemaining();
-            }else if(timer.Type == syncTo) { syncObject = timer; }
+            if(timer.Type == syncTo) { syncObject = timer; }
         });
 
-        if(timeRemaining != -1)
+        timeRemaining = m_RoundTimeCountdownObject.GetTimeRemaining();
+
+        if (timeRemaining != -1)
         {
             if(syncObject)
             {

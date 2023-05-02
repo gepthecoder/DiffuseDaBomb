@@ -3773,8 +3773,8 @@ MonoBehaviour:
   m_GameStartDelayCountdownObject: {fileID: 2067820084}
   m_RoundTimeCountdownObject: {fileID: 1058436406}
   m_DefuseTimeCountdownObjects:
-  - {fileID: 1128873448}
   - {fileID: 5561773722564146558}
+  - {fileID: 1128873448}
   - {fileID: 1686119246}
   - {fileID: 491896459}
   m_TouchBlocker: {fileID: 1947178620}
