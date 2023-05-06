@@ -137,6 +137,8 @@ public class StartMatchManagerUI : MonoBehaviour
             m_TeamSettingsAxis.Play("hide");
             m_TeamSettingsAllies.Play("hide");
 
+            NavigationManager.instance.ShowMenuNavigation(false);
+
             m_TeamSettingsBackground.DOColor(
                          new Color(m_TeamSettingsBackground.color.r,
                                      m_TeamSettingsBackground.color.g,
@@ -289,6 +291,8 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private IEnumerator ShowDuelInterfaceSequence()
     {
+        NavigationManager.instance.SetNavigationPointerByState(StartMatchState.Duel);
+
         m_MatchSettingsParent.gameObject.SetActive(false);
         m_DuelParent.gameObject.SetActive(true);
 
@@ -332,6 +336,8 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private IEnumerator ShowModeSelectionInterfaceSequence()
     {
+        NavigationManager.instance.SetNavigationPointerByState(StartMatchState.ModeSelection);
+
         foreach (var item in m_StartGameOptionItems)
         {
             item.DOScale(0f, .15f)

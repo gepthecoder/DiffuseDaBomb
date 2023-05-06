@@ -155,6 +155,8 @@ public class MatchSettingsController : MonoBehaviour
             });
         }
 
+        NavigationManager.instance.SetNavigationPointerByState(StartMatchState.ModeSelection, state);
+
         // SHOW MATCH SETTING BY TYPE
         GetMatchSettingsByType(state).OnShowItem();
     }
