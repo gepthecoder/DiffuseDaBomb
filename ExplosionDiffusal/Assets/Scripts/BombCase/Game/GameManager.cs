@@ -259,8 +259,6 @@ public class GameManager : MonoBehaviour
         m_RepairBombManager.OnBombRepairCompleted.AddListener(() => {
             // N E W  R O U N D
 
-            RoundManager.instance.NewRound();
-
             // RESET
             m_PlantBombManager.Deinit();
             m_DefuseBombManager.ResetBombDefuseSettings();
@@ -269,10 +267,12 @@ public class GameManager : MonoBehaviour
             m_VictoryManager.ResetBombAfterMathEffect();
             m_BombManager.ResetSparks();
 
-            // SHOW RTIMER
-            m_CountdownManager.InitRoundTimeCountdown();
-
-            TriggerBehaviour(GameState.Initial);
+            // START NEW ROUND
+            RoundManager.instance.NewRound(() =>
+            {
+                m_CountdownManager.InitRoundTimeCountdown();
+                TriggerBehaviour(GameState.Initial);
+            });
         });
     }
 

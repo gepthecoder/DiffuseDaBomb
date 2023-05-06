@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -85, y: 43}
-  m_SizeDelta: {x: 358.298, y: 67.181}
+  m_AnchoredPosition: {x: -47.216, y: 43}
+  m_SizeDelta: {x: 433.8659, y: 67.181}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2852708055451261558
 CanvasRenderer:
@@ -78,7 +78,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ALLIES
+  m_Text: <color=#008FFF>ALLIES</color> - <size=25>ATTACKER</size> <size=10>(START
+    THE GAME AS ATTACKER)</size>
 --- !u!1 &199288374500971146
 GameObject:
   m_ObjectHideFlags: 0
@@ -6747,8 +6748,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -85, y: 43}
-  m_SizeDelta: {x: 358.298, y: 67.181}
+  m_AnchoredPosition: {x: -47.216, y: 43}
+  m_SizeDelta: {x: 433.8659, y: 67.181}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5268076034068086524
 CanvasRenderer:
@@ -6791,7 +6792,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: AXIS
+  m_Text: <color=red>AXIS</color> - <size=25>DEFENDER</size> <size=10>(START THE
+    GAME AS DEFENDER)</size>
 --- !u!1 &9031505639734090817
 GameObject:
   m_ObjectHideFlags: 0

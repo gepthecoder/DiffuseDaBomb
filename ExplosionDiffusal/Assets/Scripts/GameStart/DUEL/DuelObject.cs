@@ -31,7 +31,7 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
     [Space(10)]
     public SettingsItemData m_ConfigData = new SettingsItemData();
 
-    private bool m_IsInteractable = true;
+    public bool m_IsInteractable = true;
 
     public void OnSelected()
     {

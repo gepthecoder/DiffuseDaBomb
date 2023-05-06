@@ -6,7 +6,7 @@ using System;
 using UnityEngine.Events;
 
 public enum Team { Axis, Allies, None }
-public enum VictoryType { BombExploded, BombDefused, GameTimeEnded, RoundTimeEnded }
+public enum VictoryType { BombExploded, BombDefused, GameTimeEnded, RoundTimeEnded, ScoreLimitReached, }
 
 public class VictoryEventData
 {
@@ -99,6 +99,7 @@ public class VictoryManager : MonoBehaviour
             case VictoryType.RoundTimeEnded:
                 StartCoroutine(RoundTimeEndedSequence(data));
                 break;
+            case VictoryType.ScoreLimitReached:
             case VictoryType.GameTimeEnded:
             default:
                 break;
@@ -131,6 +132,8 @@ public class VictoryManager : MonoBehaviour
             });
         }
 
+        m_VictorySequenceComponents._BombManager_.IgniteSparks();
+
         yield return new WaitForSeconds(1f);
 
         // WIN UI
@@ -141,10 +144,6 @@ public class VictoryManager : MonoBehaviour
 
         // TODO: score limit reached case
         Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
-
-        m_VictorySequenceComponents._BombManager_.IgniteSparks();
-
-
         yield return new WaitForSeconds(1f);
 
         m_VictorySequenceComponents._CountdownManager_.DeinitRoundTimeCountdown();
