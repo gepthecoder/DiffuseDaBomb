@@ -61,7 +61,7 @@ public class VictoryManager : MonoBehaviour
                 - WIN ROUND CONDITION MET!
                     - BOMB EXPLODES SUBFLOW     v/
                     - BOMB DEFUSED SUBFLOW      v/
-                    - ROUND TIME ENDED SUBFLOW  
+                    - ROUND TIME ENDED SUBFLOW  v/
                     - GAME TIME ENDED / SCORE LIMIT REACHED SUBFLOW:
        
                 *******************************************************************************

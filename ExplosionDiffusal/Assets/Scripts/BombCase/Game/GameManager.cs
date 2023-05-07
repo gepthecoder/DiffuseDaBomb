@@ -213,7 +213,8 @@ public class GameManager : MonoBehaviour
             m_CountdownManager.SetDefuseBombTimeText(-1, CountdownObjectType.CircuitTimer3D, true);
             m_CountdownManager.SetDefuseBombTimeText(-1, CountdownObjectType.BombCaseMagnetic3D, true);
 
-            TriggerBehaviour(GameState.Victory, new VictoryEventData(Team.Axis, VictoryType.BombDefused));
+            Team team = RoundManager.instance.GetWinningTeamByVictoryType(VictoryType.BombDefused);
+            TriggerBehaviour(GameState.Victory, new VictoryEventData(team, VictoryType.BombDefused));
         });
 
         m_CountdownManager.OnCountdownCompletedEvent.AddListener(() => {

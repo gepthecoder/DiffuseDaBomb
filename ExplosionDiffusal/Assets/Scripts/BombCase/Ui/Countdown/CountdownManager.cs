@@ -49,8 +49,8 @@ public class CountdownManager : MonoBehaviour
 
         m_RoundTimeCountdownObject.OnCountdownCompletedEvent.AddListener(() => {
             print("Round Time Ended!");
-            // TODO: Emmit Victory State
-            OnVictoryEvent?.Invoke(new VictoryEventData(Team.Axis, VictoryType.RoundTimeEnded));
+            Team team = RoundManager.instance.GetWinningTeamByVictoryType(VictoryType.RoundTimeEnded);
+            OnVictoryEvent?.Invoke(new VictoryEventData(team, VictoryType.RoundTimeEnded));
         });
 
         m_DefuseTimeCountdownObjects.ForEach((timer) => { 
@@ -61,7 +61,8 @@ public class CountdownManager : MonoBehaviour
                 m_VictoryInitialized = true;
 
                 Debug.Log("Explodeeeee!");
-                OnVictoryEvent?.Invoke(new VictoryEventData(Team.Allies, VictoryType.BombExploded));
+                Team team = RoundManager.instance.GetWinningTeamByVictoryType(VictoryType.BombExploded);
+                OnVictoryEvent?.Invoke(new VictoryEventData(team, VictoryType.BombExploded));
             });
         });
     }

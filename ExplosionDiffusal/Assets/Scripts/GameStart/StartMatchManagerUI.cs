@@ -213,7 +213,8 @@ public class StartMatchManagerUI : MonoBehaviour
                 }
                 if (i == 2) {
                     movableComponents[i].GetComponent<TextMeshProUGUI>().DOFade(0f, .65f);
-                    teamHolder.DoDoScaleIn_TeamCount(); 
+                    teamHolder.DoDoScaleIn_TeamCount();
+                    teamHolder.DoDoScaleIn_AttckDefObjects();
                 }
             });
             yield return new WaitForSeconds(.2f);

@@ -17,9 +17,13 @@ public class RoundManager : MonoBehaviour
 
     [Header("SWITCHING SIDES")]
     [SerializeField] private Animator m_SwitchSidesAnime;
+    [SerializeField] private MainCanvas m_MainCanvas;
 
     private int m_CurrentRound = 1;
     private int m_MaxRounds;
+
+    private DuelObjectType m_AxisSideType = DuelObjectType.Defender;
+    private DuelObjectType m_AlliesSideType = DuelObjectType.Attacker;
 
     private void Awake() => instance = this;
 
@@ -35,7 +39,6 @@ public class RoundManager : MonoBehaviour
         m_NewRoundAnime.Play("POPUP");
         
         if(IsHalfTime()) {
-            // TODO: Init Duel Objects
             StartCoroutine(TrySwitchSides(roundTimeStartAction)); 
         }
         else { roundTimeStartAction?.Invoke(); }
@@ -51,23 +54,84 @@ public class RoundManager : MonoBehaviour
 
     // S W I T C I N G  S I D E S
 
-    public IEnumerator TrySwitchSides(Action action) // TODO: scene -> add indicator for ATTACKER / DEFENDER
+    public IEnumerator TrySwitchSides(Action action)
     {
+        m_AlliesSideType = DuelObjectType.Defender;
+        m_AxisSideType = DuelObjectType.Attacker;
+
         yield return new WaitForSeconds(2f);
 
         // Hide Teams - Defender / Attacker
+        m_MainCanvas?.ShowTeamPlaceholder(false);
 
         m_SwitchingSidesAnime.Play("POPUP");
 
+        // SWITCH
         m_SwitchSidesAnime.Play("SWITCH");
+
+        m_MainCanvas?.SwapAttackerDefender();
 
         yield return new WaitForSeconds(4.5f); // lenght of m_SwitchSidesAnime => 5s
 
         // Show Teams - Attacker / Defender
-
+        m_MainCanvas?.ShowTeamPlaceholder(true);
 
         action?.Invoke();
     }
 
+    public Team GetWinningTeamByVictoryType(VictoryType type)
+    {
+        Team team = Team.None;
+
+        switch (type)
+        {
+            case VictoryType.BombExploded:
+                {
+                    return GetAttackerTeam();
+                }
+            case VictoryType.BombDefused:
+                {
+                    return GetDefenderTeam();
+                }
+            case VictoryType.RoundTimeEnded:
+                {
+                    return GetDefenderTeam();
+                }
+            default:
+                break;
+        }
+
+        return team;
+    }
+
+    private Team GetDefenderTeam()
+    {
+        if(m_AxisSideType == DuelObjectType.Defender)
+        {
+            return Team.Axis;
+        }
+
+        if (m_AlliesSideType == DuelObjectType.Defender)
+        {
+            return Team.Allies;
+        }
+
+        else return Team.None;
+    }
+
+    private Team GetAttackerTeam()
+    {
+        if (m_AxisSideType == DuelObjectType.Attacker)
+        {
+            return Team.Axis;
+        }
+
+        if (m_AlliesSideType == DuelObjectType.Attacker)
+        {
+            return Team.Allies;
+        }
+
+        else return Team.None;
+    }
 
 }

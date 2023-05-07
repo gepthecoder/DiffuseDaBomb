@@ -42,6 +42,9 @@ public class RepairHelper : MonoBehaviour
 
     public void SetSmokeAlpha(float val)
     {
+        if (m_vType != VictoryType.BombExploded)
+            return;
+
         m_Smoke?.SetSmokeAlpha(val);
     }
 
