@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SettingsItemController : MonoBehaviour
@@ -23,13 +21,71 @@ public class SettingsItemController : MonoBehaviour
     {
         m_SettingItems_Axis.OnSettingsItemChanged.AddListener((data) =>
         {
+            if(data.TeamName != string.Empty)
+            {
+                TryDisableTeamNameOption(SettingsItemType.Axis, data.TeamName);
+            }
+
+            if(data.TeamEmblem != null)
+            {
+                TryDisableTeamEmblemOption(SettingsItemType.Axis, data.TeamEmblem.name);
+            }
+
             m_DuelController.OnSettingsChanged(data);
         });
 
         m_SettingItems_Allies.OnSettingsItemChanged.AddListener((data) =>
         {
+            if (data.TeamName != string.Empty)
+            {
+                TryDisableTeamNameOption(SettingsItemType.Allies, data.TeamName);
+            }
+
+            if (data.TeamEmblem != null)
+            {
+                TryDisableTeamEmblemOption(SettingsItemType.Allies, data.TeamEmblem.name);
+            }
+
             m_DuelController.OnSettingsChanged(data);
         });
+    }
+
+    private void TryDisableTeamNameOption(SettingsItemType team, string tNameString)
+    {
+        switch (team)
+        {
+            case SettingsItemType.Axis:
+                {
+                    m_SettingItems_Allies.DistinctTeamNameValuesPlease(tNameString);
+                }
+                break;
+            case SettingsItemType.Allies:
+                {
+                    m_SettingItems_Axis.DistinctTeamNameValuesPlease(tNameString);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void TryDisableTeamEmblemOption(SettingsItemType team, string tEmblemID)
+    {
+        switch (team)
+        {
+            case SettingsItemType.Axis:
+                {
+                    m_SettingItems_Allies.DistinctTeamEmblemsPlease(tEmblemID);
+                }
+                break;
+            case SettingsItemType.Allies:
+                {
+                    m_SettingItems_Axis.DistinctTeamEmblemsPlease(tEmblemID);
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     private void DeSub()

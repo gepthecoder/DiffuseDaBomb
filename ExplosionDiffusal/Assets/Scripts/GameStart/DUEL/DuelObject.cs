@@ -103,7 +103,7 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
         }
         else if (m_ConfigData.TeamName == "") {
             return false;
-        } 
+        }
         else {
             return true;
         }

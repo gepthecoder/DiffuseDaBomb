@@ -1743,6 +1743,12 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: NAVY SEALS
       m_Image: {fileID: 0}
+    - m_Text: GANGSTERS
+      m_Image: {fileID: 0}
+    - m_Text: GERMAN
+      m_Image: {fileID: 0}
+    - m_Text: ROBOCOPS
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -5594,6 +5600,12 @@ MonoBehaviour:
     - m_Text: SPETSNAZ
       m_Image: {fileID: 0}
     - m_Text: NAVY SEALS
+      m_Image: {fileID: 0}
+    - m_Text: GANGSTERS
+      m_Image: {fileID: 0}
+    - m_Text: GERMAN
+      m_Image: {fileID: 0}
+    - m_Text: ROBOCOPS
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
