@@ -12,7 +12,7 @@ public class ScoreManager : MonoBehaviour
     private int m_AxisScore = 0;
     private int m_AlliesScore = 0;
 
-    internal void IncreaseScore(Team winningTeam_, out bool isScoreLimit)
+    internal void IncreaseScore(Team winningTeam_, out bool isScoreLimit, out Team victoriesTeam)
     {
         Team __TeamReachedScoreLimit__;
         int teamScore;
@@ -23,6 +23,7 @@ public class ScoreManager : MonoBehaviour
         teamHolder.IncreaseScore(teamScore);
 
         isScoreLimit = __TeamReachedScoreLimit__ != Team.None;
+        victoriesTeam = __TeamReachedScoreLimit__;
     }
 
     private MainTeamHolder GetWinningTeamByType(Team type)

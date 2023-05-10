@@ -26,7 +26,7 @@ public class GlobalConfig
     public GlobalConfig() { }
 }
 
-public enum GameState { PreMatch, Countdown, Initial, Planting, Defusing, Victory, Repair, }
+public enum GameState { PreMatch, Countdown, Initial, Planting, Defusing, Victory, Repair, EndMatch, }
 
 public class GameManager : MonoBehaviour
 {
@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private VictoryManager m_VictoryManager;
     [SerializeField] private ScoreManager m_ScoreManager;
     [SerializeField] private RepairBombManager m_RepairBombManager;
+    [SerializeField] private EndMatchManager m_EndMatchManager;
 
     protected GlobalConfig ___Global_Config___;
 
@@ -103,6 +104,15 @@ public class GameManager : MonoBehaviour
                 {
                     m_CountdownManager.DeinitCountdownObjects();
                     m_RepairBombManager.Init(data._VictoryType_);
+                }
+                break;
+            case GameState.EndMatch:
+                Debug.Log($"<color=red>GameState</color><color=gold>EndMatch</color>");
+                {
+                    if(data != null)
+                    {
+                        m_EndMatchManager.InitEndMatch(data);
+                    }
                 }
                 break;
             default:
@@ -241,7 +251,13 @@ public class GameManager : MonoBehaviour
         });
 
         m_VictoryManager.OnVictoryShownEvent.AddListener((data) => {
-            TriggerBehaviour(GameState.Repair, data);
+            if(!data._ScoreLimitReached_)
+            {
+                TriggerBehaviour(GameState.Repair, data);
+            } else
+            {
+                TriggerBehaviour(GameState.EndMatch, data);
+            }
         }); 
         
         m_VictoryManager.OnZoomOutOfComplex.AddListener((callback) => {

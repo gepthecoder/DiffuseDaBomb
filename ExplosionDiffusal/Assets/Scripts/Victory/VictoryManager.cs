@@ -6,7 +6,7 @@ using System;
 using UnityEngine.Events;
 
 public enum Team { Axis, Allies, None }
-public enum VictoryType { BombExploded, BombDefused, GameTimeEnded, RoundTimeEnded, ScoreLimitReached, }
+public enum VictoryType { BombExploded, BombDefused, RoundTimeEnded, }
 
 public class VictoryEventData
 {
@@ -14,6 +14,8 @@ public class VictoryEventData
     public Team _WinningTeam_;
     public VictoryType _VictoryType_;
     public string _TeamName_;
+    public bool _ScoreLimitReached_;
+    public Team _ScoreLimitReachedByTeam_;
 
     public VictoryEventData(Team team, VictoryType type) { _WinningTeam_ = team; _VictoryType_ = type; }
     public VictoryEventData(Team team, VictoryType type, BombCaseState bombState, string teamName) 
@@ -58,11 +60,11 @@ public class VictoryManager : MonoBehaviour
     {
         /*
             FLOW:
-                - WIN ROUND CONDITION MET!
-                    - BOMB EXPLODES SUBFLOW     v/
-                    - BOMB DEFUSED SUBFLOW      v/
-                    - ROUND TIME ENDED SUBFLOW  v/
-                    - GAME TIME ENDED / SCORE LIMIT REACHED SUBFLOW:
+                - WIN ROUND CONDITION MET:
+                    - BOMB EXPLODES SUBFLOW                             v/
+                    - BOMB DEFUSED SUBFLOW                              v/
+                    - ROUND TIME ENDED SUBFLOW                          v/
+                    - GAME TIME ENDED / SCORE LIMIT REACHED SUBFLOW
        
                 *******************************************************************************
                 *                               BOMB EXPLODES                                 *
@@ -99,8 +101,6 @@ public class VictoryManager : MonoBehaviour
             case VictoryType.RoundTimeEnded:
                 StartCoroutine(RoundTimeEndedSequence(data));
                 break;
-            case VictoryType.ScoreLimitReached:
-            case VictoryType.GameTimeEnded:
             default:
                 break;
         }
@@ -136,14 +136,19 @@ public class VictoryManager : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        // WIN UI
-        m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
-
         bool isScoreLimit = false;
-        m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit);
+        Team winningTeam = Team.None;
+        m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit, out winningTeam);
 
         // TODO: score limit reached case
         Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
+
+        data._ScoreLimitReached_ = isScoreLimit;
+        data._ScoreLimitReachedByTeam_ = winningTeam;
+
+        // WIN UI
+        m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
+
         yield return new WaitForSeconds(1f);
 
         m_VictorySequenceComponents._CountdownManager_.DeinitRoundTimeCountdown();
@@ -160,12 +165,18 @@ public class VictoryManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         OnZoomOutOfComplex?.Invoke(() => {
-            m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
-
             bool isScoreLimit = false; // TODO
-            m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit);
+            Team winningTeam = Team.None;
+
+            m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit, out winningTeam);
 
             Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
+
+            data._ScoreLimitReached_ = isScoreLimit;
+            data._ScoreLimitReachedByTeam_ = winningTeam;
+
+            m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
+
 
             m_VictorySequenceComponents._BombManager_.IgniteSparks();
         });
@@ -222,14 +233,19 @@ public class VictoryManager : MonoBehaviour
         });
         // Shake Cam
         m_VictorySequenceComponents._CameraManager_.ShakeCamera(() => {
-            // WIN UI
-            m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
-
             bool isScoreLimit = false;
-            m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit);
+            Team winningTeam = Team.None;
+
+            m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit, out winningTeam);
 
             // TODO: score limit reached case
             Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
+
+            data._ScoreLimitReached_ = isScoreLimit;
+            data._ScoreLimitReachedByTeam_ = winningTeam;
+
+            // WIN UI
+            m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
         });
     }
 }
