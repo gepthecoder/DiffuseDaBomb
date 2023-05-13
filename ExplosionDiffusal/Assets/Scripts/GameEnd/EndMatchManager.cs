@@ -44,4 +44,19 @@ public class EndMatchManager : MonoBehaviour
         // Play Sequence - END MATCH (ili Someone WON or its a DRAW)
         m_EndMatchAnimeSeq?.Play(!DATA.m_IsDraw ? "endMatchAnime" : "endMatchAnimeDraw");
     }
+
+    #region Button Events
+    public void OnPlayAgainButtonPressed()
+    {
+        Fader.INSTANCE.FadeToMainScene(TransitionType.PlayAgain);
+    }
+    public void OnMatchDetailsButtonPressed()
+    {
+        Fader.INSTANCE.FadeToMainScene(TransitionType.MatchDetails);
+    }
+    public void OnExitGameButtonPressed()
+    {
+        Fader.INSTANCE.FadeToMainScene(TransitionType.ExitGame);
+    }
+    #endregion
 }
