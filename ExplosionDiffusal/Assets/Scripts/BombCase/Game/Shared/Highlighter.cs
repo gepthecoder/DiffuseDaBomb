@@ -15,16 +15,21 @@ public class Highlighter : MonoBehaviour
     public ClickableType ID;
 
     private float m_WobbleIntensity;
+    private Vector3 m_InitalScale;
 
     private void Start()
     {
         m_WobbleIntensity = GetWobbleIntensityByType(Type);
+        m_InitalScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
     }
 
     public void HighlightMe()
     {
         if (!CanHiglight)
+        {
+            transform.localScale = m_InitalScale;
             return;
+        }
 
         transform.DOShakeScale(2f, m_WobbleIntensity, 5, 20).OnComplete(() => { HighlightMe(); });
     }
