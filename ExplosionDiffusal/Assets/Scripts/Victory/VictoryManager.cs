@@ -16,6 +16,7 @@ public class VictoryEventData
     public string _TeamName_;
     public bool _ScoreLimitReached_;
     public Team _ScoreLimitReachedByTeam_;
+    public bool _IsDraw_;
 
     public VictoryEventData(Team team, VictoryType type) { _WinningTeam_ = team; _VictoryType_ = type; }
     public VictoryEventData(Team team, VictoryType type, BombCaseState bombState, string teamName) 
@@ -137,14 +138,15 @@ public class VictoryManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         bool isScoreLimit = false;
+        bool isDraw = false;
         Team winningTeam = Team.None;
-        m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit, out winningTeam);
+        m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit, out winningTeam, out isDraw);
 
-        // TODO: score limit reached case
         Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
 
         data._ScoreLimitReached_ = isScoreLimit;
         data._ScoreLimitReachedByTeam_ = winningTeam;
+        data._IsDraw_ = isDraw;
 
         // WIN UI
         m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
@@ -165,15 +167,17 @@ public class VictoryManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         OnZoomOutOfComplex?.Invoke(() => {
-            bool isScoreLimit = false; // TODO
+            bool isScoreLimit = false;
+            bool isDraw = false;
             Team winningTeam = Team.None;
 
-            m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit, out winningTeam);
+            m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit, out winningTeam, out isDraw);
 
             Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
 
             data._ScoreLimitReached_ = isScoreLimit;
             data._ScoreLimitReachedByTeam_ = winningTeam;
+            data._IsDraw_ = isDraw;
 
             m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
 
@@ -234,15 +238,16 @@ public class VictoryManager : MonoBehaviour
         // Shake Cam
         m_VictorySequenceComponents._CameraManager_.ShakeCamera(() => {
             bool isScoreLimit = false;
+            bool isDraw = false;
             Team winningTeam = Team.None;
 
-            m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit, out winningTeam);
+            m_VictorySequenceComponents._ScoreManager_.IncreaseScore(data._WinningTeam_, out isScoreLimit, out winningTeam, out isDraw);
 
-            // TODO: score limit reached case
             Debug.Log($"Is Score Limit Reached: {isScoreLimit}");
 
             data._ScoreLimitReached_ = isScoreLimit;
             data._ScoreLimitReachedByTeam_ = winningTeam;
+            data._IsDraw_ = isDraw;
 
             // WIN UI
             m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);

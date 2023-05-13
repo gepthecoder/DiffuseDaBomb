@@ -12,18 +12,45 @@ public class ScoreManager : MonoBehaviour
     private int m_AxisScore = 0;
     private int m_AlliesScore = 0;
 
-    internal void IncreaseScore(Team winningTeam_, out bool isScoreLimit, out Team victoriesTeam)
+    internal void IncreaseScore(Team winningTeam_, out bool isScoreLimit, out Team victoriesTeam, out bool isDraw)
     {
         Team __TeamReachedScoreLimit__;
         int teamScore;
-        IncreaseScoreByType(winningTeam_, out __TeamReachedScoreLimit__, out teamScore);
+        bool isTeamDraw;
+        IncreaseScoreByType(winningTeam_, out __TeamReachedScoreLimit__, out teamScore, out isTeamDraw);
 
         var teamHolder = GetWinningTeamByType(winningTeam_);
 
         teamHolder.IncreaseScore(teamScore);
 
         isScoreLimit = __TeamReachedScoreLimit__ != Team.None;
+        isDraw = isScoreLimit && isTeamDraw;
         victoriesTeam = __TeamReachedScoreLimit__;
+    }
+
+    public void GetFinalScoreByTeamType(Team winTeam, out int winScore, out int loseScore)
+    {
+        switch (winTeam)
+        {
+            case Team.Axis:
+                {
+                    winScore = m_AxisScore;
+                    loseScore = m_AlliesScore;
+                } break;
+            case Team.Allies:
+                {
+                    winScore = m_AlliesScore;
+                    loseScore = m_AxisScore;
+                }
+                break;
+            case Team.None:
+            default:
+                {
+                    winScore = -1;
+                    loseScore = -1;
+                }
+                break;
+        }
     }
 
     private MainTeamHolder GetWinningTeamByType(Team type)
@@ -40,7 +67,7 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    private void IncreaseScoreByType(Team type, out Team teamWon, out int teamScore)
+    private void IncreaseScoreByType(Team type, out Team teamWon, out int teamScore, out bool isDraw)
     {
         switch (type)
         {
@@ -58,9 +85,12 @@ public class ScoreManager : MonoBehaviour
                 break;
         }
 
-        if (m_AlliesScore >= m_ScoreLimit) { teamWon = Team.Allies; }
-        else if (m_AxisScore >= m_ScoreLimit) { teamWon = Team.Axis; }
-        else teamWon = Team.None;
+        if((m_AxisScore + m_AlliesScore) >= m_ScoreLimit)
+        {
+            teamWon = m_AxisScore > m_AlliesScore ? Team.Axis : Team.Allies;
+        } else { teamWon = Team.None; }
+
+        isDraw = m_AlliesScore == m_AxisScore;
     }
 
     public void SetScoreLimit(int scoreLimit) { m_ScoreLimit = scoreLimit; }

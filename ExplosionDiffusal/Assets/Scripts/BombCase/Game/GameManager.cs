@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -67,29 +68,34 @@ public class GameManager : MonoBehaviour
         {
             case GameState.PreMatch:
                 Debug.Log($"<color=red>GameState</color><color=gold>PreMatch</color>");
-                m_StartMatchManager.Init();
-                break;
+                {
+                    m_StartMatchManager.Init();
+                } break;
             case GameState.Countdown:
                 Debug.Log($"<color=red>GameState</color><color=gold>Countdown</color>");
-                m_ScoreManager.SetScoreLimit(___Global_Config___.__MATCH_SETTINGS__.ScoreLimit);
-                m_CountdownManager.InitCountdown(___Global_Config___.__MATCH_SETTINGS__);
-                break;
+                {
+                    m_ScoreManager.SetScoreLimit(___Global_Config___.__MATCH_SETTINGS__.ScoreLimit);
+                    m_CountdownManager.InitCountdown(___Global_Config___.__MATCH_SETTINGS__);
+                } break;
             case GameState.Initial:
                 Debug.Log($"<color=red>GameState</color><color=gold>Initial</color>");
-                m_BombManager.TriggerBombBehaviour(BombCaseState.Close);
-                m_SceneSetupManager.EnableBombCoverUps(true);
-                break;
+                {
+                    m_BombManager.TriggerBombBehaviour(BombCaseState.Close);
+                    m_SceneSetupManager.EnableBombCoverUps(true);
+                } break;
             case GameState.Planting:
                 Debug.Log($"<color=red>GameState</color><color=gold>Planting</color>");
-                m_SceneSetupManager.SetupScene(SceneType.Planting);
-                m_PlantBombManager.TriggerPlantBehaviour(PlantBombState.Start);
-                m_UiManager.FadeOutScreen();
-                m_CameraManager.ZoomOutOfTarget();
-                break;
+                {
+                    m_SceneSetupManager.SetupScene(SceneType.Planting);
+                    m_PlantBombManager.TriggerPlantBehaviour(PlantBombState.Start);
+                    m_UiManager.FadeOutScreen();
+                    m_CameraManager.ZoomOutOfTarget();
+                } break;
             case GameState.Defusing:
                 Debug.Log($"<color=red>GameState</color><color=gold>Defusing</color>");
-                StartCoroutine(OnDefuseBombEvent());
-                break;
+                { 
+                    StartCoroutine(OnDefuseBombEvent());
+                } break;
             case GameState.Victory:
                 Debug.Log($"<color=red>GameState</color><color=gold>Victory</color>");
                 if(data != null)
@@ -97,27 +103,86 @@ public class GameManager : MonoBehaviour
                     // TODO: check for score limit reached - Bomb Defuse / Explosion!
                     Debug.Log($"{data._WinningTeam_} WON ROUND by {data._VictoryType_}");
                     m_VictoryManager.InitVictory(new VictoryEventData(data._WinningTeam_, data._VictoryType_, m_BombManager.GetCurrentBombCaseState(), data._WinningTeam_ == Team.Axis ? ___Global_Config___.__DUEL_SETTINGS__.AxisConfigData.TeamName : ___Global_Config___.__DUEL_SETTINGS__.AlliesConfigData.TeamName));
-                }
-                break;
+                } break;
             case GameState.Repair:
                 Debug.Log($"<color=red>GameState</color><color=gold>Repair</color>");
                 {
                     m_CountdownManager.DeinitCountdownObjects();
                     m_RepairBombManager.Init(data._VictoryType_);
-                }
-                break;
+                } break;
             case GameState.EndMatch:
                 Debug.Log($"<color=red>GameState</color><color=gold>EndMatch</color>");
                 {
                     if(data != null)
                     {
-                        m_EndMatchManager.InitEndMatch(data);
+                        EndMatchObjectData endMatchData = GetEndMatchData(data);
+                        m_EndMatchManager.InitEndMatch(endMatchData);
                     }
-                }
-                break;
+                } break;
             default:
                 break;
         }
+    }
+
+    private EndMatchObjectData GetEndMatchData(VictoryEventData data)
+    {
+        EndMatchObjectData eMatchObjData = new EndMatchObjectData();
+
+        // EMBLEM
+        eMatchObjData.m_WinningTeamSprite = data._WinningTeam_ == Team.Axis ?
+            ___Global_Config___.__DUEL_SETTINGS__.AxisConfigData.TeamEmblem : ___Global_Config___.__DUEL_SETTINGS__.AlliesConfigData.TeamEmblem;
+
+        eMatchObjData.m_LosingTeamSprite = data._WinningTeam_ == Team.Allies ?
+            ___Global_Config___.__DUEL_SETTINGS__.AxisConfigData.TeamEmblem : ___Global_Config___.__DUEL_SETTINGS__.AlliesConfigData.TeamEmblem;
+
+        // TEAM NAME
+        eMatchObjData.m_WinningTeamNameString = data._WinningTeam_ == Team.Axis ?
+            ___Global_Config___.__DUEL_SETTINGS__.AxisConfigData.TeamName : ___Global_Config___.__DUEL_SETTINGS__.AlliesConfigData.TeamName;
+
+        eMatchObjData.m_LosingTeamNameString = data._WinningTeam_ == Team.Allies ?
+            ___Global_Config___.__DUEL_SETTINGS__.AxisConfigData.TeamName : ___Global_Config___.__DUEL_SETTINGS__.AlliesConfigData.TeamName;
+
+        // SCORE
+        int winningTeamScore;
+        int losingTeamScore;
+        m_ScoreManager.GetFinalScoreByTeamType(data._WinningTeam_, out winningTeamScore, out losingTeamScore);
+
+        eMatchObjData.m_WinningTeamScore = winningTeamScore;
+        eMatchObjData.m_LosingTeamScore = losingTeamScore;
+
+        eMatchObjData.m_IsDraw = data._IsDraw_;
+
+        // DATE & TIME
+        DateTime currentDateTime = DateTime.Now;
+
+        eMatchObjData.m_EndMatchDateString = $"{currentDateTime:dd/MM/yyyy}";
+        eMatchObjData.m_EndMatchTimeString = $"{currentDateTime:h:mm tt}";
+
+        // SETTINGS ITEMS
+
+        // WINNER
+        var settingsItemDataWinner = new SettingsItemData();
+
+        settingsItemDataWinner.Type = data._WinningTeam_ == Team.Axis ? SettingsItemType.Axis : SettingsItemType.Allies;
+        settingsItemDataWinner.TeamName = eMatchObjData.m_WinningTeamNameString;
+        settingsItemDataWinner.TeamCount = data._WinningTeam_ == Team.Axis ?
+            ___Global_Config___.__DUEL_SETTINGS__.AxisConfigData.TeamCount : ___Global_Config___.__DUEL_SETTINGS__.AlliesConfigData.TeamCount;
+        settingsItemDataWinner.TeamEmblem = eMatchObjData.m_WinningTeamSprite;
+
+        eMatchObjData.m_SettingsItemDataWinner = settingsItemDataWinner;
+
+        // LOSER
+        var settingsItemDataLoser = new SettingsItemData();
+
+        settingsItemDataLoser.Type = data._WinningTeam_ == Team.Allies ? SettingsItemType.Axis : SettingsItemType.Allies;
+        settingsItemDataLoser.TeamName = eMatchObjData.m_LosingTeamNameString;
+        settingsItemDataLoser.TeamCount = data._WinningTeam_ == Team.Allies ?
+            ___Global_Config___.__DUEL_SETTINGS__.AxisConfigData.TeamCount : ___Global_Config___.__DUEL_SETTINGS__.AlliesConfigData.TeamCount;
+        settingsItemDataLoser.TeamEmblem = eMatchObjData.m_LosingTeamSprite;
+
+        eMatchObjData.m_SettingsItemDataLoser = settingsItemDataLoser;
+
+        return eMatchObjData;
     }
 
     private IEnumerator OnDefuseBombEvent()

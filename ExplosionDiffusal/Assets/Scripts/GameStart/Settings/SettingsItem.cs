@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using static TMPro.TMP_Dropdown;
-using System;
 
 public enum SettingsItemType { Axis, Allies, }
 
