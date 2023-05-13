@@ -63,12 +63,9 @@ public class SettingsItem : MonoBehaviour
 
     private void Awake()
     {
-        Sub();
-    }
-
-    private void Start()
-    {
         InitItem();
+
+        Sub();
     }
 
     private void OnDestroy()
@@ -200,7 +197,18 @@ public class SettingsItem : MonoBehaviour
         } 
         else
         {
-            m_TeamNameDropdown.options.RemoveRange(1, m_TeamNameDropdown.options.Count - 1);
+            for (int i = 0; i < m_TeamNameDropdown.options.Count; i++)
+            {
+                bool isDefaultOption = m_TeamNameDropdown.options[i].text == "SELECT TEAM";
+                if (isDefaultOption)
+                {
+                    continue;
+                }
+                m_TeamNameDropdown.options.RemoveAt(i);
+            }
+
+
+            //m_TeamNameDropdown.options.RemoveRange(1, m_TeamNameDropdown.options.Count - 1);
 
             // Add the options except the selected one
             foreach (var option in m_TMP_TNDropdownData)
