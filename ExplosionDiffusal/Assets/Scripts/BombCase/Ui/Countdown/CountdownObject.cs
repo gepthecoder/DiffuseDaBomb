@@ -202,7 +202,6 @@ public class CountdownObject : MonoBehaviour
 
     public void DeinitMainTimerAlaDefault()
     {
-
         m_CountdownTimerText.transform.localPosition = new Vector2(
             m_CountdownTimerText.transform.localPosition.x,
             m_DefaultY
@@ -216,5 +215,14 @@ public class CountdownObject : MonoBehaviour
         m_BombNumberText.transform.localScale = Vector3.zero;
 
         m_BombNumberText.color = Color.white;
+    }
+
+    public void DisableBombTimerOnDefuseEvent()
+    {
+        if(m_BombNumberText != null)
+        {
+            StopAllCoroutines();
+            m_BombNumberText.text = "XX:XX.XX";
+        } 
     }
 }

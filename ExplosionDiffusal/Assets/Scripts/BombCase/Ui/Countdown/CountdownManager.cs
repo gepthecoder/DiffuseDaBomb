@@ -176,6 +176,11 @@ public class CountdownManager : MonoBehaviour
 
     }
 
+    public void DisableBombTimerOnDefuseEvent()
+    {
+        m_RoundTimeCountdownObject.DisableBombTimerOnDefuseEvent();
+    }
+
     public void SetDefuseBombTimeText(float countdownTimeInMinutes, CountdownObjectType type, bool forceClear = false)
     {
         m_CountdownTimeInMinutes_DefuseTime = countdownTimeInMinutes;
