@@ -60818,6 +60818,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6939466849718928004, guid: 88ce46d2be8f3294da5be0a30ee2d490,
         type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6939466849718928004, guid: 88ce46d2be8f3294da5be0a30ee2d490,
+        type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -60912,6 +60917,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Keyboard
+      objectReference: {fileID: 0}
+    - target: {fileID: 3127391986875092684, guid: 98b0b2af459dca24fa60cc490e474a39,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3127391986875092687, guid: 98b0b2af459dca24fa60cc490e474a39,
         type: 3}

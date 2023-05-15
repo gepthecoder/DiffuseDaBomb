@@ -21,6 +21,8 @@ public class DefuseBombManager : MonoBehaviour
     [Space(5)]
     [SerializeField] private Lights m_Lights;
     [SerializeField] private List<Highlighter> m_HighlightedObjects;
+    [SerializeField] private LayerMask m_LayerMaskInteraction;
+
 
     private DefuseBombState i_CurrentState = DefuseBombState.Null;
     private ClickableType m_CurrentSelectedEncryptor = ClickableType.None;
@@ -141,8 +143,11 @@ public class DefuseBombManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && i_CurrentState == DefuseBombState.Start) { 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit, 100, m_LayerMaskInteraction))
             {
+                if (Helper.INSTANCE != null && Helper.INSTANCE.IsPointerOverUI())
+                    return;
+
                 var interactor = hit.transform.GetComponent<ItemInteractor>();
                 if (interactor != null)
                 {

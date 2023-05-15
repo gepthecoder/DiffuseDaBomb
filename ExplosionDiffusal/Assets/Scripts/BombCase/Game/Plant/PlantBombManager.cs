@@ -19,6 +19,8 @@ public class PlantBombManager : MonoBehaviour
 
     [SerializeField] private List<Highlighter> m_HighlightedObjects;
 
+    [SerializeField] private LayerMask m_LayerMaskInteraction;
+
     private PlantBombState i_CurrentState = PlantBombState.Start;
     private ClickableType m_CurrentSelectedEncryptor = ClickableType.None;
 
@@ -187,8 +189,11 @@ public class PlantBombManager : MonoBehaviour
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit, 100, m_LayerMaskInteraction))
             {
+                if (Helper.INSTANCE != null && Helper.INSTANCE.IsPointerOverUI())
+                    return;
+
                 var clickable = hit.transform.GetComponent<Clickable>();
                 if (clickable != null)
                 {
