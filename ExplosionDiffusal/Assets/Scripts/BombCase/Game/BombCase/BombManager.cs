@@ -20,6 +20,7 @@ public class BombManager : MonoBehaviour
     [SerializeField] private List<Light> m_BombCaseCircuitLights;
     [Space(5)]
     [SerializeField] private Sparks m_Sparks;
+    [SerializeField] private LayerMask m_LayerMaskInteraction;
 
     [HideInInspector] public UnityEvent BombCaseOpeningEvent;
 
@@ -153,8 +154,11 @@ public class BombManager : MonoBehaviour
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
-                if (Physics.Raycast(ray, out hit))
+                if (Physics.Raycast(ray, out hit, 100, m_LayerMaskInteraction))
                 {
+                    if (Helper.INSTANCE != null && Helper.INSTANCE.IsPointerOverUI())
+                        return;
+
                     if (hit.transform.tag == m_BombCaseTag)
                     {
                         OnBombCaseInteractionEvent?.Invoke(BombCaseSubState.OnBombCasePressDown);
@@ -207,8 +211,11 @@ public class BombManager : MonoBehaviour
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
-                if (Physics.Raycast(ray, out hit))
+                if (Physics.Raycast(ray, out hit, 100, m_LayerMaskInteraction))
                 {
+                    if (Helper.INSTANCE != null && Helper.INSTANCE.IsPointerOverUI())
+                        return;
+
                     if (hit.transform.tag == m_BombCaseTag)
                     {
                         TriggerBombBehaviour(BombCaseState.Open);
