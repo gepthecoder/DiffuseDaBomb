@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Developer : MonoBehaviour
@@ -13,8 +14,13 @@ public class Developer : MonoBehaviour
     [SerializeField] private Animator m_DeveloperAnimator;
     [Header("LOGGER")]
     [SerializeField] private BombLogger m_BombLogger;
+    [Header("FPS")]
+    [SerializeField] private TextMeshProUGUI m_FPSCounterText;
 
     protected DeveloperItemType m_CurrentDeveloperItem = DeveloperItemType.TimeMenu;
+
+    private float m_DeltaTime;
+    private float m_FPS;
 
     private void Awake()
     {
@@ -38,6 +44,16 @@ public class Developer : MonoBehaviour
         }
 
         StartCoroutine(DelayShowDevMenuButton(2f));
+    }
+
+    private void Update()
+    {
+        if (!m_DeveloperMode)
+            return;
+
+        m_DeltaTime += (Time.unscaledDeltaTime - m_DeltaTime) * 0.1f;
+        m_FPS = 1.0f / m_DeltaTime;
+        m_FPSCounterText.text = $"FPS: {Mathf.Round(m_FPS)}";
     }
 
     #region Interface
