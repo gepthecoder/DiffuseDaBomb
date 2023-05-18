@@ -6607,6 +6607,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 480688271}
+  - component: {fileID: 480688272}
   m_Layer: 0
   m_Name: ADS
   m_TagString: Untagged
@@ -6628,6 +6629,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &480688272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 480688270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3da46f2a1aeea4044adb412c390e3a77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _androidGameId: 5281588
+  _iOSGameId: 5281589
+  _testMode: 1
 --- !u!1 &482127896
 GameObject:
   m_ObjectHideFlags: 0
