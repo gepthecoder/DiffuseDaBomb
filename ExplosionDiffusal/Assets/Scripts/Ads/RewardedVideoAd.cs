@@ -88,6 +88,6 @@ public class RewardedVideoAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSh
     void OnDestroy()
     {
         // Clean up the button listeners:
-        _showAdButton.onClick.RemoveAllListeners();
+        //_showAdButton.onClick.RemoveAllListeners();
     }
 }

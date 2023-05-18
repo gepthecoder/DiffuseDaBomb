@@ -341,21 +341,26 @@ public class GameManager : MonoBehaviour
         });
 
         m_RepairBombManager.OnBombRepairCompleted.AddListener(() => {
-            // N E W  R O U N D
 
-            // RESET
-            m_PlantBombManager.Deinit();
-            m_DefuseBombManager.ResetBombDefuseSettings();
-            m_CodeManager.Deinit();
-            m_CountdownManager.ResetCountDownObjects();
-            m_VictoryManager.ResetBombAfterMathEffect();
-            m_BombManager.ResetSparks();
+            // INTERSTITIAL AD POPUP
+            AdManager.INSTANCE.ShowInterstitalAd(() => {
 
-            // START NEW ROUND
-            RoundManager.instance.NewRound(() =>
-            {
-                m_CountdownManager.InitRoundTimeCountdown();
-                TriggerBehaviour(GameState.Initial);
+                // N E W  R O U N D
+
+                // RESET
+                m_PlantBombManager.Deinit();
+                m_DefuseBombManager.ResetBombDefuseSettings();
+                m_CodeManager.Deinit();
+                m_CountdownManager.ResetCountDownObjects();
+                m_VictoryManager.ResetBombAfterMathEffect();
+                m_BombManager.ResetSparks();
+
+                // START NEW ROUND
+                RoundManager.instance.NewRound(() =>
+                {
+                    m_CountdownManager.InitRoundTimeCountdown();
+                    TriggerBehaviour(GameState.Initial);
+                });
             });
         });
     }

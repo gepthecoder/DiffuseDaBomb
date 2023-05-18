@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Advertisements;
 
@@ -6,6 +7,8 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
     [SerializeField] string _androidAdUnitId = "Interstitial_Android";
     [SerializeField] string _iOsAdUnitId = "Interstitial_iOS";
     string _adUnitId;
+
+    private Action _OnAdCompletedAction = null;
 
     void Awake()
     {
@@ -29,10 +32,12 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
     }
 
     // Show the loaded content in the Ad Unit:
-    public void ShowAd()
+    public void ShowAd(Action onCompleted)
     {
         // Note that if the ad content wasn't previously loaded, this method will fail
         Debug.Log("Showing Ad: " + _adUnitId);
+        _OnAdCompletedAction = onCompleted;
+
         Advertisement.Show(_adUnitId, this);
         LoadAd();
     }
@@ -57,5 +62,8 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
 
     public void OnUnityAdsShowStart(string _adUnitId) { }
     public void OnUnityAdsShowClick(string _adUnitId) { }
-    public void OnUnityAdsShowComplete(string _adUnitId, UnityAdsShowCompletionState showCompletionState) { }
+    public void OnUnityAdsShowComplete(string _adUnitId, UnityAdsShowCompletionState showCompletionState) {
+        Debug.Log($"OnUnityAdsShowComplete:: ComplitionState: {showCompletionState}");
+        _OnAdCompletedAction?.Invoke();
+    }
 }
