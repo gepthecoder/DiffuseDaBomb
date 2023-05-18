@@ -19,7 +19,12 @@ public class RewardedVideoAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSh
 #endif
 
         // Disable the button until the ad is ready to show:
-        _showAdButton.interactable = false;
+        //_showAdButton.interactable = false;
+    }
+
+    private void Start()
+    {
+        LoadAd();
     }
 
     // Call this public method when you want to get an ad ready to show.
@@ -40,7 +45,7 @@ public class RewardedVideoAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSh
             // Configure the button to call the ShowAd() method when clicked:
             _showAdButton.onClick.AddListener(ShowAd);
             // Enable the button for users to click:
-            _showAdButton.interactable = true;
+            //_showAdButton.interactable = true;
         }
     }
 
@@ -48,9 +53,10 @@ public class RewardedVideoAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSh
     public void ShowAd()
     {
         // Disable the button:
-        _showAdButton.interactable = false;
+        //_showAdButton.interactable = false;
         // Then show the ad:
         Advertisement.Show(_adUnitId, this);
+        LoadAd();
     }
 
     // Implement the Show Listener's OnUnityAdsShowComplete callback method to determine if the user gets a reward:
