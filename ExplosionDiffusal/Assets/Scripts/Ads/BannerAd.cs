@@ -74,8 +74,12 @@ public class BannerAd : MonoBehaviour
     }
 
     // Implement a method to call when the Show Banner button is clicked:
-    public void ShowBannerAd()
+    public void ShowBannerAd(BannerPosition bannerPosition)
     {
+        _bannerPosition = bannerPosition;
+        // Set Position Of The Banner
+        Advertisement.Banner.SetPosition(_bannerPosition);
+
         // Set up options to notify the SDK of show events:
         BannerOptions options = new BannerOptions
         {

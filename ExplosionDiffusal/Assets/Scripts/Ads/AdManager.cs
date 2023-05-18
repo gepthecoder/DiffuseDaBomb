@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Advertisements;
 
 [System.Serializable]
 public class ADS
@@ -21,8 +22,8 @@ public class AdManager : MonoBehaviour
     }
 
     // BANNER
-    public void ShowBannerAd() {
-        m_ADS.BANNER.ShowBannerAd();
+    public void ShowBannerAd(BannerPosition bannerPosition) {
+        m_ADS.BANNER.ShowBannerAd(bannerPosition);
     }
     public void HideBannerAd() {
         m_ADS.BANNER.HideBannerAd();

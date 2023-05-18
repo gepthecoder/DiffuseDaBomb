@@ -4817,7 +4817,7 @@ MonoBehaviour:
   _loadBannerButton: {fileID: 0}
   _showBannerButton: {fileID: 0}
   _hideBannerButton: {fileID: 0}
-  _bannerPosition: 1
+  _bannerPosition: 4
   _androidAdUnitId: Banner_Android
   _iOSAdUnitId: Banner_iOS
 --- !u!1 &357491989

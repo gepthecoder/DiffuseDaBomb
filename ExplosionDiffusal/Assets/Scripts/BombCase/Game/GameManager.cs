@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Advertisements;
 
 public class GlobalConfig
 {
@@ -69,17 +70,20 @@ public class GameManager : MonoBehaviour
             case GameState.PreMatch:
                 Debug.Log($"<color=red>GameState</color><color=gold>PreMatch</color>");
                 {
+                    AdManager.INSTANCE.ShowBannerAd(BannerPosition.BOTTOM_CENTER);
                     m_StartMatchManager.Init();
                 } break;
             case GameState.Countdown:
                 Debug.Log($"<color=red>GameState</color><color=gold>Countdown</color>");
                 {
+                    AdManager.INSTANCE.HideBannerAd();
                     m_ScoreManager.SetScoreLimit(___Global_Config___.__MATCH_SETTINGS__.ScoreLimit);
                     m_CountdownManager.InitCountdown(___Global_Config___.__MATCH_SETTINGS__);
                 } break;
             case GameState.Initial:
                 Debug.Log($"<color=red>GameState</color><color=gold>Initial</color>");
                 {
+                    AdManager.INSTANCE.ShowBannerAd(BannerPosition.BOTTOM_RIGHT);
                     m_BombManager.TriggerBombBehaviour(BombCaseState.Close);
                     m_SceneSetupManager.EnableBombCoverUps(true);
                 } break;
@@ -107,6 +111,7 @@ public class GameManager : MonoBehaviour
             case GameState.Repair:
                 Debug.Log($"<color=red>GameState</color><color=gold>Repair</color>");
                 {
+                    AdManager.INSTANCE.HideBannerAd();
                     m_CountdownManager.DeinitCountdownObjects();
                     m_RepairBombManager.Init(data._VictoryType_);
                 } break;
