@@ -23,19 +23,26 @@ public class AdManager : MonoBehaviour
 
     // BANNER
     public void ShowBannerAd(BannerPosition bannerPosition) {
-        m_ADS.BANNER.ShowBannerAd(bannerPosition);
+        if(IAPManager.INSTANCE.AdsEnabled()) {
+            m_ADS.BANNER.ShowBannerAd(bannerPosition);
+        }
     }
     public void HideBannerAd() {
-        m_ADS.BANNER.HideBannerAd();
+        if (IAPManager.INSTANCE.AdsEnabled()) {
+            m_ADS.BANNER.HideBannerAd();
+        }
     }
 
     // INTERSTITIAL
     public void ShowInterstitalAd(Action callback) {
-        m_ADS.INTERSTITIAL.ShowAd(callback);
+        if (IAPManager.INSTANCE.AdsEnabled()) {
+            m_ADS.INTERSTITIAL.ShowAd(callback);
+        }
+        else { callback?.Invoke(); }
     }
 
     // REWARDED
-    public void ShoRewardedVideoAd() {
+    public void ShowRewardedVideoAd() {
         m_ADS.REWARDED.ShowAd();
     }
 }

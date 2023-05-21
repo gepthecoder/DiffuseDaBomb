@@ -80,9 +80,27 @@ public class IAPManager : MonoBehaviour
     protected int _AdsEnabled_ = (int)AdState.Enabled;
     protected readonly string _AdsPrefsID_ = "ADS";
 
+    public bool AdsEnabled()
+    {
+        return (AdState)_AdsEnabled_ == AdState.Enabled;
+    }
+
+    // IAP Button Actions
     public void OnNoADSPurchaseSuccessfulAction()
     {
         _AdsEnabled_ = (int)AdState.Disabled;
+
+        // SAVE
+        PlayerPrefs.SetInt(_AdsPrefsID_, _AdsEnabled_);
+        PlayerPrefs.Save();
+
+        // UPDATE VIEW
+        m_NoADS.EnableAdsByState((AdState)_AdsEnabled_);
+    }
+
+    public void OnNoADSPurchaseFailedAction()
+    {
+        _AdsEnabled_ = (int)AdState.Enabled;
 
         // SAVE
         PlayerPrefs.SetInt(_AdsPrefsID_, _AdsEnabled_);
