@@ -13,7 +13,9 @@ using TMPro;
 
 public class StartMatchManagerUI : MonoBehaviour
 {
-    
+    [Header("IAP")]
+    [SerializeField] private Button m_IAPButtonShow;
+    [SerializeField] private Button m_IAPButtonHide;
     [Header("START MATCH")]
     [SerializeField] private Button m_StartMatchButton;
     [Header("PRE MATCH")]
@@ -181,11 +183,25 @@ public class StartMatchManagerUI : MonoBehaviour
             //OnStartMatchButtonClickedEvent?.Invoke();
         });
 
+
+
         m_PlayButton.onClick.AddListener(() => {
             if (m_CurrentState != StartMatchState.Initial)
                 return;
 
             TriggerBehaviour(StartMatchState.ModeSelection);
+        });
+
+        m_IAPButtonShow.onClick.AddListener(() => {
+            if (m_CurrentState != StartMatchState.Initial)
+                return;
+            OnIAPButtonClicked();
+        });
+
+        m_IAPButtonHide.onClick.AddListener(() => {
+            if (m_CurrentState != StartMatchState.Initial)
+                return;
+            OnIAPButtonCloseClicked();
         });
     }
 
@@ -337,6 +353,10 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private IEnumerator ShowModeSelectionInterfaceSequence()
     {
+        if(m_IsIAPOpened) {
+            OnIAPButtonCloseClicked();
+        }
+
         NavigationManager.instance.SetNavigationPointerByState(StartMatchState.ModeSelection);
 
         foreach (var item in m_StartGameOptionItems)
@@ -433,4 +453,33 @@ public class StartMatchManagerUI : MonoBehaviour
         m_StartMatchCanvas.gameObject.SetActive(false);
     }
 
+
+    // IAP
+    private bool m_IsIAPOpened = false;
+    private void OnIAPButtonClicked()
+    {
+        if (m_IsIAPOpened)
+            return;
+
+        // HIDE BUTTON
+        m_IAPButtonShow.transform.parent.transform.DOScale(0f, .2f).SetEase(Ease.InExpo);
+        // show iap
+        IAPManager.INSTANCE.ShowIAP();
+
+        m_IsIAPOpened = true;
+    }
+
+    public void OnIAPButtonCloseClicked()
+    {
+        if (!m_IsIAPOpened)
+            return;
+
+        // SHOW BUTTON
+        m_IAPButtonShow.transform.parent.transform.DOScale(1f, .5f).SetEase(Ease.InExpo);
+        // hide iap
+        IAPManager.INSTANCE.HideIAP();
+
+        m_IsIAPOpened = false;
+    }
+    //
 }
