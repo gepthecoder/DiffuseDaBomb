@@ -122,6 +122,19 @@ public class GameManager : MonoBehaviour
                     {
                         EndMatchObjectData endMatchData = GetEndMatchData(data);
                         m_EndMatchManager.InitEndMatch(endMatchData);
+
+                        // SaveData
+                        HistoryItemData historyData = new HistoryItemData(
+                              endMatchData.m_WinningTeamSprite.name,
+                              endMatchData.m_LosingTeamSprite.name,
+                              endMatchData.m_WinningTeamNameString,
+                              endMatchData.m_LosingTeamNameString,
+                              endMatchData.m_WinningTeamScore,
+                              endMatchData.m_LosingTeamScore,
+                              endMatchData.m_EndMatchDateString,
+                              endMatchData.m_EndMatchTimeString
+                        );
+                        SaveLoadManager.INSTANCE?.SaveHistoryObject(historyData);
                     }
                 } break;
             default:
@@ -161,7 +174,7 @@ public class GameManager : MonoBehaviour
         DateTime currentDateTime = DateTime.Now;
 
         eMatchObjData.m_EndMatchDateString = $"{currentDateTime:dd/MM/yyyy}";
-        eMatchObjData.m_EndMatchTimeString = $"{currentDateTime:h:mm tt}";
+        eMatchObjData.m_EndMatchTimeString = $"{currentDateTime:HH:MM}";
 
         // SETTINGS ITEMS
 

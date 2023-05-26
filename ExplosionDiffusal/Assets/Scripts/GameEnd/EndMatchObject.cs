@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
 public class EndMatchObjectData
 {
     public Sprite m_WinningTeamSprite;
@@ -79,10 +80,12 @@ public class EndMatchObject : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_LosingTeamScoreText;
     [Header("Time Info")]
     [SerializeField] private TextMeshProUGUI m_EndMatchDateText; // format: 12/05/2023
-    [SerializeField] private TextMeshProUGUI m_EndMatchTimeText; // format: 4:20 P.M
+    [SerializeField] private TextMeshProUGUI m_EndMatchTimeText; // format: 16:20
+    [Header("History Index")]
+    [SerializeField] private TextMeshProUGUI m_HistoryIndexText; 
 
 
-    public void SetEndMatchObjectData(EndMatchObjectData data)
+    public void SetEndMatchObjectData(EndMatchObjectData data, int index = -1)
     {
         if (data == null)
             return;
@@ -100,5 +103,9 @@ public class EndMatchObject : MonoBehaviour
 
         m_EndMatchDateText.text = $"{data.m_EndMatchDateString}";
         m_EndMatchTimeText.text = $"{data.m_EndMatchTimeString}";
+
+        if(index != -1 && m_HistoryIndexText != null) {
+            m_HistoryIndexText.text = $"{index}";
+        }
     }
 }
