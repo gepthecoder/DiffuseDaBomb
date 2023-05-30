@@ -36415,7 +36415,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.105882354}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -36796,7 +36796,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 82bab87a6c54ade40a59ed16cd085f27, type: 3}
+    m_Font: {fileID: 12800000, guid: d121a20ba5e24f042b6acbb5f30d3fe0, type: 3}
     m_FontSize: 77
     m_FontStyle: 0
     m_BestFit: 1
@@ -37465,7 +37465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.105882354}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -37543,7 +37543,7 @@ RectTransform:
   m_GameObject: {fileID: 222864929009824390}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 1}
   m_Children: []
   m_Father: {fileID: 8058725301822185554}
   m_RootOrder: 0
@@ -37574,7 +37574,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 82bab87a6c54ade40a59ed16cd085f27, type: 3}
+    m_Font: {fileID: 12800000, guid: d121a20ba5e24f042b6acbb5f30d3fe0, type: 3}
     m_FontSize: 77
     m_FontStyle: 0
     m_BestFit: 1
