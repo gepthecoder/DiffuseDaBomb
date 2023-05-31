@@ -284,7 +284,7 @@ public class StartMatchManagerUI : MonoBehaviour
                             m_TeamSettingsBackground.DOColor(
                                 new Color(m_TeamSettingsBackground.color.r,
                                        m_TeamSettingsBackground.color.g,
-                                           m_TeamSettingsBackground.color.b, 1f), .5f);
+                                           m_TeamSettingsBackground.color.b, .6f), .5f);
 
                             var settings = state == StartMatchState.TeamAConfig ? m_TeamSettingsAxis : m_TeamSettingsAllies;
                             settings?.Play("show");
@@ -380,7 +380,7 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private void SpawnLayout()
     {
-        m_GameTile.DOScale(new Vector3(1.2f,1.2f,1.2f), .77f)
+        m_GameTile.DOScale(new Vector3(1.2f,1.2f,1.2f), .65f)
             .SetEase(Ease.InCubic)
             .OnComplete(() => {
                 m_BackgroundImage.DOColor(new Color(
@@ -389,7 +389,7 @@ public class StartMatchManagerUI : MonoBehaviour
                     m_BackgroundImage.color.b,
                     .77f), 1f);
                 m_GameTile.DOScale(Vector3.one, 1f).SetEase(Ease.InCubic);
-                m_GameTile.DOMoveY(m_GameTileEndPoint.position.y, 1f);
+                m_GameTile.DOMoveY(m_GameTileEndPoint.position.y, .65f);
 
                 StartCoroutine(StartGameSequenceEffect());
             });
@@ -432,6 +432,8 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private IEnumerator StartGameSequenceEffect()
     {
+        yield return new WaitForEndOfFrame();
+
         m_StartGameOptions.SetActive(true);
         m_StartGameOptions.transform.DOScale(1f, .3f)
                 .SetEase(Ease.InSine);
