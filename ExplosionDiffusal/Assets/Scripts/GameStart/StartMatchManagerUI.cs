@@ -22,6 +22,8 @@ public class StartMatchManagerUI : MonoBehaviour
     [SerializeField] private Transform m_GameTile;
     [SerializeField] private Transform m_GameTileEndPoint;
     [SerializeField] private Image m_BackgroundImage;
+    [Header("BG SMOKE")]
+    [SerializeField] private Camera m_ParticleSystemSmokeCamera;
     [Space(5)]
     // START GAME
     [SerializeField] private GameObject m_StartGameOptions;
@@ -141,6 +143,8 @@ public class StartMatchManagerUI : MonoBehaviour
 
             NavigationManager.instance.ShowMenuNavigation(false);
 
+            StartCoroutine(TurnOffSmoke());
+
             m_TeamSettingsBackground.DOColor(
                          new Color(m_TeamSettingsBackground.color.r,
                                      m_TeamSettingsBackground.color.g,
@@ -151,7 +155,6 @@ public class StartMatchManagerUI : MonoBehaviour
                                             m_StartGameOptionsCGroupAnime.Play("fadeOut");
                                             m_Duel.DOLocalMoveY(0, .5f).SetEase(Ease.InOutBack).OnComplete(() => {
                                                 m_VSCGroupAnime.Play("fadeOut");
-
                                                 // Init Only Config Data
                                                 m_MainCanvas.InitMainCanvas(m_GlobalConfigData.__DUEL_SETTINGS__, m_GlobalConfigData.__MATCH_SETTINGS__);
                                                 
@@ -183,8 +186,6 @@ public class StartMatchManagerUI : MonoBehaviour
             //OnStartMatchButtonClickedEvent?.Invoke();
         });
 
-
-
         m_PlayButton.onClick.AddListener(() => {
             if (m_CurrentState != StartMatchState.Initial)
                 return;
@@ -203,6 +204,31 @@ public class StartMatchManagerUI : MonoBehaviour
                 return;
             OnIAPButtonCloseClicked();
         });
+    }
+
+    private IEnumerator TurnOffSmoke()
+    {
+        float waitTime = 1f;
+        float elapsedTime = 0;
+
+        var currentColor = m_ParticleSystemSmokeCamera.backgroundColor;
+        var alphaZeroColor = new Color(
+            m_ParticleSystemSmokeCamera.backgroundColor.r,
+            m_ParticleSystemSmokeCamera.backgroundColor.g,
+            m_ParticleSystemSmokeCamera.backgroundColor.b,
+            0f
+        );
+
+        while (elapsedTime < waitTime)
+        {
+            m_ParticleSystemSmokeCamera.backgroundColor = Color.Lerp(currentColor, alphaZeroColor, elapsedTime / waitTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Make sure we got there
+        m_ParticleSystemSmokeCamera.backgroundColor = alphaZeroColor;
+        yield return null;
     }
 
     private IEnumerator StartDuelTransitionSequence(List<Transform> movableComponents, List<Image> staticComponents, MainTeamHolder teamHolder, List<Transform> endGoToPositionsOrganized)

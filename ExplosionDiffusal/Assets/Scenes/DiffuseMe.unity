@@ -19871,6 +19871,7 @@ MonoBehaviour:
   m_GameTile: {fileID: 6744843964181978144}
   m_GameTileEndPoint: {fileID: 1099930099}
   m_BackgroundImage: {fileID: 1447863791}
+  m_ParticleSystemSmokeCamera: {fileID: 1675018669}
   m_StartGameOptions: {fileID: 8058725301822185555}
   m_StartGameOptionItems:
   - {fileID: 6164714062868825664}
