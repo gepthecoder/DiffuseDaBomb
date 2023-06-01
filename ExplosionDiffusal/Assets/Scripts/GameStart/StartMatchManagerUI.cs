@@ -257,15 +257,17 @@ public class StartMatchManagerUI : MonoBehaviour
                 break;
             case StartMatchState.ModeSelection:
                 Debug.Log($"<color=orange>StartMatchState</color><color=gold>ModeSelection</color>");
+                BackgroundManager.INSTANCE.TriggerBackgroundChanged();
                 StartCoroutine(ShowModeSelectionInterfaceSequence());
                 break;
-
             case StartMatchState.MatchSettings:
                 Debug.Log($"<color=orange>StartMatchState</color><color=gold>MatchSettings</color>");
+                BackgroundManager.INSTANCE.TriggerBackgroundChanged();
                 StartCoroutine(ShowMatchSettingsInterfaceSequence());
                 break;
             case StartMatchState.Duel:
                 Debug.Log($"<color=orange>StartMatchState</color><color=gold>Duel</color>");
+                BackgroundManager.INSTANCE.TriggerBackgroundChanged();
                 StartCoroutine(ShowDuelInterfaceSequence());
                 break;
             case StartMatchState.TeamAConfig:
