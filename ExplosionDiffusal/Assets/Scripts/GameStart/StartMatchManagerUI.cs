@@ -103,6 +103,10 @@ public class StartMatchManagerUI : MonoBehaviour
             TriggerBehaviour(StartMatchState.MatchSettings);
         });
 
+        m_GameModeController.OnPreviousButtonClickedEvent.AddListener(() => {
+            StartCoroutine(TransitionBackToMainMenu());
+        });
+
 
         m_DuelController.OnDuelConfigSetEvent.AddListener((DATA) => {
 
@@ -206,70 +210,12 @@ public class StartMatchManagerUI : MonoBehaviour
         });
     }
 
-    private IEnumerator TurnOffSmoke()
-    {
-        float waitTime = 1f;
-        float elapsedTime = 0;
-
-        var currentColor = m_ParticleSystemSmokeCamera.backgroundColor;
-        var alphaZeroColor = new Color(
-            m_ParticleSystemSmokeCamera.backgroundColor.r,
-            m_ParticleSystemSmokeCamera.backgroundColor.g,
-            m_ParticleSystemSmokeCamera.backgroundColor.b,
-            0f
-        );
-
-        while (elapsedTime < waitTime)
-        {
-            m_ParticleSystemSmokeCamera.backgroundColor = Color.Lerp(currentColor, alphaZeroColor, elapsedTime / waitTime);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        // Make sure we got there
-        m_ParticleSystemSmokeCamera.backgroundColor = alphaZeroColor;
-        yield return null;
-    }
-
-    private IEnumerator StartDuelTransitionSequence(List<Transform> movableComponents, List<Image> staticComponents, MainTeamHolder teamHolder, List<Transform> endGoToPositionsOrganized)
-    {
-        for (int i = 0; i < staticComponents.Count; i++)
-        {
-            staticComponents[i].DOFade(0f, .2f);
-        }
-
-        for (int i = 0; i < movableComponents.Count; i++)
-        {
-            movableComponents[i].DOScale(1.1f, .2f).OnComplete(() => {
-                movableComponents[i].DOScale(.5f, .5f);
-                movableComponents[i].DOJump(endGoToPositionsOrganized[i].position, 1f, 1, .77f);
-                if (i == 0) {
-                    movableComponents[i].GetComponent<Image>()?.DOFade(0f, .65f);
-                    teamHolder.DoDoScaleIn_Emblem(); 
-                }
-                if (i == 1)
-                {
-                    movableComponents[i].GetComponent<TextMeshProUGUI>().DOFade(0f, .65f);
-                    teamHolder.DoDoScaleIn_TeamName();
-                    teamHolder.DoDoScaleIn_ScoreText();
-                }
-                if (i == 2) {
-                    movableComponents[i].GetComponent<TextMeshProUGUI>().DOFade(0f, .65f);
-                    teamHolder.DoDoScaleIn_TeamCount();
-                    teamHolder.DoDoScaleIn_AttckDefObjects();
-                }
-            });
-            yield return new WaitForSeconds(.2f);
-        }
-
-    }
-
     private void Start()
     {
         SetupSceneDefault();
     }
 
-    public void TriggerBehaviour(StartMatchState state)
+    public void TriggerBehaviour(StartMatchState state, bool backToMM = false)
     {
         m_CurrentState = state;
 
@@ -277,9 +223,17 @@ public class StartMatchManagerUI : MonoBehaviour
         {
             case StartMatchState.Initial:
                 Debug.Log($"<color=orange>StartMatchState</color><color=gold>Initial</color>");
-                OnFadeOutEffectEvent?.Invoke(() => {
+                if(backToMM)
+                {
+                    BackgroundManager.INSTANCE.TriggerBackgroundChanged(true);
                     SpawnLayout();
-                });
+                }
+                else
+                {
+                    OnFadeOutEffectEvent?.Invoke(() => {
+                        SpawnLayout();
+                    });
+                }
                 break;
             case StartMatchState.ModeSelection:
                 Debug.Log($"<color=orange>StartMatchState</color><color=gold>ModeSelection</color>");
@@ -334,6 +288,82 @@ public class StartMatchManagerUI : MonoBehaviour
         }
     }
 
+    private IEnumerator TransitionBackToMainMenu()
+    {
+        m_GameModeAnime.Play("signal_HIDE");
+
+        NavigationManager.instance.ShowMenuNavigation(false);
+
+        yield return new WaitForSeconds(1f);
+
+
+        m_GameMode.DOScale(0f, .77f).SetEase(Ease.InOutQuart).OnComplete(() => {
+            TriggerBehaviour(StartMatchState.Initial, true);
+            m_RectGameOptions.DOSizeDelta(new Vector2(m_RectGameOptions.sizeDelta.x, 531.2f), .77f).OnComplete(() => {
+            });
+        });
+    }
+
+    private IEnumerator TurnOffSmoke()
+    {
+        float waitTime = 1f;
+        float elapsedTime = 0;
+
+        var currentColor = m_ParticleSystemSmokeCamera.backgroundColor;
+        var alphaZeroColor = new Color(
+            m_ParticleSystemSmokeCamera.backgroundColor.r,
+            m_ParticleSystemSmokeCamera.backgroundColor.g,
+            m_ParticleSystemSmokeCamera.backgroundColor.b,
+            0f
+        );
+
+        while (elapsedTime < waitTime)
+        {
+            m_ParticleSystemSmokeCamera.backgroundColor = Color.Lerp(currentColor, alphaZeroColor, elapsedTime / waitTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Make sure we got there
+        m_ParticleSystemSmokeCamera.backgroundColor = alphaZeroColor;
+        yield return null;
+    }
+
+    private IEnumerator StartDuelTransitionSequence(List<Transform> movableComponents, List<Image> staticComponents, MainTeamHolder teamHolder, List<Transform> endGoToPositionsOrganized)
+    {
+        for (int i = 0; i < staticComponents.Count; i++)
+        {
+            staticComponents[i].DOFade(0f, .2f);
+        }
+
+        for (int i = 0; i < movableComponents.Count; i++)
+        {
+            movableComponents[i].DOScale(1.1f, .2f).OnComplete(() => {
+                movableComponents[i].DOScale(.5f, .5f);
+                movableComponents[i].DOJump(endGoToPositionsOrganized[i].position, 1f, 1, .77f);
+                if (i == 0)
+                {
+                    movableComponents[i].GetComponent<Image>()?.DOFade(0f, .65f);
+                    teamHolder.DoDoScaleIn_Emblem();
+                }
+                if (i == 1)
+                {
+                    movableComponents[i].GetComponent<TextMeshProUGUI>().DOFade(0f, .65f);
+                    teamHolder.DoDoScaleIn_TeamName();
+                    teamHolder.DoDoScaleIn_ScoreText();
+                }
+                if (i == 2)
+                {
+                    movableComponents[i].GetComponent<TextMeshProUGUI>().DOFade(0f, .65f);
+                    teamHolder.DoDoScaleIn_TeamCount();
+                    teamHolder.DoDoScaleIn_AttckDefObjects();
+                }
+            });
+            yield return new WaitForSeconds(.2f);
+        }
+
+    }
+
     private IEnumerator ShowDuelInterfaceSequence()
     {
         NavigationManager.instance.SetNavigationPointerByState(StartMatchState.Duel);
@@ -381,11 +411,14 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private IEnumerator ShowModeSelectionInterfaceSequence()
     {
+        // TODO: check for history
         if(m_IsIAPOpened) {
             OnIAPButtonCloseClicked();
         }
 
         NavigationManager.instance.SetNavigationPointerByState(StartMatchState.ModeSelection);
+
+        m_GameModeController.Init();
 
         foreach (var item in m_StartGameOptionItems)
         {

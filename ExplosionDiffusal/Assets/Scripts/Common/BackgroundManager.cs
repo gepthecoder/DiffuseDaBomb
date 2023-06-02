@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 public class BackgroundManager : MonoBehaviour
 {
@@ -14,21 +13,32 @@ public class BackgroundManager : MonoBehaviour
 
     private int m_CurrentBGSpriteIndex = 0;
 
+    private bool m_OneBack = false;
+
     private void Awake() {
         INSTANCE = this;
     }
 
-    public void TriggerBackgroundChanged()
+    public void TriggerBackgroundChanged(bool previous = false)
     {
+        m_OneBack = previous;
+
         m_BGHelper.DarkenBackground();
     }
 
 
     public void ChangeBackgroundToNextImage()
     {
-        m_CurrentBGSpriteIndex++;
+        if(m_OneBack)
+        {
+            m_OneBack = false;
+            m_CurrentBGSpriteIndex--;
+        }else
+        {
+            m_CurrentBGSpriteIndex++;
+        }
 
-        if(m_CurrentBGSpriteIndex > m_BGSprites.Count) {
+        if(m_CurrentBGSpriteIndex > m_BGSprites.Count || m_CurrentBGSpriteIndex < 0) {
             m_CurrentBGSpriteIndex = 0;
         }
 
