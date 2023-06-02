@@ -38,7 +38,7 @@ public class BackgroundManager : MonoBehaviour
             m_CurrentBGSpriteIndex++;
         }
 
-        if(m_CurrentBGSpriteIndex > m_BGSprites.Count || m_CurrentBGSpriteIndex < 0) {
+        if(m_CurrentBGSpriteIndex > m_BGSprites.Count -1 || m_CurrentBGSpriteIndex < 0) {
             m_CurrentBGSpriteIndex = 0;
         }
 

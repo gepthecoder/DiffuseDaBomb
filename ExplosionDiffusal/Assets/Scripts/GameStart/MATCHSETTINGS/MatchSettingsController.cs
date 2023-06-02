@@ -29,6 +29,7 @@ public class MatchSettingsConfigData
 public class MatchSettingsController : MonoBehaviour
 {
     [HideInInspector] public UnityEvent<MatchSettingsConfigData> OnSetMatchSettingsDoneEvent = new UnityEvent<MatchSettingsConfigData>();
+    [HideInInspector] public UnityEvent OnBackToGameModeEvent = new UnityEvent();
 
     [SerializeField] private List<MatchSettingsItem> m_MatchSettingsItems;
 
@@ -52,7 +53,14 @@ public class MatchSettingsController : MonoBehaviour
 
                     GetMatchSettingsByType(m_CurrentState).OnHideItem();
 
-                    TriggerBehaviour(m_CurrentState - 1);
+                    if(m_CurrentState == MatchSettingsStateType.GameTime) {
+
+                        OnBackToGameModeEvent?.Invoke();
+
+                    } else
+                    {
+                        TriggerBehaviour(m_CurrentState - 1);
+                    }
                 });
             });
 
@@ -87,7 +95,9 @@ public class MatchSettingsController : MonoBehaviour
                 });
             });
         });
-    }
+    } 
+
+
 
     private void SaveConfig()
     {
@@ -140,20 +150,12 @@ public class MatchSettingsController : MonoBehaviour
         });
 
         // PREVIOUS BUTTON
-        if (m_CurrentState == MatchSettingsStateType.GameTime)
-        {
-            m_PreviousButton.interactable = false;
-
-            m_PreviousButton.transform.DOScale(0f, .77f).OnComplete(() => {
+       
+        m_PreviousButton.transform.DOScale(1.15f, .77f).OnComplete(() => {
+            m_PreviousButton.transform.DOScale(1f, .25f).OnComplete(() => {
+                m_PreviousButton.interactable = true;
             });
-        } else
-        {
-            m_PreviousButton.transform.DOScale(1.15f, .77f).OnComplete(() => {
-                m_PreviousButton.transform.DOScale(1f, .25f).OnComplete(() => {
-                    m_PreviousButton.interactable = true;
-                });
-            });
-        }
+        });
 
         NavigationManager.instance.SetNavigationPointerByState(StartMatchState.ModeSelection, state);
 

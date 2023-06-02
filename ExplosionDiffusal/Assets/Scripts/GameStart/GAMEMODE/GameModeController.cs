@@ -46,15 +46,16 @@ public class GameModeController : MonoBehaviour
         m_PrevButton.onClick.AddListener(() => {
             m_PrevButton.interactable = false;
 
-            m_NextButton.transform.DOScale(1.15f, .25f).OnComplete(() => {
-                m_NextButton.transform.DOScale(0f, .5f);
-            });
+            if(m_NextButton.transform.localScale.x > .95f)
+            {
+                m_NextButton.transform.DOScale(1.15f, .25f).OnComplete(() => {
+                    m_NextButton.transform.DOScale(0f, .5f);
+                });
+            }
 
             m_PrevButton.transform.DOScale(1.15f, .25f).OnComplete(() => {
                 m_PrevButton.transform.DOScale(0f, .5f);
             });
-
-            StartCoroutine(HideGameModeSequence_TransitionBack());
 
             OnPreviousButtonClickedEvent?.Invoke();
         });
@@ -70,10 +71,13 @@ public class GameModeController : MonoBehaviour
         StartCoroutine(WaitAndShowModule());
     }
 
+    public void Deinit()
+    {
+        StartCoroutine(HideGameModeSequence_TransitionBack());
+    }
+
     private IEnumerator WaitAndShowModule()
     {
-        yield return new WaitForSeconds(2f);
-
         m_PrevButton.transform.DOScale(1.15f, .77f).OnComplete(() => {
             m_PrevButton.transform.DOScale(1f, .25f);
             m_PrevButton.interactable = true;
@@ -94,11 +98,22 @@ public class GameModeController : MonoBehaviour
 
     private IEnumerator HideGameModeSequence_TransitionBack()
     {
+        Transform selected = null;
+        Transform other = null;
+
         foreach (var item in m_GameModes)
         {
-            item.transform.DOScale(0f, .7f).SetEase(Ease.InExpo);
-            yield return new WaitForSeconds(.7f);
+            if (item.Type == m_CurrentSelectedGameMode)
+            {
+                selected = item.transform;
+                continue;
+            }
+            other = item.transform;
         }
+
+        selected?.DOScale(0f, .7f).SetEase(Ease.InExpo);
+        yield return new WaitForSeconds(.7f);
+        other?.DOScale(0f, .7f).SetEase(Ease.InExpo);
     }
 
     private IEnumerator HideGameModeSequence()
@@ -128,9 +143,16 @@ public class GameModeController : MonoBehaviour
 
         m_CurrentSelectedGameMode = type;
 
+        Debug.Log($"m_CurrentSelectedGameMode: {m_CurrentSelectedGameMode}");
+
         m_GameModes.ForEach((obj) => {
-            if (obj.Type == m_CurrentSelectedGameMode) obj.OnSelected();
-            else obj.OnDeSelected();
+            if (obj.Type == m_CurrentSelectedGameMode)
+            {
+                obj.OnSelected();
+            }
+            else {
+                obj.OnDeSelected();
+            }
         });
 
         HandleNextButton(type);

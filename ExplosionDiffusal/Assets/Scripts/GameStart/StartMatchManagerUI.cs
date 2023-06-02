@@ -90,12 +90,15 @@ public class StartMatchManagerUI : MonoBehaviour
 
     private GlobalConfig m_GlobalConfigData = new GlobalConfig();
 
-
     private void Awake()
     {
         m_MatchSettingsController.OnSetMatchSettingsDoneEvent.AddListener((DATA) => {
             m_GlobalConfigData.__MATCH_SETTINGS__ = DATA;
             TriggerBehaviour(StartMatchState.Duel);
+        });
+
+        m_MatchSettingsController.OnBackToGameModeEvent.AddListener(() => {
+            StartCoroutine(TransitionBackToGameModeSequence());
         });
 
         m_GameModeController.OnGameModeSelectedFinalEvent.AddListener((MODE) => {
@@ -293,9 +296,9 @@ public class StartMatchManagerUI : MonoBehaviour
         m_GameModeAnime.Play("signal_HIDE");
 
         NavigationManager.instance.ShowMenuNavigation(false);
+        m_GameModeController.Deinit();
 
         yield return new WaitForSeconds(1f);
-
 
         m_GameMode.DOScale(0f, .77f).SetEase(Ease.InOutQuart).OnComplete(() => {
             TriggerBehaviour(StartMatchState.Initial, true);
@@ -392,6 +395,22 @@ public class StartMatchManagerUI : MonoBehaviour
         m_MatchSettingsParent.DOScale(1f, .3f);
     }
 
+    private IEnumerator TransitionBackToGameModeSequence()
+    {
+        m_MatchSettingsParent.DOScale(0f, .5f).OnComplete(() => {
+            m_MatchSettingsParent.gameObject.SetActive(false);
+        });
+
+        m_GameMode.gameObject.SetActive(true);
+
+        m_MatchSettingsAnime.Play("signal_HIDE");
+        yield return new WaitForSeconds(.15f);
+        m_GameModeAnime.Play("signal_SHOW");
+        yield return new WaitForSeconds(.3f);
+
+        TriggerBehaviour(StartMatchState.ModeSelection);
+    }
+
     private IEnumerator ShowTeamConfig(StartMatchState teamConfig)
     {
         yield return new WaitForSeconds(.15f);
@@ -418,8 +437,6 @@ public class StartMatchManagerUI : MonoBehaviour
 
         NavigationManager.instance.SetNavigationPointerByState(StartMatchState.ModeSelection);
 
-        m_GameModeController.Init();
-
         foreach (var item in m_StartGameOptionItems)
         {
             item.DOScale(0f, .15f)
@@ -432,6 +449,9 @@ public class StartMatchManagerUI : MonoBehaviour
         {
             m_GameModeAnime.Play("signal_SHOW");
         });
+
+        m_GameModeController.Init();
+
         m_RectGameOptions.DOSizeDelta(new Vector2(m_RectGameOptions.sizeDelta.x, 787f), 1f).OnComplete(() =>
         {
             m_GameMode.DOScale(1f, .77f).SetEase(Ease.InOutQuart);
