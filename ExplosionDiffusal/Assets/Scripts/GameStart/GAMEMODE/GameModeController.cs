@@ -86,6 +86,10 @@ public class GameModeController : MonoBehaviour
             });
             yield return new WaitForSeconds(.7f);
         }
+
+        m_IsNextButtonShown = false;
+
+        OnGameModeSelected(GameModeType.None);
     }
 
     private IEnumerator HideGameModeSequence_TransitionBack()
