@@ -298,7 +298,7 @@ public class StartMatchManagerUI : MonoBehaviour
         NavigationManager.instance.ShowMenuNavigation(false);
         m_GameModeController.Deinit();
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.5f);
 
         m_GameMode.DOScale(0f, .77f).SetEase(Ease.InOutQuart).OnComplete(() => {
             TriggerBehaviour(StartMatchState.Initial, true);
@@ -450,12 +450,11 @@ public class StartMatchManagerUI : MonoBehaviour
             m_GameModeAnime.Play("signal_SHOW");
         });
 
-        m_GameModeController.Init();
-
-        m_RectGameOptions.DOSizeDelta(new Vector2(m_RectGameOptions.sizeDelta.x, 787f), 1f).OnComplete(() =>
-        {
-            m_GameMode.DOScale(1f, .77f).SetEase(Ease.InOutQuart);
+        m_GameMode.DOScale(1f, .77f).SetEase(Ease.InOutQuart).OnComplete(() => {
+            m_GameModeController.Init();
         });
+
+        m_RectGameOptions.DOSizeDelta(new Vector2(m_RectGameOptions.sizeDelta.x, 787f), 1f);
     }
 
 

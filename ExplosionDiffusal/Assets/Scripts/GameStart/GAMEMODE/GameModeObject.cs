@@ -4,9 +4,15 @@ using DG.Tweening;
 using UnityEngine;
 
 public class GameModeObject : GameModeObjectBase
-{   
+{
+    private bool m_CanInteract = false;
+
     public override void OnPointerClick(PointerEventData eventData)
     {
+        if(!m_CanInteract) {
+            return;
+        }
+
         OnGameModeSelectedEvent?.Invoke(Type);
     }
 
@@ -25,4 +31,8 @@ public class GameModeObject : GameModeObjectBase
         transform.DOScale(new Vector3(.77f, .77f, .77f), .5f);
     }
 
+    public void SetInteractability(bool canInteract)
+    {
+        m_CanInteract = canInteract;
+    }
 }

@@ -85,35 +85,40 @@ public class GameModeController : MonoBehaviour
 
         foreach (var item in m_GameModes)
         {
-            item.transform.DOScale(.9f, .77f).SetEase(Ease.InSine).OnComplete(() => {
-                item.transform.DOScale(.77f, .5f).SetEase(Ease.InExpo);
+            item.transform.DOScale(.88f, .66f).SetEase(Ease.OutExpo).OnComplete(() =>
+            {
+                item.transform.DOScale(.77f, .4f).SetEase(Ease.InExpo);
             });
-            yield return new WaitForSeconds(.7f);
         }
 
         m_IsNextButtonShown = false;
 
         OnGameModeSelected(GameModeType.None);
+
+        yield return new WaitForSeconds(1f);
+
+        m_GameModes.ForEach((mode) => { mode.SetInteractability(true); });
+
+        yield break;
     }
 
     private IEnumerator HideGameModeSequence_TransitionBack()
     {
         Transform selected = null;
-        Transform other = null;
 
         foreach (var item in m_GameModes)
         {
             if (item.Type == m_CurrentSelectedGameMode)
             {
                 selected = item.transform;
-                continue;
+                break;
             }
-            other = item.transform;
         }
+        selected?.DOScale(.77f, .5f).SetEase(Ease.InExpo);
 
-        selected?.DOScale(0f, .7f).SetEase(Ease.InExpo);
-        yield return new WaitForSeconds(.7f);
-        other?.DOScale(0f, .7f).SetEase(Ease.InExpo);
+        m_GameModes.ForEach((mode) => { mode.SetInteractability(false); });
+
+        yield break;
     }
 
     private IEnumerator HideGameModeSequence()
@@ -145,15 +150,19 @@ public class GameModeController : MonoBehaviour
 
         Debug.Log($"m_CurrentSelectedGameMode: {m_CurrentSelectedGameMode}");
 
-        m_GameModes.ForEach((obj) => {
-            if (obj.Type == m_CurrentSelectedGameMode)
-            {
-                obj.OnSelected();
-            }
-            else {
-                obj.OnDeSelected();
-            }
-        });
+        if(type != GameModeType.None)
+        {
+            m_GameModes.ForEach((obj) => {
+                if (obj.Type == m_CurrentSelectedGameMode)
+                {
+                    obj.OnSelected();
+                }
+                else
+                {
+                    obj.OnDeSelected();
+                }
+            });
+        }
 
         HandleNextButton(type);
     }
