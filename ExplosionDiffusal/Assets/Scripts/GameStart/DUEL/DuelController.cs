@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
+using DG.Tweening;
 
 public class DuelConfigData {
     public SettingsItemData AxisConfigData;
@@ -16,11 +18,13 @@ public class DuelConfigData {
 public class DuelController : MonoBehaviour
 {
     [SerializeField] private List<DuelObject> m_DuelObjects;
+    [SerializeField] private Button m_PreviousButton;
 
     private DuelObjectType m_CurrentSelectedTeam = DuelObjectType.None;
 
     [HideInInspector] public UnityEvent<DuelObjectType> OnDuelObjectSelectedEvent = new UnityEvent<DuelObjectType>();
     [HideInInspector] public UnityEvent<DuelConfigData> OnDuelConfigSetEvent = new UnityEvent<DuelConfigData>();
+    [HideInInspector] public UnityEvent OnPreviousButtonClickedEvent = new UnityEvent();
 
     private DuelConfigData m_DuelConfigData = new DuelConfigData();
 
@@ -31,6 +35,12 @@ public class DuelController : MonoBehaviour
                 OnDuelObjectSelected(TYPE);
             });
         });
+
+        m_PreviousButton.onClick.AddListener(() => {
+            m_PreviousButton.interactable = false;
+            
+            OnPreviousButtonClickedEvent?.Invoke();
+        });
     }
 
     private void OnDestroy()
@@ -38,6 +48,24 @@ public class DuelController : MonoBehaviour
         m_DuelObjects.ForEach((OBJECT) => {
             OBJECT.OnDuelObjectSelected.RemoveAllListeners();
         });
+
+        m_PreviousButton.onClick.RemoveAllListeners();
+    }
+
+    public void Init() {
+
+        m_PreviousButton.transform.DOScale(1.1f, .5f).OnComplete(() => {
+            m_PreviousButton.interactable = true;
+            m_PreviousButton.transform.DOScale(1f, .25f);
+        });
+    }
+
+    public void Deinit() {
+        m_PreviousButton.transform.DOScale(0f, .5f).OnComplete(() => {
+            m_PreviousButton.interactable = true;
+        });
+
+        OnDuelObjectSelected(DuelObjectType.None);
     }
 
     public void OnSettingsChanged(SettingsItemData data)
@@ -79,7 +107,10 @@ public class DuelController : MonoBehaviour
             else obj.OnDeSelected();
         });
 
-        OnDuelObjectSelectedEvent?.Invoke(m_CurrentSelectedTeam);
+        if(m_CurrentSelectedTeam != DuelObjectType.None)
+        {
+            OnDuelObjectSelectedEvent?.Invoke(m_CurrentSelectedTeam);
+        }
     }
 
     public DuelObject GetDuelObjByType(DuelObjectType type)

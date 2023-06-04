@@ -110,6 +110,9 @@ public class StartMatchManagerUI : MonoBehaviour
             StartCoroutine(TransitionBackToMainMenu());
         });
 
+        m_DuelController.OnPreviousButtonClickedEvent.AddListener(() => {
+            StartCoroutine(TransitionToMatchSettings());
+        });
 
         m_DuelController.OnDuelConfigSetEvent.AddListener((DATA) => {
 
@@ -218,7 +221,7 @@ public class StartMatchManagerUI : MonoBehaviour
         SetupSceneDefault();
     }
 
-    public void TriggerBehaviour(StartMatchState state, bool backToMM = false)
+    public void TriggerBehaviour(StartMatchState state, bool goToPrevious = false)
     {
         m_CurrentState = state;
 
@@ -226,7 +229,7 @@ public class StartMatchManagerUI : MonoBehaviour
         {
             case StartMatchState.Initial:
                 Debug.Log($"<color=orange>StartMatchState</color><color=gold>Initial</color>");
-                if(backToMM)
+                if(goToPrevious)
                 {
                     BackgroundManager.INSTANCE.TriggerBackgroundChanged(true);
                     SpawnLayout();
@@ -246,7 +249,13 @@ public class StartMatchManagerUI : MonoBehaviour
             case StartMatchState.MatchSettings:
                 Debug.Log($"<color=orange>StartMatchState</color><color=gold>MatchSettings</color>");
                 BackgroundManager.INSTANCE.TriggerBackgroundChanged();
-                StartCoroutine(ShowMatchSettingsInterfaceSequence());
+                if(goToPrevious)
+                {
+                    ShowMatchSettingsInterfaceSequence_v2();
+                }else
+                {
+                    StartCoroutine(ShowMatchSettingsInterfaceSequence());
+                }
                 break;
             case StartMatchState.Duel:
                 Debug.Log($"<color=orange>StartMatchState</color><color=gold>Duel</color>");
@@ -280,6 +289,8 @@ public class StartMatchManagerUI : MonoBehaviour
                         m_ReadyButton.transform.DOScale(1f, .5f).SetEase(Ease.InOutExpo);
 
                         m_CanPlaySetupAnime = false;
+
+                        m_DuelController.Init();
                     } else
                     {
                         StartCoroutine(ShowTeamConfig(m_CurrentState));
@@ -289,6 +300,44 @@ public class StartMatchManagerUI : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    private IEnumerator TransitionToMatchSettings()
+    {
+        // HIDE DUEL
+        m_DuelController.Deinit();
+
+        m_SetupAnime.Play("signal_HIDE");
+        yield return new WaitForSeconds(.15f);
+        m_MatchSettingsAnime.Play("signal_SHOW");
+
+        m_TeamSettingsBackground.DOColor(
+                               new Color(m_TeamSettingsBackground.color.r,
+                                      m_TeamSettingsBackground.color.g,
+                                          m_TeamSettingsBackground.color.b, 0f), .5f).OnComplete(() => {
+                                              m_Duel.DOScale(Vector3.zero, .5f);
+                                              m_Duel.DOLocalMoveY(0f, .5f).SetEase(Ease.InOutBack).OnComplete(() => {
+                                                  m_DuelParent.gameObject.SetActive(false);
+                                              });
+                                          });
+
+        m_ReadyButton.transform.DOScale(0f, .5f).SetEase(Ease.InOutExpo);
+        m_TeamSettingsCanvasGroupRef.blocksRaycasts = false;
+
+        m_CanPlaySetupAnime = true;
+
+        m_TeamSettingsAxis?.Play("hide");
+        m_TeamSettingsCanvasGroupRef = m_TeamSettingsAxis?.GetComponent<CanvasGroup>();
+        m_TeamSettingsCanvasGroupRef.blocksRaycasts = false;
+
+        m_TeamSettingsAllies?.Play("hide");
+        m_TeamSettingsCanvasGroupRef = m_TeamSettingsAllies?.GetComponent<CanvasGroup>();
+        m_TeamSettingsCanvasGroupRef.blocksRaycasts = false;
+
+        yield return new WaitForSeconds(1f);
+
+        // SHOW MATCH SETTINGS
+        TriggerBehaviour(StartMatchState.MatchSettings, true);
     }
 
     private IEnumerator TransitionBackToMainMenu()
@@ -392,6 +441,14 @@ public class StartMatchManagerUI : MonoBehaviour
         yield return new WaitForSeconds(.15f);
         m_MatchSettingsAnime.Play("signal_SHOW");
         yield return new WaitForSeconds(.3f);
+        m_MatchSettingsParent.DOScale(1f, .3f);
+    }
+
+    private void ShowMatchSettingsInterfaceSequence_v2()
+    {
+        m_MatchSettingsParent.gameObject.SetActive(true);
+
+        m_MatchSettingsController.TriggerBehaviour(MatchSettingsStateType.ScoreLimit);
         m_MatchSettingsParent.DOScale(1f, .3f);
     }
 
