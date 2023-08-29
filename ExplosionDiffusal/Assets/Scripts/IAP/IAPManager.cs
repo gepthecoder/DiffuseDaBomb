@@ -96,6 +96,12 @@ public class IAPManager : MonoBehaviour
 
         // UPDATE VIEW
         m_NoADS.EnableAdsByState((AdState)_AdsEnabled_);
+
+        // EMIT NO ADS!
+        if(AdManager.INSTANCE != null)
+        {
+            AdManager.INSTANCE.ForceHideBanner();
+        }
     }
 
     public void OnNoADSPurchaseFailedAction()

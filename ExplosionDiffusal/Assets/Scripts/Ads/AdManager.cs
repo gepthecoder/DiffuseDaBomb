@@ -33,6 +33,12 @@ public class AdManager : MonoBehaviour
         }
     }
 
+    public void ForceHideBanner()
+    {
+        m_ADS.BANNER.HideBannerAd();
+    }
+
+
     // INTERSTITIAL
     public void ShowInterstitalAd(Action callback) {
         if (IAPManager.INSTANCE.AdsEnabled()) {
