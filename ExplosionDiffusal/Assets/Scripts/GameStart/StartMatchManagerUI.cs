@@ -16,6 +16,7 @@ public class StartMatchManagerUI : MonoBehaviour
     [Header("IAP")]
     [SerializeField] private Button m_IAPButtonShow;
     [SerializeField] private Button m_IAPButtonHide;
+    [SerializeField] private Transform m_IAPButtonParent;
     [Header("START MATCH")]
     [SerializeField] private Button m_StartMatchButton;
     [Header("PRE MATCH")]
@@ -601,7 +602,7 @@ public class StartMatchManagerUI : MonoBehaviour
             return;
 
         // HIDE BUTTON
-        m_IAPButtonShow.transform.parent.transform.DOScale(0f, .2f).SetEase(Ease.InExpo);
+        m_IAPButtonParent.DOScale(0f, .2f).SetEase(Ease.InExpo);
         // show iap
         IAPManager.INSTANCE.ShowIAP();
 
@@ -614,7 +615,7 @@ public class StartMatchManagerUI : MonoBehaviour
             return;
 
         // SHOW BUTTON
-        m_IAPButtonShow.transform.parent.transform.DOScale(1f, .5f).SetEase(Ease.InExpo);
+        m_IAPButtonParent.DOScale(1f, .5f).SetEase(Ease.InExpo);
         // hide iap
         IAPManager.INSTANCE.HideIAP();
 
