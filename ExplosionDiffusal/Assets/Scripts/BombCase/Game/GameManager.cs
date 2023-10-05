@@ -50,6 +50,11 @@ public class GameManager : MonoBehaviour
 
     protected GlobalConfig ___Global_Config___;
 
+    private void Awake()
+    {
+        Application.targetFrameRate = 60;
+    }
+
     private void Start()
     {
         AddListeners();
