@@ -75,12 +75,15 @@ public class GameManager : MonoBehaviour
             case GameState.PreMatch:
                 Debug.Log($"<color=red>GameState</color><color=gold>PreMatch</color>");
                 {
+                    Time.timeScale = 1.5f;
                     AdManager.INSTANCE.ShowBannerAd(BannerPosition.BOTTOM_CENTER);
                     m_StartMatchManager.Init();
+
                 } break;
             case GameState.Countdown:
                 Debug.Log($"<color=red>GameState</color><color=gold>Countdown</color>");
                 {
+                    Time.timeScale = 1f;
                     AdManager.INSTANCE.HideBannerAd();
                     m_ScoreManager.SetScoreLimit(___Global_Config___.__MATCH_SETTINGS__.ScoreLimit);
                     m_CountdownManager.InitCountdown(___Global_Config___.__MATCH_SETTINGS__);
