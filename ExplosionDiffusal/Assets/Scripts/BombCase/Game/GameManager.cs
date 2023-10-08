@@ -143,6 +143,8 @@ public class GameManager : MonoBehaviour
                               endMatchData.m_EndMatchTimeString
                         );
                         SaveLoadManager.INSTANCE?.SaveHistoryObject(historyData);
+
+                        AdManager.INSTANCE.HideBannerAd();
                     }
                 } break;
             default:

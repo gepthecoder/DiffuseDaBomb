@@ -132,4 +132,9 @@ public class DuelController : MonoBehaviour
             duelObj.SetInteractability(false);
         });
     }
+
+    public void HidePreviousButton()
+    {
+        m_PreviousButton.transform.DOScale(0f, .3f);
+    }
 } 

@@ -22,7 +22,6 @@ public class Fader : MonoBehaviour
             INSTANCE = this;
             DontDestroyOnLoad(this);
         }
-        else { Destroy(INSTANCE); }
     }
 
     public void FadeToMainScene(TransitionType transtionType)
