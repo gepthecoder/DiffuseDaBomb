@@ -76,8 +76,6 @@ public class Keyboard : Encryptor
 
     private void UpdateInputField(string key)
     {
-        //Debug.Log("UpdateOutputText: " + key);
-        Event fakeEvent;
         switch (key)
         {
             case "Backspace":
@@ -89,67 +87,24 @@ public class Keyboard : Encryptor
             case "Esc":
                 CloseEncryptor();
                 return;
-
-            case ",":
-                fakeEvent = Event.KeyboardEvent("a");
-                fakeEvent.keyCode = KeyCode.Comma;
-                fakeEvent.character = key[0];
-                break;
-            case ".":
-                fakeEvent = Event.KeyboardEvent("a");
-                fakeEvent.keyCode = KeyCode.Period;
-                fakeEvent.character = key[0];
-                break;
-            case "?":
-                fakeEvent = Event.KeyboardEvent("a");
-                fakeEvent.keyCode = KeyCode.Question;
-                fakeEvent.character = key[0];
-                break;
-            case "&":
-                fakeEvent = Event.KeyboardEvent("a");
-                fakeEvent.keyCode = KeyCode.Ampersand;
-                fakeEvent.character = key[0];
-                break;
-            case "^":
-                fakeEvent = Event.KeyboardEvent("a");
-                fakeEvent.keyCode = KeyCode.Caret;
-                fakeEvent.character = key[0];
-                break;
-            case "%":
-                fakeEvent = Event.KeyboardEvent("a");
-                fakeEvent.keyCode = KeyCode.Percent;
-                fakeEvent.character = key[0];
-                break;
-            case "#":
-                fakeEvent = Event.KeyboardEvent("a");
-                fakeEvent.keyCode = KeyCode.Hash;
-                fakeEvent.character = key[0];
-                break;
-           
             default:
                 if (key.Length != 1)
                 {
                     Debug.LogError("Ignoring spurious multi-character key value: " + key);
                     return;
                 }
-                fakeEvent = Event.KeyboardEvent(key);
-                char keyChar = key[0];
-                fakeEvent.character = keyChar;
-                if (Char.IsUpper(keyChar))
+
+                if (key.Length == 1)
                 {
-                    fakeEvent.modifiers |= EventModifiers.Shift;
+                    char keyChar = key[0];
+                    m_InputField.text += keyChar;
+                    m_CurrentString += key;
+                    m_CharacterCounter++;
+
+                    PlayButtonPressedSFX(AudioEffect.Keypress);
                 }
                 break;
         }
-        //Debug.Log("ProcessEvent: " + fakeEvent.functionKey);
-
-        m_InputField.ProcessEvent(fakeEvent);
-        m_InputField.ForceLabelUpdate();
-
-        m_CurrentString += key;
-        m_CharacterCounter++;
-
-        PlayButtonPressedSFX(AudioEffect.Keypress);
     }
 
     private void SendBackspace()
@@ -158,11 +113,9 @@ public class Keyboard : Encryptor
         {
             PlayButtonPressedSFX(AudioEffect.Keypress);
             
-            m_InputField.ProcessEvent(Event.KeyboardEvent("backspace"));
-            m_InputField.ForceLabelUpdate();
-
             m_CharacterCounter -= 1;
             m_CurrentString = m_CurrentString.Substring(0, m_CurrentString.Length - 1);
+            m_InputField.text = m_CurrentString;
             //Debug.Log("ProcessEvent: backspace charCount: " + m_CharacterCounter);
         }
         else
