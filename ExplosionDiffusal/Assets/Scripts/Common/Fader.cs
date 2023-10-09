@@ -18,10 +18,16 @@ public class Fader : MonoBehaviour
 
     private void Awake()
     {
-        if(INSTANCE == null) {
+        if (INSTANCE == null)
+        {
             INSTANCE = this;
             DontDestroyOnLoad(this);
         }
+        else
+        {
+            Destroy(gameObject);
+        }
+
     }
 
     public void FadeToMainScene(TransitionType transtionType)
