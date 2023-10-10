@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public enum DeveloperItemType { TimeMenu, LogMenu, TriggerMenu, }
+public enum DeveloperItemType { TimeMenu, LogMenu, TriggerMenu, AudioMenu, }
 
 // BASE
 public class DeveloperItem : MonoBehaviour

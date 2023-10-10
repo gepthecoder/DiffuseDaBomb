@@ -22,6 +22,9 @@ public class Developer : MonoBehaviour
     private float m_DeltaTime;
     private float m_FPS;
 
+    protected private const string _____PASS_____ = "bombaclart";
+
+
     private void Awake()
     {
         m_BombLogger?.InitBombLogger(m_DeveloperMode);
@@ -76,6 +79,10 @@ public class Developer : MonoBehaviour
     public void OnTriggerMenuButtonClicked() {
         ShowDeveloperItemByType(DeveloperItemType.TriggerMenu);
     }
+    public void OnAudioMenuButtonClicked()
+    {
+        ShowDeveloperItemByType(DeveloperItemType.AudioMenu);
+    }
 
     #endregion
 
@@ -96,6 +103,11 @@ public class Developer : MonoBehaviour
 
     #region Public Methods
     public bool IsDeveloperMode() { return m_DeveloperMode; }
+
+    public string GetPass()
+    {
+        return _____PASS_____;
+    }
     #endregion
 
 }
