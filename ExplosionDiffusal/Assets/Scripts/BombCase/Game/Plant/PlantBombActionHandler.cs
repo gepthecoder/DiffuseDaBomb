@@ -39,6 +39,8 @@ public class PlantBombActionHandler : MonoBehaviour
     {
         AudioManager.INSTANCE.PlayButtonPressedSFX(AudioEffect.Plant);
 
+        SuitcaseHelper.INSTANCE?.ShowCloseSuitcaseButton(false);
+
         m_CameraManager.ZoomInOutOfTarget(data.Position, () => {
             m_UiManager.FadeInOutScreen(.77f);
         }, () => 
@@ -50,6 +52,8 @@ public class PlantBombActionHandler : MonoBehaviour
 
     private void OnEncryptorClose(HackingItemData data)
     {
+        SuitcaseHelper.INSTANCE?.ShowCloseSuitcaseButton(true);
+
         m_CameraManager.ZoomOutOfTarget();
         m_UiManager.FadeInOutScreen(.77f);
 

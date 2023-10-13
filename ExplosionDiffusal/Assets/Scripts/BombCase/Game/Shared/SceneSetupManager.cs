@@ -20,6 +20,8 @@ public class SceneSetupManager : MonoBehaviour
             case SceneType.Planting:
                 m_BombCase.SetActive(false);
                 m_Curcuit.SetActive(true);
+
+                SuitcaseHelper.INSTANCE?.ShowCloseSuitcaseButton(true);
                 break;
             case SceneType.Defusing:
                 m_BombCase.SetActive(false);
@@ -30,6 +32,9 @@ public class SceneSetupManager : MonoBehaviour
 
             case SceneType.Default:
             default:
+
+                SuitcaseHelper.INSTANCE?.ShowCloseSuitcaseButton(false);
+
                 m_BombCase.SetActive(true);
                 m_Curcuit.SetActive(false);
                 break;

@@ -391,6 +391,22 @@ public class GameManager : MonoBehaviour
                 });
             });
         });
+
+        SuitcaseHelper.INSTANCE.OnCloseSuitcaseButtonEvent.AddListener(() =>
+        {
+            m_UiManager.FadeInOutScreen(1f);
+            m_CameraManager.ZoomInOutToBombCaseView(
+                () =>
+                {
+                    m_SceneSetupManager.SetupScene(SceneType.Default);
+                },
+                () =>
+                {
+                    TriggerBehaviour(GameState.Initial);
+                }
+            );
+
+        });
     }
 
     private void RemoveListeners()
@@ -408,5 +424,7 @@ public class GameManager : MonoBehaviour
         m_VictoryManager.OnVictoryShownEvent.RemoveAllListeners();
         m_VictoryManager.OnZoomOutOfComplex.RemoveAllListeners();
         m_RepairBombManager.OnBombRepairCompleted.RemoveAllListeners();
+
+        SuitcaseHelper.INSTANCE.OnCloseSuitcaseButtonEvent.RemoveAllListeners();
     }
 }
