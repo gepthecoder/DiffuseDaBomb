@@ -86,4 +86,9 @@ public class UiManager : MonoBehaviour
     {
         m_KeypadUI.EnableObject(false);
     }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }
