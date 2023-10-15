@@ -427,4 +427,5 @@ public class GameManager : MonoBehaviour
 
         SuitcaseHelper.INSTANCE.OnCloseSuitcaseButtonEvent.RemoveAllListeners();
     }
+
 }
