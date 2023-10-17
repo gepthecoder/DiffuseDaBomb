@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,15 +21,26 @@ public class MainSettingsController : MonoBehaviour
     [SerializeField] private Transform m_ContentParent;
     [SerializeField] private TeamIcon m_TeamIconPrefab;
     [SerializeField] private Material m_MaterialTemplate;
+    [Header("Team Emblems")]
+    [SerializeField] private List<string> m_BuildInTeamNames = new List<string>() 
+    {
+        "Navy SEALs", "MARCOS", "Spetsnaz", "SAS", "SASR", "Army Delta Force",
+    };
+    [SerializeField] private Transform m_ContentParent_TN;
+    [SerializeField] private TMP_InputField m_TeamNameInputField;
+    [SerializeField] private TeamName m_TeamNamPlaceholder;
 
-    private string m_DirectoryPath = "";
+    private string m_DirectoryPath_Emblems = "";
+    private const string m_TeamNamesPrefsKey = "TeamNames";
 
     private void Start()
     {
-        m_DirectoryPath = Path.Combine(Application.persistentDataPath, "CustomEmblems");
+        m_DirectoryPath_Emblems = Path.Combine(Application.persistentDataPath, "CustomEmblems");
 
-
-        RefreshTeamIcons();
+        if (!Directory.Exists(m_DirectoryPath_Emblems))
+        {
+            Directory.CreateDirectory(m_DirectoryPath_Emblems);
+        }
     }
 
     public void InitMainSettings()
@@ -38,6 +50,9 @@ public class MainSettingsController : MonoBehaviour
 
         m_UploadedTextureMat.mainTexture = m_DefaultTexture;
         m_UploadedTextureImagePlaceholder.SetMaterialDirty();
+
+        RefreshTeamIcons();
+        RefreshTeamNames();
     }
 
     public void DeinitMainSettings()
@@ -69,7 +84,7 @@ public class MainSettingsController : MonoBehaviour
         byte[] encodedImage = TEX.EncodeToPNG();
 
         // write to file
-        var wPath = Path.Combine(m_DirectoryPath, $"{Random.Range(0, 100000000)}_Emblem.png");
+        var wPath = Path.Combine(m_DirectoryPath_Emblems, $"{Random.Range(0, 100000000)}_Emblem.png");
         File.WriteAllBytes(wPath, encodedImage);
 
         // refresh ui
@@ -85,14 +100,9 @@ public class MainSettingsController : MonoBehaviour
         }
 
         try
-        {
-            if (!Directory.Exists(m_DirectoryPath))
-            {
-                Directory.CreateDirectory(m_DirectoryPath); // Ensure the directory exists
-            }
-            
+        {  
             // add first custom icons
-            string[] filePaths = Directory.GetFiles(m_DirectoryPath, "*.png");
+            string[] filePaths = Directory.GetFiles(m_DirectoryPath_Emblems, "*.png");
 
             List<byte[]> retrievedTextures = new List<byte[]>();
 
@@ -141,6 +151,68 @@ public class MainSettingsController : MonoBehaviour
     #endregion
 
     #region Team Name Settings
+    
+    public void OnSubmitNewTeamNameButtonClicked()
+    {
+        string input = m_TeamNameInputField.text;
+
+        if (input == string.Empty)
+            return;
+
+        // write to file
+        string currentTeams = PlayerPrefs.GetString(m_TeamNamesPrefsKey, "");
+        PlayerPrefs.SetString(m_TeamNamesPrefsKey, $"{currentTeams}{input},");
+
+        m_TeamNameInputField.text = string.Empty;
+
+        RefreshTeamNames();
+    }
+
+    private void RefreshTeamNames()
+    {
+        // clear current children
+        for (int i = 0; i < m_ContentParent_TN.childCount; i++)
+        {
+            Destroy(m_ContentParent_TN.GetChild(i).gameObject);
+        }
+
+        // load custom team names
+        var tNames = LoadTeamNames();
+        for (int i = 0; i < tNames.Count; i++)
+        {
+            GameObject tName = Instantiate(m_TeamNamPlaceholder.gameObject, m_ContentParent_TN);
+            tName.GetComponent<TeamName>().SetTeamNameText(tNames[i]);
+        }
+        // load build it team names
+        for (int i = 0; i < m_BuildInTeamNames.Count; i++)
+        {
+            GameObject tName = Instantiate(m_TeamNamPlaceholder.gameObject, m_ContentParent_TN);
+            tName.GetComponent<TeamName>().SetTeamNameText(m_BuildInTeamNames[i]);
+        }
+    }
+
+    private List<string> LoadTeamNames()
+    {
+        List<string> tNames = new List<string>();
+
+        string currentTeams = PlayerPrefs.GetString(m_TeamNamesPrefsKey, "");
+
+        var teams = currentTeams.Split(',');
+
+        for (int i = 0; i < teams.Length; i++)
+        {
+            if(teams[i] == string.Empty)
+            {
+                continue;
+            }
+
+            tNames.Add(teams[i]);
+        }
+
+        tNames.Reverse();
+
+        return tNames;
+    }
 
     #endregion
 
