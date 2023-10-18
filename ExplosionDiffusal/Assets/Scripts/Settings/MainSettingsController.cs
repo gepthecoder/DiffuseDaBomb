@@ -41,6 +41,8 @@ public class MainSettingsController : MonoBehaviour
         {
             Directory.CreateDirectory(m_DirectoryPath_Emblems);
         }
+
+        print($"m_DirectoryPath_Emblems: {m_DirectoryPath_Emblems}");
     }
 
     public void InitMainSettings()

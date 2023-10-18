@@ -28,7 +28,7 @@ public class SettingsItemController : MonoBehaviour
 
             if(data.TeamEmblem != null)
             {
-                TryDisableTeamEmblemOption(SettingsItemType.Axis, data.TeamEmblem.name);
+                TryDisableTeamEmblemOption(SettingsItemType.Axis, data.TeamEmblem.hasMaterial ?  data.TeamEmblem.MATERIAL.mainTexture.name : data.TeamEmblem.SPRITE.name);
             }
 
             m_DuelController.OnSettingsChanged(data);
@@ -43,7 +43,7 @@ public class SettingsItemController : MonoBehaviour
 
             if (data.TeamEmblem != null)
             {
-                TryDisableTeamEmblemOption(SettingsItemType.Allies, data.TeamEmblem.name);
+                TryDisableTeamEmblemOption(SettingsItemType.Allies, data.TeamEmblem.hasMaterial ? data.TeamEmblem.MATERIAL.mainTexture.name : data.TeamEmblem.SPRITE.name);
             }
 
             m_DuelController.OnSettingsChanged(data);

@@ -7,14 +7,14 @@ using DG.Tweening;
 
 public class MainTeamHolderData
 {
-    public Sprite LogoSprite;
+    public TeamIconImageMapper LogoSprite;
     public string Score;
     public string TeamName;
     public string TeamCount;
     public string ScoreLimit;
 
     public MainTeamHolderData() { }
-    public MainTeamHolderData(Sprite logo, string score, string teamName, string teamCount, string scoreLimit) {
+    public MainTeamHolderData(TeamIconImageMapper logo, string score, string teamName, string teamCount, string scoreLimit) {
         LogoSprite = logo;
         Score = score;
         TeamName = teamName;
@@ -25,7 +25,7 @@ public class MainTeamHolderData
 
 public class MainTeamHolder : MonoBehaviour
 {
-    public Image LogoImage;
+    public TeamIcon LogoImage;
     public Image LogoShineImage;
     public Text ScoreText;
     public Text TeamNameText;
@@ -40,7 +40,7 @@ public class MainTeamHolder : MonoBehaviour
     {
         scoreLimit = data.ScoreLimit;
 
-        LogoImage.sprite = data.LogoSprite;
+        LogoImage.SetTeamIconImageViaMapper(data.LogoSprite);;
         ScoreText.text = $"{data.Score}/{data.ScoreLimit}";
         TeamNameText.text = $"{data.TeamName}";
         TeamCountText.text = $"{data.TeamCount}";

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,5 +26,22 @@ public class TeamIcon : MonoBehaviour
             m_Icon.color.b,
             alpha
         );
+    }
+
+    public void SetTeamIconImageViaMapper(TeamIconImageMapper mapper)
+    {
+        if(mapper.hasMaterial) {
+            m_Icon.sprite = null;
+            SetTeamIconMaterial(mapper.MATERIAL);
+        } else
+        {
+            m_Icon.material = null;
+            SetTeamIconSprite(mapper.SPRITE);
+        }
+    }
+
+    public void FadeTeamIcon(float endVal, float duration)
+    {
+        m_Icon.DOFade(endVal, duration);
     }
 }

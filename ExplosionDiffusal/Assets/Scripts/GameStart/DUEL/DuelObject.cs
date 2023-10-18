@@ -16,7 +16,7 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
     [HideInInspector] public UnityEvent<DuelObjectType> OnDuelObjectSelected = new UnityEvent<DuelObjectType>();
 
     [Header("Movable Components")]
-    public Image Emblem;
+    public TeamIcon Emblem;
     public TextMeshProUGUI TeamName;
     public TextMeshProUGUI TeamCount;
     public Animator TeamCountBgAnimator;
@@ -69,12 +69,12 @@ public class DuelObject : MonoBehaviour, IPointerClickHandler
         {
             m_ConfigData.TeamEmblem = data.TeamEmblem;
 
-            Emblem.sprite = data.TeamEmblem;
+            Emblem.SetTeamIconImageViaMapper(data.TeamEmblem);
 
             if (QuestionMark.isActiveAndEnabled)
             {
                 QuestionMark.enabled = false;
-                Emblem.DOFade(1f, .4f);
+                Emblem.FadeTeamIcon(1f, .4f);
             }
         }
 

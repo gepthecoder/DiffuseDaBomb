@@ -133,8 +133,8 @@ public class GameManager : MonoBehaviour
 
                         // SaveData
                         HistoryItemData historyData = new HistoryItemData(
-                              endMatchData.m_WinningTeamSprite.name,
-                              endMatchData.m_LosingTeamSprite.name,
+                              endMatchData.m_WinningTeamSprite.hasMaterial ? endMatchData.m_WinningTeamSprite.MATERIAL.mainTexture.name : endMatchData.m_WinningTeamSprite.SPRITE.name,
+                              endMatchData.m_LosingTeamSprite.hasMaterial ? endMatchData.m_LosingTeamSprite.MATERIAL.mainTexture.name : endMatchData.m_LosingTeamSprite.SPRITE.name,
                               endMatchData.m_WinningTeamNameString,
                               endMatchData.m_LosingTeamNameString,
                               endMatchData.m_WinningTeamScore,

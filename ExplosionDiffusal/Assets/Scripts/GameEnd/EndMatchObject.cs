@@ -7,8 +7,8 @@ using UnityEngine.UI;
 [System.Serializable]
 public class EndMatchObjectData
 {
-    public Sprite m_WinningTeamSprite;
-    public Sprite m_LosingTeamSprite;
+    public TeamIconImageMapper m_WinningTeamSprite;
+    public TeamIconImageMapper m_LosingTeamSprite;
 
     public string m_WinningTeamNameString;
     public string m_LosingTeamNameString;
@@ -27,7 +27,7 @@ public class EndMatchObjectData
     public EndMatchObjectData() { }
 
     public EndMatchObjectData
-        (Sprite wT, Sprite lT, string wTName, string lTName, int wTScore, int lTScore, string eMDate, string eMTime, SettingsItemData sItemDataWinner, SettingsItemData sItemDataLoser, bool isDraw)
+        (TeamIconImageMapper wT, TeamIconImageMapper lT, string wTName, string lTName, int wTScore, int lTScore, string eMDate, string eMTime, SettingsItemData sItemDataWinner, SettingsItemData sItemDataLoser, bool isDraw)
     {
         m_WinningTeamSprite = wT; m_LosingTeamSprite = lT;
         m_WinningTeamNameString = wTName; m_LosingTeamNameString = lTName;
@@ -70,8 +70,8 @@ public class EndMatchTeamStatusIcon
 public class EndMatchObject : MonoBehaviour
 {
     [Header("Duel")]
-    [SerializeField] private Image m_WinningTeamImage;
-    [SerializeField] private Image m_LosingTeamImage;
+    [SerializeField] private TeamIcon m_WinningTeamImage;
+    [SerializeField] private TeamIcon m_LosingTeamImage;
     [SerializeField] private EndMatchTeamStatusIcon m_EndMatchTeamStatusIcon;
     [Header("Match Info")]
     [SerializeField] private TextMeshProUGUI m_WinningTeamNameText;
@@ -90,8 +90,8 @@ public class EndMatchObject : MonoBehaviour
         if (data == null)
             return;
 
-        m_WinningTeamImage.sprite = data.m_WinningTeamSprite;
-        m_LosingTeamImage.sprite = data.m_LosingTeamSprite;
+        m_WinningTeamImage.SetTeamIconImageViaMapper(data.m_WinningTeamSprite);
+        m_LosingTeamImage.SetTeamIconImageViaMapper(data.m_LosingTeamSprite);
 
         m_EndMatchTeamStatusIcon.EnableStatusIcons(data.m_IsDraw);
 
