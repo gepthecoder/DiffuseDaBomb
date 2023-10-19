@@ -29,9 +29,43 @@ public class MainSettingsController : MonoBehaviour
     [SerializeField] private Transform m_ContentParent_TN;
     [SerializeField] private TMP_InputField m_TeamNameInputField;
     [SerializeField] private TeamName m_TeamNamPlaceholder;
+    [Header("Audio")]
+    [SerializeField] private Slider m_MasterVolumeSlider;
+    [SerializeField] private TextMeshProUGUI m_MasterVolumeValueText;
+    [Space(5)]
+    [SerializeField] private Slider m_MusicVolumeSlider;
+    [SerializeField] private TextMeshProUGUI m_MusicVolumeValueText;
+    [Space(5)]
+    [SerializeField] private Slider m_SFXVolumeSlider;
+    [SerializeField] private TextMeshProUGUI m_SFXVolumeValueText;
+    [Space(10)]
+    [SerializeField] private Image m_MuteSFX_Image;
+    [SerializeField] private Image m_MuteMUSIC_Image;
+    [SerializeField] private Sprite m_SFX_ON;
+    [SerializeField] private Sprite m_SFX_OFF;
+    [SerializeField] private TextMeshProUGUI m_SFX_Text;
+    [SerializeField] private TextMeshProUGUI m_MUSIC_Text;
 
     private string m_DirectoryPath_Emblems = "";
+
+    private bool m_IsSFX_ON = true;
+    private bool m_IsMUSIC_ON = true;
+
+    #region Consts
     private const string m_TeamNamesPrefsKey = "TeamNames";
+
+    private const float m_MinInput = -80f;
+    private const float m_MaxInput = 0f;
+
+    private const float m_MinOutput = 0f;
+    private const float m_MaxOutput = 100f;
+
+    private const string m_SfxOnText = "MUTE <size=30><color=green>SFX</color>";
+    private const string m_MusicOnText = "MUTE <size=30><color=yellow>MUSIC</color>";
+
+    private const string m_SfxOffText = "UNMUTE <size=30><color=green>SFX</color>";
+    private const string m_MusicOffText = "UNMUTE <size=30><color=yellow>MUSIC</color>";
+    #endregion
 
     private void Start()
     {
@@ -55,12 +89,16 @@ public class MainSettingsController : MonoBehaviour
 
         RefreshTeamIcons();
         RefreshTeamNames();
+
+        SubToAudioSliders();
     }
 
     public void DeinitMainSettings()
     {
         m_SettingsAnimator.Play("HIDE");
         m_SnapToItemTeamEmblem.DeinitSnap();
+
+        UnSubAudioSliders();
     }
 
     #region Team Emblem Settings
@@ -219,6 +257,103 @@ public class MainSettingsController : MonoBehaviour
     #endregion
 
     #region Audio Settings
+
+    public void SFX_BUTTON_PRESS()
+    {
+        if (m_IsSFX_ON)
+        {
+            m_SFX_Text.text = m_SfxOffText;
+            m_MuteSFX_Image.sprite = m_SFX_ON;
+            AudioDirector.INSTANCE?.MuteSFX();
+
+            m_IsSFX_ON = false;
+
+            m_SFXVolumeSlider.value = -80;
+            m_SFXVolumeValueText.text = $"{(int)0}";
+        }
+        else
+        {
+            m_SFX_Text.text = m_SfxOnText;
+            m_MuteSFX_Image.sprite = m_SFX_OFF;
+            AudioDirector.INSTANCE?.AmplifySFX();
+
+            m_IsSFX_ON = true;
+
+            m_SFXVolumeSlider.value = 0;
+            m_SFXVolumeValueText.text = $"{(int)100}";
+        }
+    }
+
+    public void MUSIC_BUTTON_PRESS()
+    {
+        if (m_IsMUSIC_ON)
+        {
+            m_MUSIC_Text.text = m_MusicOffText;
+            m_MuteMUSIC_Image.sprite = m_SFX_ON;
+            AudioDirector.INSTANCE?.MuteMUSIC();
+
+            m_IsMUSIC_ON = false;
+
+            m_MusicVolumeSlider.value = -80;
+            m_MusicVolumeValueText.text = $"{(int)0}";
+        }
+        else
+        {
+            m_MUSIC_Text.text = m_MusicOnText;
+            m_MuteMUSIC_Image.sprite = m_SFX_OFF;
+            AudioDirector.INSTANCE?.AmplifyMUSIC();
+
+            m_IsMUSIC_ON = true;
+
+            m_MusicVolumeSlider.value = 0;
+            m_MusicVolumeValueText.text = $"{(int)100}";
+        }
+    }
+    private void SubToAudioSliders()
+    {
+        m_MasterVolumeSlider.onValueChanged.AddListener((value) => {
+
+            float VOL = Mathf.Clamp(value, -80, 0);
+            AudioDirector.INSTANCE?.SetMasterVolume(VOL);
+
+            float mappedValue = (value - m_MinInput) / (m_MaxInput - m_MinInput) * (m_MaxOutput - m_MinOutput) + m_MinOutput;
+
+            m_MasterVolumeValueText.text = $"{(int)mappedValue}";
+
+            m_MusicVolumeSlider.value = VOL;
+            m_MusicVolumeValueText.text = $"{(int)mappedValue}";
+
+            m_SFXVolumeSlider.value = VOL;
+            m_SFXVolumeValueText.text = $"{(int)mappedValue}";
+        });
+
+        m_MusicVolumeSlider.onValueChanged.AddListener((value) => {
+
+            float VOL = Mathf.Clamp(value, -80, 0);
+            AudioDirector.INSTANCE?.SetMusicVolume(VOL);
+
+            float mappedValue = (value - m_MinInput) / (m_MaxInput - m_MinInput) * (m_MaxOutput - m_MinOutput) + m_MinOutput;
+
+            m_MusicVolumeValueText.text = $"{(int)mappedValue}";
+        });
+
+        m_SFXVolumeSlider.onValueChanged.AddListener((value) => {
+
+            float VOL = Mathf.Clamp(value, -80, 0);
+            AudioDirector.INSTANCE?.SetSFXVolume(VOL);
+
+            float mappedValue = (value - m_MinInput) / (m_MaxInput - m_MinInput) * (m_MaxOutput - m_MinOutput) + m_MinOutput;
+
+            m_SFXVolumeValueText.text = $"{(int)mappedValue}";
+        });
+    }
+
+    private void UnSubAudioSliders()
+    {
+        m_MasterVolumeSlider.onValueChanged.RemoveAllListeners();
+        m_MusicVolumeSlider.onValueChanged.RemoveAllListeners();
+        m_SFXVolumeSlider.onValueChanged.RemoveAllListeners();
+    }
 
     #endregion
 }

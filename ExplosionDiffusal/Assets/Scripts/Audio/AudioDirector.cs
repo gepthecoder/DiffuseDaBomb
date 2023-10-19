@@ -9,7 +9,6 @@ public class AudioDirector : MonoBehaviour
 
     [SerializeField] private AudioMixer m_RootAudio;
 
-
     private void Awake()
     {
         if (INSTANCE == null)
@@ -28,6 +27,16 @@ public class AudioDirector : MonoBehaviour
     public void SetMasterVolume(float volume)
     {
         m_RootAudio?.SetFloat("Master", volume);
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+        m_RootAudio?.SetFloat("MUSIC", volume);
+    }
+
+    public void SetSFXVolume(float volume)
+    {
+        m_RootAudio?.SetFloat("SFX", volume);
     }
 
     public void MuteSFX()
@@ -49,6 +58,5 @@ public class AudioDirector : MonoBehaviour
     {
         m_RootAudio.SetFloat("MUSIC", 0f);
     }
-
     #endregion
 }
