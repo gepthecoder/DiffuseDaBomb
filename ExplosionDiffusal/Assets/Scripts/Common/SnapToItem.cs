@@ -13,7 +13,7 @@ public class SnapToItem : MonoBehaviour
     [Space(5)]
     [SerializeField] [Range(20, 300)] private float m_SnapForce = 100;
 
-    private bool m_Inited = false;
+    public bool m_Inited = false;
     private bool m_IsSnapped = false;
 
     private float m_SnapSpeed;

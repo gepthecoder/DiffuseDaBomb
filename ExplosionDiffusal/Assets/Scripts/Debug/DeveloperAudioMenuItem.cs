@@ -28,7 +28,6 @@ public class DeveloperAudioMenuItem : DeveloperItem
     
     private const string m_SfxOffText = "UNMUTE <size=30><color=green>SFX</color>";
     private const string m_MusicOffText = "UNMUTE <size=30><color=yellow>MUSIC</color>";
-
     #endregion
 
     private bool m_IsSFX_ON = true;
