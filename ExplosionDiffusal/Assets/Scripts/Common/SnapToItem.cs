@@ -45,13 +45,15 @@ public class SnapToItem : MonoBehaviour
                 m_Scroll.velocity = Vector2.zero;
                 m_SnapSpeed += m_SnapForce * Time.deltaTime;
 
+                float targetX = 0 - (currentItem * (m_ContentItemList.rect.width + m_HorizontalLG.spacing));
                 m_ContentPanel.localPosition = new Vector3(
-                    Mathf.MoveTowards(m_ContentPanel.localPosition.x, 0 - (currentItem * (m_ContentItemList.rect.width + m_HorizontalLG.spacing)), m_SnapSpeed), 
+                    Mathf.MoveTowards(m_ContentPanel.localPosition.x, targetX, m_SnapSpeed),
                     m_ContentPanel.localPosition.y,
                     m_ContentPanel.localPosition.z
                 );
 
-                if(m_ContentPanel.localPosition.x == (0 - (currentItem * (m_ContentItemList.rect.width + m_HorizontalLG.spacing))))
+                // Use a tolerance for comparison
+                if (Mathf.Approximately(m_ContentPanel.localPosition.x, targetX))
                 {
                     m_IsSnapped = true;
                 }
