@@ -242,16 +242,20 @@ public class StartMatchManagerUI : MonoBehaviour
                         SpawnLayout();
                     });
                 }
+
+                AudioManager.INSTANCE.TriggerMenuLoopChanged(MenuAudioLoopType.Loop1);
                 break;
             case StartMatchState.ModeSelection:
                 Debug.Log($"<color=orange>StartMatchState</color><color=gold>ModeSelection</color>");
                 BackgroundManager.INSTANCE.TriggerBackgroundChanged();
+                AudioManager.INSTANCE.TriggerMenuLoopChanged(MenuAudioLoopType.Loop2);
                 StartCoroutine(ShowModeSelectionInterfaceSequence());
                 break;
             case StartMatchState.MatchSettings:
                 Debug.Log($"<color=orange>StartMatchState</color><color=gold>MatchSettings</color>");
                 BackgroundManager.INSTANCE.TriggerBackgroundChanged();
-                if(goToPrevious)
+                AudioManager.INSTANCE.TriggerMenuLoopChanged(MenuAudioLoopType.Loop3);
+                if (goToPrevious)
                 {
                     ShowMatchSettingsInterfaceSequence_v2();
                 }else
@@ -262,6 +266,7 @@ public class StartMatchManagerUI : MonoBehaviour
             case StartMatchState.Duel:
                 Debug.Log($"<color=orange>StartMatchState</color><color=gold>Duel</color>");
                 BackgroundManager.INSTANCE.TriggerBackgroundChanged();
+                AudioManager.INSTANCE.TriggerMenuLoopChanged(MenuAudioLoopType.Loop4);
                 StartCoroutine(ShowDuelInterfaceSequence());
                 break;
             case StartMatchState.TeamAConfig:
