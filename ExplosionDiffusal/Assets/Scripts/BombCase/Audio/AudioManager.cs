@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public enum AudioEffect { Keypress, Success, Denial, Plant, BombsPlanted, Defuse, BombsDefused }
-public enum MenuAudioLoopType { Loop1, Loop2, Loop3, Loop4, }
+public enum MenuAudioLoopType { Loop1, Loop2, Loop3, Loop4, None }
 
 
 [System.Serializable]
@@ -28,10 +28,16 @@ public class AudioManager : MonoBehaviour
     [Header("Music Loops")]
     [SerializeField] private List<MenuAudioLoopData> m_MenuAudioLoops = new List<MenuAudioLoopData>();
 
-    [Header("SFX")]
+    [Header("Sources")]
     [SerializeField] private AudioSource m_KeyPressAudio;
     [SerializeField] private AudioSource m_OtherAudio;
     [Space(5)]
+    [SerializeField] private AudioSource m_StartMatchAudio;
+    [SerializeField] private AudioSource m_StartMatchAudioTemp;
+    [SerializeField] private AudioSource m_StartMatchAudioTemp1;
+
+
+    [Header("SFX")]
     [SerializeField] private AudioClip m_KeyPressClip;
     [SerializeField] private AudioClip m_AccessDeniedClip;
     [SerializeField] private AudioClip m_BombPlantedClip;
@@ -39,9 +45,13 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip m_AllBombsPlantedClip;
     [SerializeField] private AudioClip m_AllBombsDefusedClip;
     [SerializeField] private AudioClip m_PlantBombClip;
+    [Space(5)]
+    [SerializeField] private AudioClip m_SearchAndDestroyIntroBGClip;
+    [SerializeField] private AudioClip m_StartMatchDrums;
 
-    //[Header("VO")]
-    //[SerializeField] private AudioClip m_PlantBombClip;
+    [Header("VO")]
+    [SerializeField] private AudioClip m_SearchAndDestroyIntroClip;
+    
 
     private void Awake()
     {
@@ -81,6 +91,24 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void PlayGameIntroAudio()
+    {
+        StartCoroutine(PlayGameIntroAudioSequence());
+    }
+
+    private IEnumerator PlayGameIntroAudioSequence()
+    {
+        m_StartMatchAudio.PlayOneShot(m_StartMatchDrums);
+        yield return new WaitForSeconds(m_StartMatchDrums.length / 3);
+
+        m_StartMatchAudioTemp.PlayOneShot(m_SearchAndDestroyIntroBGClip);
+        yield return new WaitForSeconds(m_SearchAndDestroyIntroBGClip.length / 6);
+
+        m_StartMatchAudioTemp1.PlayOneShot(m_SearchAndDestroyIntroClip);
+
+        StartCoroutine(FadeMusic(m_StartMatchAudio, 0f, 3f));
+    }
+
     #endregion
 
     #region AUDIO LOOPS
@@ -92,12 +120,27 @@ public class AudioManager : MonoBehaviour
             loopData.Init();
         }
     }
+
     public void TriggerMenuLoopChanged(MenuAudioLoopType loopType)
     {
         foreach (var loopData in m_MenuAudioLoops)
         {
             bool fadeIn = loopData.m_Type == loopType;
-            StartCoroutine(FadeMusic(loopData.m_MenuMusicLoopSource, fadeIn ? 1f : 0f, fadeIn ? 2f : 1f));
+            StartCoroutine(FadeMusic(loopData.m_MenuMusicLoopSource, fadeIn ? 1f : 0f, fadeIn ? 3f : 2f));
+        }
+    }
+
+    public void FadeOutVolume(MenuAudioLoopType loopType, float time)
+    {
+        print("FadeOutVolume: " + time);
+
+        foreach (var loopData in m_MenuAudioLoops)
+        {
+            if(loopData.m_Type == loopType)
+            {
+                StartCoroutine(FadeMusic(loopData.m_MenuMusicLoopSource, 0f, time));
+                break;
+            }
         }
     }
 
