@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum AudioEffect { Keypress, Success, Denial, Plant, BombsPlanted, Defuse, BombsDefused }
+public enum AudioEffect { Keypress, Success, Denial, Plant, BombsPlanted, Defuse, BombsDefused, }
 public enum MenuAudioLoopType { Loop1, Loop2, Loop3, Loop4, None }
 
 
@@ -35,7 +35,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource m_StartMatchAudio;
     [SerializeField] private AudioSource m_StartMatchAudioTemp;
     [SerializeField] private AudioSource m_StartMatchAudioTemp1;
-
+    [Space(5)]
+    [SerializeField] private AudioSource m_ButtonPressDefaultAudio;
 
     [Header("SFX")]
     [SerializeField] private AudioClip m_KeyPressClip;
@@ -48,6 +49,8 @@ public class AudioManager : MonoBehaviour
     [Space(5)]
     [SerializeField] private AudioClip m_SearchAndDestroyIntroBGClip;
     [SerializeField] private AudioClip m_StartMatchDrums;
+    [Space(5)]
+    [SerializeField] private AudioClip m_ButtonPressDefault;
 
     [Header("VO")]
     [SerializeField] private AudioClip m_SearchAndDestroyIntroClip;
@@ -89,6 +92,11 @@ public class AudioManager : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public void DEFAULT_BUTTON_PRESS_SOUND()
+    {
+        m_ButtonPressDefaultAudio.PlayOneShot(m_ButtonPressDefault);
     }
 
     public void PlayGameIntroAudio()
