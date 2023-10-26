@@ -195,6 +195,9 @@ public class VictoryManager : MonoBehaviour
         // CASE 01
         if(data._BombState_ == BombCaseState.Close)
         {
+            // Trigger SFX
+            AudioManager.INSTANCE.TriggerExplosionAudio(data._WinningTeam_);
+
             m_VictorySequenceComponents._BombManager_.ForceOpenBombBehaviour(() => {
                 ExplodeBomb(data);
             });
@@ -206,10 +209,13 @@ public class VictoryManager : MonoBehaviour
             bool isSubState;
             m_VictorySequenceComponents._DefuseBombManager_.TryForceCloseEncryptor(out isSubState);
 
-            if(isSubState)
+            if (isSubState)
             {
                 yield return new WaitForSeconds(2f);    
             }
+
+            AudioManager.INSTANCE.TriggerExplosionAudio(data._WinningTeam_);
+
 
             OnZoomOutOfComplex?.Invoke(() => {
                 ExplodeBomb(data);
@@ -235,6 +241,7 @@ public class VictoryManager : MonoBehaviour
             m_VictorySequenceComponents._BombManager_.InitClockMotion(false);
             m_VictorySequenceComponents._SceneSetupManager_.EnableBombCoverUps(true);
         });
+
         // Shake Cam
         m_VictorySequenceComponents._CameraManager_.ShakeCamera(() => {
             bool isScoreLimit = false;

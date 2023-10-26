@@ -120,7 +120,7 @@ public class CountdownObject : MonoBehaviour
                 }
             }
 
-            if(m_TimeRemaining <= 60)
+            if(m_TimeRemaining <= 62)
             {
                 OnLast60SecLeftEvent?.Invoke();
             }

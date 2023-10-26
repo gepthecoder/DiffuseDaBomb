@@ -58,6 +58,10 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource m_StartMatchAudioTemp1;
     [Space(5)]
     [SerializeField] private AudioSource m_ButtonPressDefaultAudio;
+    [Space(5)]
+    [SerializeField] private AudioSource m_ExplosionAudio;
+    [SerializeField] private AudioSource m_ExplosionTemp01Audio;
+    [SerializeField] private AudioSource m_ExplosionTemp02Audio;
 
     [Header("SFX")]
     [SerializeField] private AudioClip m_KeyPressClip;
@@ -74,11 +78,22 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip m_ButtonPressDefault;
     [Space(5)]
     [SerializeField] private AudioClip m_OpenBombClip;
+    [Space(5)]
+    [SerializeField] private AudioClip m_BombExplosionAnticipationClip;
+    [SerializeField] private AudioClip m_BombExplosion00Clip;
+    [SerializeField] private AudioClip m_BombExplosion01Clip;
+    [SerializeField] private AudioClip m_BombExplosion02Clip;
 
     [Header("VO")]
     [SerializeField] private AudioClip m_SearchAndDestroyIntroClipVO;
+    [Space(5)]
     [SerializeField] private AudioClip m_BombHasBeenPlantedClipVO;
+    [Space(5)]
     [SerializeField] private AudioClip m_Last60SecClipVO;
+    [Space(5)]
+    [SerializeField] private AudioClip m_ObjectiveDestroyedClipVO;
+    [SerializeField] private AudioClip m_AlliesWinClipVO;
+    [SerializeField] private AudioClip m_AxisWinClipVO;
     
 
     private void Awake()
@@ -122,13 +137,43 @@ public class AudioManager : MonoBehaviour
         StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Last16).m_BombCountdownLoopSource, 0f, .5f));
     }
 
-    public void TriggerExplosionAudioSeq(Team winTeam)
+    public void TriggerExplosionAudio(Team winTeam)
     {
-        // boom
+        StartCoroutine(TriggerExplosionAudioSeq(winTeam));
+    }    
+    
+    private IEnumerator TriggerExplosionAudioSeq(Team winTeam)
+    {
+        // anticipation
+        m_ExplosionAudio.PlayOneShot(m_BombExplosionAnticipationClip);
+
+        yield return new WaitForSeconds(1f);
+
+        m_ExplosionAudio.PlayOneShot(m_BombExplosion00Clip);
+
+        yield return new WaitForSeconds(.5f);
+
+        m_ExplosionTemp01Audio.PlayOneShot(m_BombExplosion01Clip);
+
+        yield return new WaitForSeconds(.5f);
+
+        m_ExplosionTemp01Audio.PlayOneShot(m_BombExplosion02Clip);
+
+        yield return new WaitForSeconds(1f);
 
         // "OBJECTIVE DESTROYED"
+        m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+        m_StartMatchAudioTemp1.PlayOneShot(m_ObjectiveDestroyedClipVO);
+       
+        yield return new WaitForSeconds(m_ObjectiveDestroyedClipVO.length);
 
         // "AXIS / ALLIES WIN"
+        var winWO = winTeam == Team.Allies ? m_AlliesWinClipVO : m_AxisWinClipVO;
+
+        m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+        m_StartMatchAudioTemp1.PlayOneShot(winWO);
+
+        yield break;
     }
 
     public void PlayAudioEffectByType(AudioEffect effectType)
@@ -230,7 +275,10 @@ public class AudioManager : MonoBehaviour
         foreach (var loopData in m_MenuAudioLoops)
         {
             bool fadeIn = loopData.m_Type == loopType;
-            StartCoroutine(FadeMusic(loopData.m_MenuMusicLoopSource, fadeIn ? 1f : 0f, fadeIn ? 3f : 2f));
+
+            StartCoroutine(FadeMusic(loopData.m_MenuMusicLoopSource, fadeIn ? 1f : 0f, 
+                fadeIn ? loopType == MenuAudioLoopType.Loop1 ? 5f: 3f : 2f
+            ));
         }
     }
 
