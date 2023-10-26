@@ -143,7 +143,7 @@ public class Keypad : Encryptor
         if (enable)
         {
             gameObject.SetActive(true);
-            gameObject.transform.DOScale(Vector3.one, 1f)
+            gameObject.transform.DOScale(Vector3.one, .6f)
                 .SetEase(Ease.InOutCubic);
         }
         else
