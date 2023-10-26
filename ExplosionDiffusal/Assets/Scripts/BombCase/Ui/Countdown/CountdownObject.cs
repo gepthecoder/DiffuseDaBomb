@@ -21,6 +21,10 @@ public class CountdownObject : MonoBehaviour
 
     [HideInInspector] public UnityEvent OnCountdownCompletedEvent = new UnityEvent();
 
+    [HideInInspector] public UnityEvent OnLast60SecLeftEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent OnLast48SecLeftEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent OnLast16SecLeftEvent = new UnityEvent();
+
     private TimeSpan m_TimePlaying;
     private bool m_TimerRunning;
 
@@ -115,7 +119,21 @@ public class CountdownObject : MonoBehaviour
                     m_CountdownTimerText_3D.text = m_TimePlaying.ToString("mm':'ss'.'ff");
                 }
             }
-          
+
+            if(m_TimeRemaining <= 60)
+            {
+                OnLast60SecLeftEvent?.Invoke();
+            }
+
+            if (m_TimeRemaining <= 48)
+            {
+                OnLast48SecLeftEvent?.Invoke();
+            }
+
+            if (m_TimeRemaining <= 16)
+            {
+                OnLast16SecLeftEvent?.Invoke();
+            }
 
             if (m_TimeRemaining <= 0) {
 

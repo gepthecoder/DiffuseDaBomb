@@ -19,7 +19,7 @@ public class AudioButtonSFXHelper : MonoBehaviour
 
         m_ArrowButtons.ForEach((btn) => {
             btn.onClick.AddListener(() => {
-                AudioManager.INSTANCE.PlayButtonPressedSFX(AudioEffect.Keypress);
+                AudioManager.INSTANCE.PlayAudioEffectByType(AudioEffect.Keypress);
             });
         });
     }

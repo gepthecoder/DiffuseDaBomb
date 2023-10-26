@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private ScoreManager m_ScoreManager;
     [SerializeField] private RepairBombManager m_RepairBombManager;
     [SerializeField] private EndMatchManager m_EndMatchManager;
+    [SerializeField] private AudioManager m_AudioManager;
 
     protected GlobalConfig ___Global_Config___;
 
@@ -304,6 +305,8 @@ public class GameManager : MonoBehaviour
         {
             m_CountdownManager.InitDefuseBombTime(___Global_Config___.__MATCH_SETTINGS__.BombTimeInMinutes, new List<CountdownObjectType>() { CountdownObjectType.CircuitTimer3D, CountdownObjectType.MagneticBombTimer3D });
             m_PlantBombManager.InitClockMotion(true);
+
+            m_AudioManager.OnPlantBombVFX();
 
             TriggerBehaviour(GameState.Defusing);
         });

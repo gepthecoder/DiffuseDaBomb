@@ -55,6 +55,8 @@ public class DefuseBombManager : MonoBehaviour
 
             m_CurrentSelectedEncryptor = ClickableType.None;
 
+            AudioManager.INSTANCE.MuteAllBombCountdownLoops();
+
             TriggerDefuseBehaviour(DefuseBombState.Done, data);
         });
 

@@ -29,6 +29,10 @@ public class CountdownManager : MonoBehaviour
 
     private bool m_VictoryInitialized = false;
 
+    private bool m_Last60SecPlayed = false;
+    private bool m_Last48SecPlayed = false;
+    private bool m_Last16SecPlayed = false;
+
     private void Awake()
     {
         m_GameStartDelayCountdownObject.OnCountdownCompletedEvent.AddListener(() => {
@@ -63,9 +67,47 @@ public class CountdownManager : MonoBehaviour
 
                 m_VictoryInitialized = true;
 
+                AudioManager.INSTANCE.MuteAllBombCountdownLoops();
+
                 Debug.Log("Explodeeeee!");
                 Team team = RoundManager.instance.GetWinningTeamByVictoryType(VictoryType.BombExploded);
                 OnVictoryEvent?.Invoke(new VictoryEventData(team, VictoryType.BombExploded));
+            });
+        });
+    }
+
+    private void Start()
+    {
+        m_RoundTimeCountdownObject.OnLast60SecLeftEvent.AddListener(() => {
+            if (m_Last60SecPlayed)
+                return;
+            
+            m_Last60SecPlayed = true;
+
+            AudioManager.INSTANCE.Last60Sec();
+        });
+
+        m_DefuseTimeCountdownObjects.ForEach((timer) => {
+            timer.OnLast60SecLeftEvent.AddListener(() => {
+                if (m_Last60SecPlayed)
+                    return;
+                m_Last60SecPlayed = true;
+
+                AudioManager.INSTANCE.Last60Sec();
+            });
+            timer.OnLast48SecLeftEvent.AddListener(() => {
+                if (m_Last48SecPlayed)
+                    return;
+                m_Last48SecPlayed = true;
+
+                AudioManager.INSTANCE.Last48Sec();
+            });
+            timer.OnLast16SecLeftEvent.AddListener(() => {
+                if (m_Last16SecPlayed)
+                    return;
+                m_Last16SecPlayed = true;
+
+                AudioManager.INSTANCE.Last16Sec();
             });
         });
     }
@@ -76,7 +118,12 @@ public class CountdownManager : MonoBehaviour
         m_RoundTimeCountdownObject.OnCountdownCompletedEvent.RemoveAllListeners();
         m_DefuseTimeCountdownObjects.ForEach((timer) => {
             timer.OnCountdownCompletedEvent.RemoveAllListeners();
+            timer.OnLast60SecLeftEvent.RemoveAllListeners();
+            timer.OnLast48SecLeftEvent.RemoveAllListeners();
+            timer.OnLast16SecLeftEvent.RemoveAllListeners();
         });
+
+        m_RoundTimeCountdownObject.OnLast60SecLeftEvent.RemoveAllListeners();
     }
 
     public void DeinitCountdownObjects()

@@ -34,6 +34,7 @@ public class BombManager : MonoBehaviour
     //--------------------------------------------/\--------------------------------------------\\
     private float m_OnDownTimer = 0;
     private float m_OnDownTreshold = 3f;
+    private float m_OnDownTresholdShort = 2f;
     private bool m_OpenSuitcase = false;
     private bool m_OnDownStart = false;
     private bool m_CanCheckBombInteraction = false;
@@ -185,6 +186,11 @@ public class BombManager : MonoBehaviour
                     m_OnDownTimer = 0;
                     m_BombOpeningUiManager.ShowSlider(false);
                 }
+            }
+
+            if(m_OnDownTimer >= m_OnDownTresholdShort)
+            {
+                AudioManager.INSTANCE.PlayAudioEffectByType(AudioEffect.OpenBomb);
             }
 
             if (m_OnDownTimer >= m_OnDownTreshold)

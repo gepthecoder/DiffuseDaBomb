@@ -135,7 +135,7 @@ public class Keypad : Encryptor
 
     private void PlayButtonPressedSFX(AudioEffect fx)
     {
-        AudioManager.INSTANCE.PlayButtonPressedSFX(fx);
+        AudioManager.INSTANCE.PlayAudioEffectByType(fx);
     }
 
     public void EnableObject(bool enable)

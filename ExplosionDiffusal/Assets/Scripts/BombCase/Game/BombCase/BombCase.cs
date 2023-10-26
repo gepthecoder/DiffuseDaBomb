@@ -54,10 +54,13 @@ public class BombCase : MonoBehaviour
 
     public void OpenBombCase(Action callback)
     {
-        m_TopCasePart.DOLocalRotate(new Vector3(0f, m_CaseOpenedValue, 0f), 1.5f).SetEase(Ease.OutExpo).OnComplete(() => 
-        {
-            callback();
-        });
+        m_TopCasePart.DOLocalRotate(new Vector3(0f, m_CaseOpenedValue, 0f), 1.5f)
+            .SetEase(Ease.OutExpo)
+            .OnComplete(() => 
+            {
+                callback();
+            }
+        );
     }
     private void CloseBombCase()
     {

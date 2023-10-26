@@ -107,7 +107,7 @@ public class PlantBombHackingController : MonoBehaviour
     }
     private void PlayButtonPressedSFX(AudioEffect fx)
     {
-        AudioManager.INSTANCE.PlayButtonPressedSFX(fx);
+        AudioManager.INSTANCE.PlayAudioEffectByType(fx);
     }
 
     private void Deinit3dViews(CodeEncryptionType type)

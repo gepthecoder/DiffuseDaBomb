@@ -29,7 +29,7 @@ public class DefuseBombController : MonoBehaviour
 
         m_CurrentSelected = data.SelectedType;
 
-        AudioManager.INSTANCE.PlayButtonPressedSFX(AudioEffect.Defuse);
+        AudioManager.INSTANCE.PlayAudioEffectByType(AudioEffect.Defuse);
 
         m_CameraManager.ZoomInOutOfTarget(data.Position, () => {
             m_UiManager.FadeInOutScreen(.77f);
@@ -56,7 +56,7 @@ public class DefuseBombController : MonoBehaviour
             OnItemHackedEvent?.Invoke(data);
         }
 
-        AudioManager.INSTANCE.PlayButtonPressedSFX(AudioEffect.BombsDefused);
+        AudioManager.INSTANCE.PlayAudioEffectByType(AudioEffect.BombsDefused);
         m_CurrentSelected = ClickableType.None;
 
         ActivateBombEffect(true, data.CodeEncryption);

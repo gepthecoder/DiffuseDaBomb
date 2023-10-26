@@ -37,7 +37,7 @@ public class PlantBombActionHandler : MonoBehaviour
 
     private void OnHackingItemSelected(HackingItemData data)
     {
-        AudioManager.INSTANCE.PlayButtonPressedSFX(AudioEffect.Plant);
+        AudioManager.INSTANCE.PlayAudioEffectByType(AudioEffect.Plant);
 
         SuitcaseHelper.INSTANCE?.ShowCloseSuitcaseButton(false);
 

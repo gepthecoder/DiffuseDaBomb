@@ -59,7 +59,7 @@ public class Keyboard : Encryptor
 
     private void PlayButtonPressedSFX(AudioEffect fx)
     {
-        AudioManager.INSTANCE.PlayButtonPressedSFX(fx);
+        AudioManager.INSTANCE.PlayAudioEffectByType(fx);
     }
 
     private bool IsSpecialKey(string key)
