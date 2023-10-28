@@ -4301,7 +4301,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 189
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -4995,7 +4995,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 196
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -6051,7 +6051,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 30
+  Priority: 220
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -11351,6 +11351,7 @@ GameObject:
   - component: {fileID: 618914399}
   - component: {fileID: 618914401}
   - component: {fileID: 618914400}
+  - component: {fileID: 618914402}
   m_Layer: 5
   m_Name: TeamAvatar
   m_TagString: Untagged
@@ -11417,6 +11418,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 618914398}
   m_CullTransparentMesh: 1
+--- !u!114 &618914402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618914398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9873bde4891daff4dab14bbad39d6912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Icon: {fileID: 618914400}
 --- !u!1 &623468256
 GameObject:
   m_ObjectHideFlags: 0
@@ -17681,7 +17695,7 @@ MonoBehaviour:
   OnDuelObjectSelected:
     m_PersistentCalls:
       m_Calls: []
-  Emblem: {fileID: 0}
+  Emblem: {fileID: 618914402}
   TeamName: {fileID: 963665821}
   TeamCount: {fileID: 524158304}
   TeamCountBgAnimator: {fileID: 1874498458}
@@ -23736,7 +23750,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 180
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -25176,7 +25190,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &1458597453
 RectTransform:
@@ -26092,7 +26106,7 @@ MonoBehaviour:
   OnDuelObjectSelected:
     m_PersistentCalls:
       m_Calls: []
-  Emblem: {fileID: 0}
+  Emblem: {fileID: 1699612157}
   TeamName: {fileID: 1377991839}
   TeamCount: {fileID: 1027387660}
   TeamCountBgAnimator: {fileID: 1930167500}
@@ -29558,6 +29572,7 @@ GameObject:
   - component: {fileID: 1699612154}
   - component: {fileID: 1699612156}
   - component: {fileID: 1699612155}
+  - component: {fileID: 1699612157}
   m_Layer: 5
   m_Name: TeamAvatar
   m_TagString: Untagged
@@ -29624,6 +29639,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1699612153}
   m_CullTransparentMesh: 1
+--- !u!114 &1699612157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699612153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9873bde4891daff4dab14bbad39d6912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Icon: {fileID: 1699612155}
 --- !u!1 &1700102308
 GameObject:
   m_ObjectHideFlags: 0
@@ -30968,15 +30996,20 @@ MonoBehaviour:
     type: 3}
   m_BombExplosion02Clip: {fileID: 8300000, guid: 8102f2d26fad508418690fd5cb47144c,
     type: 3}
+  m_SwooshClip: {fileID: 8300000, guid: 33fd402366acea844a9427b50d0b57a3, type: 3}
   m_SearchAndDestroyIntroClipVO: {fileID: 8300000, guid: ce6eb5aa3929bec4084e9cc7affc802e,
     type: 3}
   m_BombHasBeenPlantedClipVO: {fileID: 8300000, guid: 514c37e3f54992c45b0189c1c809d0dc,
+    type: 3}
+  m_BombHasBeenDefusedClipVO: {fileID: 8300000, guid: f347e60f38ffe60478c8ed4110854f4e,
     type: 3}
   m_Last60SecClipVO: {fileID: 8300000, guid: e2efef4714f80d2468b82d098f3cbbba, type: 3}
   m_ObjectiveDestroyedClipVO: {fileID: 8300000, guid: 3501c4619cda7b642ad066b60cb2b2e4,
     type: 3}
   m_AlliesWinClipVO: {fileID: 8300000, guid: 0d6339e82f660484bb11187b9a5b99bf, type: 3}
   m_AxisWinClipVO: {fileID: 8300000, guid: 56c75f4caedaad64c9904043e5c01c99, type: 3}
+  m_SwitchingSidesClipVO: {fileID: 8300000, guid: 320e3e6524a201f48aff122dece6fe79,
+    type: 3}
 --- !u!1 &1758531283
 GameObject:
   m_ObjectHideFlags: 0
@@ -36109,6 +36142,9 @@ MonoBehaviour:
   m_RoundNumberText: {fileID: 0}
   m_BombNumberText: {fileID: 0}
   OnCountdownCompletedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCountdownAlmostCompletedEvent:
     m_PersistentCalls:
       m_Calls: []
   OnLast60SecLeftEvent:

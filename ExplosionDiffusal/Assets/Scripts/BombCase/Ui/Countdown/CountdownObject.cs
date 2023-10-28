@@ -20,6 +20,7 @@ public class CountdownObject : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_BombNumberText;
 
     [HideInInspector] public UnityEvent OnCountdownCompletedEvent = new UnityEvent();
+    [HideInInspector] public UnityEvent OnCountdownAlmostCompletedEvent = new UnityEvent();
 
     [HideInInspector] public UnityEvent OnLast60SecLeftEvent = new UnityEvent();
     [HideInInspector] public UnityEvent OnLast48SecLeftEvent = new UnityEvent();
@@ -133,6 +134,11 @@ public class CountdownObject : MonoBehaviour
             if (m_TimeRemaining <= 16)
             {
                 OnLast16SecLeftEvent?.Invoke();
+            }
+
+            if(!isMainBombTimer && m_TimeRemaining <= 1.5f)
+            {
+                OnCountdownAlmostCompletedEvent?.Invoke();
             }
 
             if (m_TimeRemaining <= 0) {

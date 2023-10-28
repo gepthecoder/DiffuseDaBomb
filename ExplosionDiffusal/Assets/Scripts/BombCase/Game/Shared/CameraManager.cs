@@ -38,7 +38,7 @@ public class CameraManager : MonoBehaviour
             .OnComplete((() =>
             {
                 callback();
-                m_MainCam.DOFieldOfView(m_MainCam.nearClipPlane, .5f).SetEase(Ease.InSine)
+                m_MainCam.DOFieldOfView(m_MainCam.nearClipPlane, .4f).SetEase(Ease.InSine)
                 .OnComplete((() => {
                     callback1();
                     ZoomOutOfTarget(true); 
@@ -50,7 +50,7 @@ public class CameraManager : MonoBehaviour
     {
         m_MainCam.transform.localEulerAngles = new Vector3(90, 0, 0);
 
-        m_MainCam.DOFieldOfView(!seq ? m_InitialFieldOfView : m_ItemSelectedFieldOfView, .77f).SetEase(Ease.InSine);
+        m_MainCam.DOFieldOfView(!seq ? m_InitialFieldOfView : m_ItemSelectedFieldOfView, !seq ? .77f : .4f).SetEase(Ease.InSine);
 
         if(!seq)
             m_MainCam.transform.DOLocalMove(new Vector3(1, 12, 1), 1f);

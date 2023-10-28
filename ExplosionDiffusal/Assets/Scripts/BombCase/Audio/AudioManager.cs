@@ -83,18 +83,33 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip m_BombExplosion00Clip;
     [SerializeField] private AudioClip m_BombExplosion01Clip;
     [SerializeField] private AudioClip m_BombExplosion02Clip;
+    [Space(5)]
+    [SerializeField] private AudioClip m_SwooshClip;
 
     [Header("VO")]
     [SerializeField] private AudioClip m_SearchAndDestroyIntroClipVO;
     [Space(5)]
     [SerializeField] private AudioClip m_BombHasBeenPlantedClipVO;
     [Space(5)]
+    [SerializeField] private AudioClip m_BombHasBeenDefusedClipVO;
+    [Space(5)]
     [SerializeField] private AudioClip m_Last60SecClipVO;
     [Space(5)]
     [SerializeField] private AudioClip m_ObjectiveDestroyedClipVO;
+    [Space(5)]
     [SerializeField] private AudioClip m_AlliesWinClipVO;
     [SerializeField] private AudioClip m_AxisWinClipVO;
-    
+    [Space(5)]
+    [SerializeField] private AudioClip m_SwitchingSidesClipVO;
+
+    // TODO: 
+
+    // SWOOSH SOUND when goin in/out of circuitboard - DONE
+    // DEFUSE CASE - DONE
+    // SWITCHING SIDES - DONE
+
+    // END MATCH
+
 
     private void Awake()
     {
@@ -106,157 +121,271 @@ public class AudioManager : MonoBehaviour
 
     #region SFX
 
-    public void OnPlantBombVFX()
-    {
-        StartCoroutine(OnPlantBombVFXSeq());
-    }
-
-    public void Last60Sec()
-    {
-        m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
-        m_StartMatchAudioTemp1.PlayOneShot(m_Last60SecClipVO);
-    }
-
-    public void Last48Sec()
-    {
-        StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Default).m_BombCountdownLoopSource, 0f, 1));
-        StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Last48).m_BombCountdownLoopSource, 1f, 1));
-    }
-
-    public void Last16Sec()
-    {
-        StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Last48).m_BombCountdownLoopSource, 0f, 1));
-        StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Last16).m_BombCountdownLoopSource, 1f, 1));
-    }
-
-    // On Explode, Defuse
-    public void MuteAllBombCountdownLoops()
-    {
-        StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Default).m_BombCountdownLoopSource, 0f, .5f));
-        StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Last48).m_BombCountdownLoopSource, 0f, .5f));
-        StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Last16).m_BombCountdownLoopSource, 0f, .5f));
-    }
-
-    public void TriggerExplosionAudio(Team winTeam)
-    {
-        StartCoroutine(TriggerExplosionAudioSeq(winTeam));
-    }    
-    
-    private IEnumerator TriggerExplosionAudioSeq(Team winTeam)
-    {
-        // anticipation
-        m_ExplosionAudio.PlayOneShot(m_BombExplosionAnticipationClip);
-
-        yield return new WaitForSeconds(1f);
-
-        m_ExplosionAudio.PlayOneShot(m_BombExplosion00Clip);
-
-        yield return new WaitForSeconds(.5f);
-
-        m_ExplosionTemp01Audio.PlayOneShot(m_BombExplosion01Clip);
-
-        yield return new WaitForSeconds(.5f);
-
-        m_ExplosionTemp01Audio.PlayOneShot(m_BombExplosion02Clip);
-
-        yield return new WaitForSeconds(1f);
-
-        // "OBJECTIVE DESTROYED"
-        m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
-        m_StartMatchAudioTemp1.PlayOneShot(m_ObjectiveDestroyedClipVO);
-       
-        yield return new WaitForSeconds(m_ObjectiveDestroyedClipVO.length);
-
-        // "AXIS / ALLIES WIN"
-        var winWO = winTeam == Team.Allies ? m_AlliesWinClipVO : m_AxisWinClipVO;
-
-        m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
-        m_StartMatchAudioTemp1.PlayOneShot(winWO);
-
-        yield break;
-    }
-
-    public void PlayAudioEffectByType(AudioEffect effectType)
-    {
-        switch (effectType)
+        #region public-methods
+        public void PlaySwooshSound()
         {
-            case AudioEffect.Keypress:
-                m_KeyPressAudio.PlayOneShot(m_KeyPressClip);
-                break;
-            case AudioEffect.Success:
-                m_OtherAudio.PlayOneShot(m_BombPlantedClip);
-                break;
-            case AudioEffect.Denial:
-                m_OtherAudio.PlayOneShot(m_AccessDeniedClip);
-                break;
-            case AudioEffect.Plant:
-                m_OtherAudio.PlayOneShot(m_PlantBombClip);
-                break;
-            case AudioEffect.BombsPlanted:
-                m_OtherAudio.PlayOneShot(m_AllBombsPlantedClip);
-                break;
-            case AudioEffect.Defuse:
-                m_OtherAudio.PlayOneShot(m_DefusingClip);
-                break;
-            case AudioEffect.BombsDefused:
-                m_OtherAudio.PlayOneShot(m_AllBombsDefusedClip);
-                break;
-            case AudioEffect.OpenBomb:
-                if(!m_OtherAudio.isPlaying)
-                    m_OtherAudio.PlayOneShot(m_OpenBombClip);
-                break;
-            default:
-                break;
+            m_OtherAudio.PlayOneShot(m_SwooshClip);
         }
-    }
 
-    public void DEFAULT_BUTTON_PRESS_SOUND()
-    {
-        m_ButtonPressDefaultAudio.PlayOneShot(m_ButtonPressDefault);
-    }
-
-    public void PlayGameIntroAudio()
-    {
-        StartCoroutine(PlayGameIntroAudioSequence());
-    }
-
-
-    private IEnumerator PlayGameIntroAudioSequence()
-    {
-        m_StartMatchAudio.PlayOneShot(m_StartMatchDrums);
-        yield return new WaitForSeconds(m_StartMatchDrums.length / 3);
-
-        m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
-        m_StartMatchAudioTemp1.PlayOneShot(m_SearchAndDestroyIntroClipVO);
-
-        StartCoroutine(FadeMusic(m_StartMatchAudio, 0f, 3f));
-    }
-
-    private IEnumerator OnPlantBombVFXSeq()
-    {
-        yield return new WaitForSeconds(1f);
-
-        // Tick Loop Sound 0 - 1 volume t-LENGHT OF VO: "TheBombHasBeenPlanted.."
-        StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Default).m_BombCountdownLoopSource, 1, m_BombHasBeenPlantedClipVO.length + 2f));
-
-        m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
-        m_StartMatchAudioTemp1.PlayOneShot(m_BombHasBeenPlantedClipVO);
-
-        yield break;
-    }
-
-    private BombCountdownLoopData GetDataByBombCountdownLoopType(BombCountdownLoopType type)
-    {
-        return m_BombCountdownLoops.FirstOrDefault((item => item.m_Type == type));
-    }
-
-    private void InitBombCountdownLoops()
-    {
-        foreach (var loopData in m_BombCountdownLoops)
+        public void OnPlantBombVFX()
         {
-            loopData.Init();
+            StartCoroutine(OnPlantBombVFXSeq());
         }
-    }
+
+        public void Last60Sec()
+        {
+            StartCoroutine(Last60SecSeq());
+        }
+
+        public void Last48Sec()
+        {
+            StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Default).m_BombCountdownLoopSource, 0f, 1));
+            StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Last48).m_BombCountdownLoopSource, 1f, 1));
+        }
+
+        public void Last16Sec()
+        {
+            StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Last48).m_BombCountdownLoopSource, 0f, 1));
+            StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Last16).m_BombCountdownLoopSource, 1f, 1));
+        }
+
+        // On Explode, Defuse
+        public void MuteAllBombCountdownLoops()
+        {
+            StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Default).m_BombCountdownLoopSource, 0f, .8f));
+            StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Last48).m_BombCountdownLoopSource, 0f, .8f));
+            StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Last16).m_BombCountdownLoopSource, 0f, .8f));
+        }
+
+        public void ExplodeOnly()
+        {
+            StartCoroutine(ExplosionOnlySeq());
+        }
+
+        public void SwitchingSides()
+        {
+            StartCoroutine(SwitchingSidesSeq());   
+        }
+
+        public void TriggerDefuseBombAudio(Team winTeam)
+        {
+            StartCoroutine(TriggerDefuseBombAudioSeq(winTeam));
+        }   
+
+        public void TriggerExplosionAudio(Team winTeam)
+        {
+            StartCoroutine(TriggerExplosionAudioSeq(winTeam));
+        }
+
+        public void PlayAudioEffectByType(AudioEffect effectType)
+        {
+            switch (effectType)
+            {
+                case AudioEffect.Keypress:
+                    m_KeyPressAudio.PlayOneShot(m_KeyPressClip);
+                    break;
+                case AudioEffect.Success:
+                    m_OtherAudio.PlayOneShot(m_BombPlantedClip);
+                    break;
+                case AudioEffect.Denial:
+                    m_OtherAudio.PlayOneShot(m_AccessDeniedClip);
+                    break;
+                case AudioEffect.Plant:
+                    m_OtherAudio.PlayOneShot(m_PlantBombClip);
+                    break;
+                case AudioEffect.BombsPlanted:
+                    m_OtherAudio.PlayOneShot(m_AllBombsPlantedClip);
+                    break;
+                case AudioEffect.Defuse:
+                    m_OtherAudio.PlayOneShot(m_DefusingClip);
+                    break;
+                case AudioEffect.BombsDefused:
+                    m_OtherAudio.PlayOneShot(m_AllBombsDefusedClip);
+                    break;
+                case AudioEffect.OpenBomb:
+                    if(!m_OtherAudio.isPlaying)
+                        m_OtherAudio.PlayOneShot(m_OpenBombClip);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void DEFAULT_BUTTON_PRESS_SOUND()
+        {
+            m_ButtonPressDefaultAudio.PlayOneShot(m_ButtonPressDefault);
+        }
+
+        public void PlayGameIntroAudio(bool playIntro = true)
+        {
+            StartCoroutine(PlayGameIntroAudioSequence(playIntro));
+        }
+
+        public void PlayWinningTeamVO(Team wTeam)
+        {
+            StartCoroutine(PlayWinningTeamVOSeq(wTeam));
+        }
+        #endregion
+
+        #region private-methods
+
+        private IEnumerator Last60SecSeq()
+        {
+            if (m_StartMatchAudioTemp1.isPlaying)
+            {
+                while (m_StartMatchAudioTemp1.isPlaying)
+                {
+                    yield return null;
+                }
+            }
+
+            m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+            m_StartMatchAudioTemp1.PlayOneShot(m_Last60SecClipVO);
+        }
+
+        private IEnumerator PlayWinningTeamVOSeq(Team wTeam)
+        {
+            yield return new WaitForSeconds(1f);
+
+            var wClip = wTeam == Team.Allies ? m_AlliesWinClipVO : m_AxisWinClipVO;
+
+            m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+            m_StartMatchAudioTemp1.PlayOneShot(wClip);
+        }
+
+        private IEnumerator PlayGameIntroAudioSequence(bool playIntro = true)
+        {
+            if(playIntro)
+            {
+                m_StartMatchAudio.PlayOneShot(m_StartMatchDrums);
+                StartCoroutine(FadeMusic(m_StartMatchAudio, 1f, 2f));
+
+                yield return new WaitForSeconds(m_StartMatchDrums.length / 3);
+
+                StartCoroutine(FadeMusic(m_StartMatchAudio, 0f, 3f));
+
+                if (m_StartMatchAudioTemp1.isPlaying)
+                {
+                    while(m_StartMatchAudioTemp1.isPlaying)
+                    {
+                        yield return null;
+                    }
+                }
+
+                m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+                m_StartMatchAudioTemp1.PlayOneShot(m_SearchAndDestroyIntroClipVO);
+
+            } else
+            {
+                yield return new WaitForSeconds(1.5f);
+
+                m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+                m_StartMatchAudioTemp1.PlayOneShot(m_SearchAndDestroyIntroClipVO);
+            }      
+        }
+
+        private IEnumerator OnPlantBombVFXSeq()
+        {
+            yield return new WaitForSeconds(1f);
+
+            // Tick Loop Sound 0 - 1 volume t-LENGHT OF VO: "TheBombHasBeenPlanted.."
+            StartCoroutine(FadeMusic(GetDataByBombCountdownLoopType(BombCountdownLoopType.Default).m_BombCountdownLoopSource, 1, m_BombHasBeenPlantedClipVO.length + 2f));
+
+            if(m_StartMatchAudioTemp1.isPlaying)
+            {
+                while (m_StartMatchAudioTemp1.isPlaying)
+                {
+                    yield return null;
+                }
+            }
+
+            m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+            m_StartMatchAudioTemp1.PlayOneShot(m_BombHasBeenPlantedClipVO);
+
+            yield break;
+        }
+
+        private BombCountdownLoopData GetDataByBombCountdownLoopType(BombCountdownLoopType type)
+        {
+            return m_BombCountdownLoops.FirstOrDefault((item => item.m_Type == type));
+        }
+
+        private void InitBombCountdownLoops()
+        {
+            foreach (var loopData in m_BombCountdownLoops)
+            {
+                loopData.Init();
+            }
+        }
+
+        private IEnumerator ExplosionOnlySeq()
+        {
+            m_ExplosionAudio.PlayOneShot(m_BombExplosion00Clip);
+
+            yield return new WaitForSeconds(.25f);
+
+            m_ExplosionTemp01Audio.PlayOneShot(m_BombExplosion01Clip);
+
+            yield return new WaitForSeconds(.5f);
+
+            m_ExplosionTemp01Audio.PlayOneShot(m_BombExplosion02Clip);
+        }
+
+        private IEnumerator TriggerExplosionAudioSeq(Team winTeam)
+        {
+            // anticipation
+            m_ExplosionAudio.PlayOneShot(m_BombExplosionAnticipationClip);
+
+            yield return new WaitForSeconds(3.75f);
+
+            // "OBJECTIVE DESTROYED"
+            m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+            m_StartMatchAudioTemp1.PlayOneShot(m_ObjectiveDestroyedClipVO);
+
+            yield return new WaitForSeconds(m_ObjectiveDestroyedClipVO.length);
+
+            // "AXIS / ALLIES WIN"
+            var winWO = winTeam == Team.Allies ? m_AlliesWinClipVO : m_AxisWinClipVO;
+
+            m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+            m_StartMatchAudioTemp1.PlayOneShot(winWO);
+
+            yield break;
+        }
+
+        private IEnumerator TriggerDefuseBombAudioSeq(Team winTeam)
+        {
+            yield return new WaitForSeconds(1.5f);
+
+            m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+            m_StartMatchAudioTemp1.PlayOneShot(m_BombHasBeenDefusedClipVO);
+
+            yield return new WaitForSeconds(m_BombHasBeenDefusedClipVO.length + 2f);
+
+            var winClip = winTeam == Team.Allies ? m_AlliesWinClipVO : m_AxisWinClipVO;
+
+            m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+            m_StartMatchAudioTemp1.PlayOneShot(winClip);
+
+            yield break;
+        }
+
+        private IEnumerator SwitchingSidesSeq()
+        {
+            m_StartMatchAudio.PlayOneShot(m_StartMatchDrums);
+
+            StartCoroutine(FadeMusic(m_StartMatchAudio, 1f, 1f));
+
+            yield return new WaitForSeconds(m_StartMatchDrums.length / 4.5f);
+
+            StartCoroutine(FadeMusic(m_StartMatchAudio, 0f, 2f));
+
+            yield return new WaitForSeconds(2f);
+
+            m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+            m_StartMatchAudioTemp1.PlayOneShot(m_SwitchingSidesClipVO);
+        }
+        #endregion
 
     #endregion
 

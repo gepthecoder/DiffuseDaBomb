@@ -103,6 +103,8 @@ public class GameManager : MonoBehaviour
                     m_PlantBombManager.TriggerPlantBehaviour(PlantBombState.Start);
                     m_UiManager.FadeOutScreen();
                     m_CameraManager.ZoomOutOfTarget();
+
+                    AudioManager.INSTANCE.PlaySwooshSound();
                 } break;
             case GameState.Defusing:
                 Debug.Log($"<color=red>GameState</color><color=gold>Defusing</color>");
@@ -283,6 +285,8 @@ public class GameManager : MonoBehaviour
                 m_UiManager.FadeOutScreen();
                 m_CameraManager.ZoomOutOfTarget();
 
+                AudioManager.INSTANCE.PlaySwooshSound();
+
                 m_CountdownManager.SyncDefuseBombTime(CountdownObjectType.BombCaseTimer3D, CountdownObjectType.CircuitTimer3D);
                 m_CountdownManager.SyncDefuseBombTime(CountdownObjectType.BombCaseTimer3D, CountdownObjectType.MagneticBombTimer3D);
                 m_PlantBombManager.InitClockMotion(true);
@@ -392,6 +396,7 @@ public class GameManager : MonoBehaviour
                     m_CountdownManager.InitRoundTimeCountdown();
                     TriggerBehaviour(GameState.Initial);
                 });
+
             });
         });
 

@@ -41,7 +41,10 @@ public class RoundManager : MonoBehaviour
         if(IsHalfTime()) {
             StartCoroutine(TrySwitchSides(roundTimeStartAction)); 
         }
-        else { roundTimeStartAction?.Invoke(); }
+        else {
+            AudioManager.INSTANCE.PlayGameIntroAudio();
+            roundTimeStartAction?.Invoke(); 
+        }
     }
     public int GetCurrentRound() { return m_CurrentRound; }
 
@@ -59,6 +62,8 @@ public class RoundManager : MonoBehaviour
         m_AlliesSideType = DuelObjectType.Defender;
         m_AxisSideType = DuelObjectType.Attacker;
 
+        AudioManager.INSTANCE.SwitchingSides();
+
         yield return new WaitForSeconds(2f);
 
         // Hide Teams - Defender / Attacker
@@ -75,6 +80,8 @@ public class RoundManager : MonoBehaviour
 
         // Show Teams - Attacker / Defender
         m_MainCanvas?.ShowTeamPlaceholder(true);
+
+        AudioManager.INSTANCE.PlayGameIntroAudio(false);
 
         action?.Invoke();
     }

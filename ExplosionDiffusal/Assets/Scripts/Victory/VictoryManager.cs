@@ -148,6 +148,8 @@ public class VictoryManager : MonoBehaviour
         data._ScoreLimitReachedByTeam_ = winningTeam;
         data._IsDraw_ = isDraw;
 
+        AudioManager.INSTANCE.PlayWinningTeamVO(data._WinningTeam_);
+
         // WIN UI
         m_VictorySequenceComponents._VictoryUiManager_.InitVictoryUi(data);
 
@@ -159,6 +161,8 @@ public class VictoryManager : MonoBehaviour
     private IEnumerator BombDefusedSequence(VictoryEventData data)
     {
         m_VictorySequenceComponents._SceneSetupManager_.EnableBombCoverUps(true);
+
+        AudioManager.INSTANCE.TriggerDefuseBombAudio(data._WinningTeam_);
 
         yield return new WaitForSeconds(2f);
 
@@ -235,6 +239,9 @@ public class VictoryManager : MonoBehaviour
 
     private void ExplodeBomb(VictoryEventData data)
     {
+        // Audio
+        AudioManager.INSTANCE.ExplodeOnly();
+
         // Explode Bomb
         m_VictorySequenceComponents._BombExplosionController_.ExplodeBomb(() => {
             m_VictorySequenceComponents._BombManager_.TurnOffAllLights();

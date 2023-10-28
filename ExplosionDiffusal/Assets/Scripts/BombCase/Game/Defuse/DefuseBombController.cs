@@ -32,7 +32,7 @@ public class DefuseBombController : MonoBehaviour
         AudioManager.INSTANCE.PlayAudioEffectByType(AudioEffect.Defuse);
 
         m_CameraManager.ZoomInOutOfTarget(data.Position, () => {
-            m_UiManager.FadeInOutScreen(.77f);
+            m_UiManager.FadeInOutScreen(.6f);
         }, () =>
         {
             if (data.SelectedType == ClickableType.Keyboard) { InitKeyboardView(); }

@@ -33,12 +33,11 @@ public class CountdownManager : MonoBehaviour
     private bool m_Last48SecPlayed = false;
     private bool m_Last16SecPlayed = false;
 
+    private bool m_HasPlayedGameIntroSound = false;
+
     private void Awake()
     {
         m_GameStartDelayCountdownObject.OnCountdownCompletedEvent.AddListener(() => {
-            AudioManager.INSTANCE.PlayGameIntroAudio();
-
-
             m_GameStartDelayCountdownObject.transform.DOScale(.9f, 1f);
             m_GameStartDelayCountdownObject.transform.DOLocalMoveY(370f, 1f).OnComplete(() => {
                 m_TouchBlocker.DOFade(0f, 1f).OnComplete(() => {
@@ -52,6 +51,14 @@ public class CountdownManager : MonoBehaviour
                     InitRoundTimeCountdown();
                 });
             });
+        });
+
+        m_GameStartDelayCountdownObject.OnCountdownAlmostCompletedEvent.AddListener(() => {
+            if (m_HasPlayedGameIntroSound)
+                return;
+
+            AudioManager.INSTANCE.PlayGameIntroAudio();
+            m_HasPlayedGameIntroSound = true;
         });
 
         m_RoundTimeCountdownObject.OnCountdownCompletedEvent.AddListener(() => {
@@ -124,6 +131,7 @@ public class CountdownManager : MonoBehaviour
         });
 
         m_RoundTimeCountdownObject.OnLast60SecLeftEvent.RemoveAllListeners();
+        m_GameStartDelayCountdownObject.OnCountdownAlmostCompletedEvent.RemoveAllListeners();
     }
 
     public void DeinitCountdownObjects()
@@ -141,6 +149,10 @@ public class CountdownManager : MonoBehaviour
         });
 
         m_VictoryInitialized = false;
+
+        m_Last60SecPlayed = false;
+        m_Last48SecPlayed = false;
+        m_Last16SecPlayed = false;
     }
 
     public void InitCountdown(MatchSettingsConfigData data)
