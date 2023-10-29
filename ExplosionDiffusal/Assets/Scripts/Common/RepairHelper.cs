@@ -30,6 +30,7 @@ public class RepairHelper : MonoBehaviour
         {
             m_BombCase?.PlayFixBombPartsAnimation(repairStatusValue >= m_RepairPartsTimeLimitLong);
             m_BombManager?.SetSparkSpeed(repairStatusValue);
+            AudioManager.INSTANCE.PlayStaticSparkSFXUpdate(repairStatusValue);
         }
         else if(m_vType == VictoryType.BombExploded)
         {

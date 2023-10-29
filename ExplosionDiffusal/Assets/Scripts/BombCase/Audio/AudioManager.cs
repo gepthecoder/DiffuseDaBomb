@@ -62,6 +62,11 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource m_ExplosionAudio;
     [SerializeField] private AudioSource m_ExplosionTemp01Audio;
     [SerializeField] private AudioSource m_ExplosionTemp02Audio;
+    [Space(5)]
+    [SerializeField] private AudioSource m_RepairBombAudio;
+    [Space(5)]
+    [SerializeField] private AudioSource m_VictoryAudio;
+    [SerializeField] private AudioSource m_VictoryAudio1;
 
     [Header("SFX")]
     [SerializeField] private AudioClip m_KeyPressClip;
@@ -85,6 +90,11 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip m_BombExplosion02Clip;
     [Space(5)]
     [SerializeField] private AudioClip m_SwooshClip;
+    [Space(5)]
+    [SerializeField] private AudioClip m_StaticClip;
+    [Space(5)]
+    [SerializeField] private AudioClip m_VictoryClip;
+    [SerializeField] private AudioClip m_VictoryClip1;
 
     [Header("VO")]
     [SerializeField] private AudioClip m_SearchAndDestroyIntroClipVO;
@@ -115,21 +125,77 @@ public class AudioManager : MonoBehaviour
     {
         InitMenuAudioLoops();
         InitBombCountdownLoops();
+        InitRepairBombAudio();
 
         INSTANCE = this;
     }
 
     #region SFX
 
-        #region public-methods
+    #region public-methods
+
+        public void PlayVictorySFX(Team wTeam)
+        {
+            StartCoroutine(VictorySeq(wTeam));
+        }
+
+        private IEnumerator VictorySeq(Team wTeam)
+        {
+            m_VictoryAudio.volume = 0;
+            StartCoroutine(FadeMusic(m_VictoryAudio, 1f, 2f));
+
+            m_VictoryAudio.PlayOneShot(m_VictoryClip);
+
+            yield return new WaitForSeconds(m_VictoryClip.length / 2.8f);
+
+            if(wTeam != Team.None)
+            {
+                var wClip = wTeam == Team.Allies ? m_AlliesWinClipVO : m_AxisWinClipVO;
+                m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
+                m_StartMatchAudioTemp1.PlayOneShot(wClip);
+            }
+
+            m_VictoryAudio1.volume = 0;
+            m_VictoryAudio1.loop = true;
+            m_VictoryAudio1.clip = m_VictoryClip1;
+
+            StartCoroutine(FadeMusic(m_VictoryAudio1, .65f, 9f));
+
+            m_VictoryAudio1.Play();
+
+            yield break;
+        }
+
+        /// <summary>
+        /// called every frame in repair state (while holding down repair btn)
+        /// </summary>
+        /// <param name="volume"></param>
+        public void PlayStaticSparkSFXUpdate(float volume)
+        {
+            m_RepairBombAudio.volume = 1 - volume;
+
+            if (Mathf.Approximately(volume, 1))
+            {
+                // reset
+                m_RepairBombAudio.Stop();
+                m_RepairBombAudio.volume = 1;
+            }
+        }
+
+        public void PlayStaticSparkSFX()
+        {
+            m_RepairBombAudio.volume = 1;
+            m_RepairBombAudio.Play();
+        }
+
         public void PlaySwooshSound()
         {
             m_OtherAudio.PlayOneShot(m_SwooshClip);
         }
 
-        public void OnPlantBombVFX()
+        public void OnPlantBombSFX()
         {
-            StartCoroutine(OnPlantBombVFXSeq());
+            StartCoroutine(OnPlantBombSFXSeq());
         }
 
         public void Last60Sec()
@@ -284,7 +350,7 @@ public class AudioManager : MonoBehaviour
             }      
         }
 
-        private IEnumerator OnPlantBombVFXSeq()
+        private IEnumerator OnPlantBombSFXSeq()
         {
             yield return new WaitForSeconds(1f);
 
@@ -316,6 +382,12 @@ public class AudioManager : MonoBehaviour
             {
                 loopData.Init();
             }
+        }
+
+        private void InitRepairBombAudio()
+        {
+            m_RepairBombAudio.clip = m_StaticClip;
+            m_RepairBombAudio.loop = true;
         }
 
         private IEnumerator ExplosionOnlySeq()

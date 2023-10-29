@@ -131,6 +131,9 @@ public class GameManager : MonoBehaviour
                 {
                     if(data != null)
                     {
+                        Team winTeam = data._IsDraw_ ? Team.None : data._WinningTeam_;
+                        AudioManager.INSTANCE.PlayVictorySFX(winTeam);
+
                         EndMatchObjectData endMatchData = GetEndMatchData(data);
                         m_EndMatchManager.InitEndMatch(endMatchData);
 
@@ -310,7 +313,7 @@ public class GameManager : MonoBehaviour
             m_CountdownManager.InitDefuseBombTime(___Global_Config___.__MATCH_SETTINGS__.BombTimeInMinutes, new List<CountdownObjectType>() { CountdownObjectType.CircuitTimer3D, CountdownObjectType.MagneticBombTimer3D });
             m_PlantBombManager.InitClockMotion(true);
 
-            m_AudioManager.OnPlantBombVFX();
+            m_AudioManager.OnPlantBombSFX();
 
             TriggerBehaviour(GameState.Defusing);
         });

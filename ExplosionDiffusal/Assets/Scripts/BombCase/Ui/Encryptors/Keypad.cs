@@ -16,6 +16,8 @@ public class Keypad : Encryptor
 
     private bool m_CanShowEnterCode = true;
 
+    private bool m_CodeSubmited = false;
+
     private void Awake()
     {
         m_InputField.characterLimit = m_MaxCharacters;
@@ -80,6 +82,11 @@ public class Keypad : Encryptor
 
     private void SubmitCode()
     {
+        if(m_CodeSubmited)
+        {
+            return;
+        }
+
         Debug.Log("<color=gold>SubmitCode</color>: " + m_CurrentString);
         if (m_CurrentString.Length != m_MaxCharacters)
         {
@@ -93,6 +100,7 @@ public class Keypad : Encryptor
         {
             CodeManager.instance.SetCode(CodeEncryptionType.KeyPadEncryption, m_CurrentString);
             EnableObject(false);
+            m_CodeSubmited = true;
             return;
         }
         else if (currentGameState == GameState.Defusing)
@@ -100,6 +108,7 @@ public class Keypad : Encryptor
             if (CodeManager.instance.ValidateCode(CodeEncryptionType.KeyPadEncryption, m_CurrentString))
             {
                 EnableObject(false);
+                m_CodeSubmited = true;
                 return;
             }
             else
@@ -142,6 +151,7 @@ public class Keypad : Encryptor
     {
         if (enable)
         {
+            m_CodeSubmited = false;
             gameObject.SetActive(true);
             gameObject.transform.DOScale(Vector3.one, .6f)
                 .SetEase(Ease.InOutCubic);

@@ -179,7 +179,6 @@ public class CountdownManager : MonoBehaviour
                 m_GameStartDelayCountdownObject.transform.DOScale(.85f, .5f);
                 m_GameStartDelayCountdownObject.transform.DOLocalMoveY(460f, .5f).SetEase(Ease.InExpo).OnComplete(() =>
                 {
-                    print("StartCountdown: " + countdownTimeInSeconds);
                     AudioManager.INSTANCE.FadeOutVolume(MenuAudioLoopType.Loop4, m_CountdownTimeInSeconds_MatchStartDelay);
                     m_GameStartDelayCountdownObject.StartCountdown(countdownTimeInSeconds);
                 });

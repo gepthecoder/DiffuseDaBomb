@@ -17,6 +17,8 @@ public class Keyboard : Encryptor
 
     private bool m_CanShowEnterCode = true;
 
+    private bool m_CodeSubmited = false;
+
     private void Awake()
     {
         m_InputField.characterLimit = m_MaxCharacters;
@@ -27,6 +29,7 @@ public class Keyboard : Encryptor
     {
         if(enable)
         {
+            m_CodeSubmited = false;
             gameObject.SetActive(true);
             gameObject.transform.DOScale(Vector3.one, .6f)
                 .SetEase(Ease.InOutCubic);
@@ -133,6 +136,11 @@ public class Keyboard : Encryptor
 
     private void SubmitCode()
     {
+        if(m_CodeSubmited)
+        {
+            return;
+        }
+
         Debug.Log("<color=gold>SubmitCode</color>: " + m_CurrentString);
         if(m_CurrentString.Length != m_MaxCharacters)
         {
@@ -145,6 +153,7 @@ public class Keyboard : Encryptor
         {
             CodeManager.instance.SetCode(CodeEncryptionType.KeyboardEncryption, m_CurrentString);
             EnableObject(false);
+            m_CodeSubmited = true;
             return;
         }
         else if(currentGameState == GameState.Defusing)
@@ -152,6 +161,7 @@ public class Keyboard : Encryptor
             if (CodeManager.instance.ValidateCode(CodeEncryptionType.KeyboardEncryption, m_CurrentString))
             {
                 EnableObject(false);
+                m_CodeSubmited = true;
                 return;
             }
             else
