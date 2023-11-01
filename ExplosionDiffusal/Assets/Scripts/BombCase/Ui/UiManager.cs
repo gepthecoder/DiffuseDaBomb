@@ -14,8 +14,14 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Keypad m_KeypadUI;
     [Space(5)]
     [SerializeField] private Image m_DarkenPanel;
+    [SerializeField] private Image m_DarkenPanelStartMatch;
+    [Space(5)]
+    [SerializeField] private Animator m_BeforeSwitchingSidesAnime;
+
 
     [HideInInspector] public UnityEvent OnFadeInEvent = new UnityEvent();
+
+    private bool m_BeforeSwitchingSidesShown = false;
 
     private void Awake() { Sub(); }
 
@@ -26,6 +32,8 @@ public class UiManager : MonoBehaviour
     private void SetupScene()
     {
         m_DarkenPanel.gameObject.SetActive(true);
+        m_DarkenPanelStartMatch.color = 
+            new Color(m_DarkenPanelStartMatch.color.r, m_DarkenPanelStartMatch.color.g, m_DarkenPanelStartMatch.color.b, 1f);
     }
 
     private void Sub()
@@ -67,7 +75,7 @@ public class UiManager : MonoBehaviour
     public void FadeOutScreenAction(Action action)
     {
         action();
-        m_DarkenPanel.DOFade(0, .77f).SetEase(Ease.InOutQuad);
+        m_DarkenPanelStartMatch.DOFade(0, .77f).SetEase(Ease.InOutQuad);
     }
 
     public void EnableKeyBoardUI()
@@ -85,6 +93,24 @@ public class UiManager : MonoBehaviour
     public void DisableKeyPadUI()
     {
         m_KeypadUI.EnableObject(false);
+    }
+
+    public void TryShowBeforeSwitchingSides()
+    {
+        if(!m_BeforeSwitchingSidesShown)
+        {
+            m_BeforeSwitchingSidesShown = true;
+            m_BeforeSwitchingSidesAnime.Play("SHOW");
+        }
+    }
+
+    public void TryHideBeforeSwitchingSides()
+    {
+        if(m_BeforeSwitchingSidesShown)
+        {
+            m_BeforeSwitchingSidesShown = false;
+            m_BeforeSwitchingSidesAnime.Play("HIDE");
+        }
     }
 
     public void ExitGame()

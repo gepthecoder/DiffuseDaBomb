@@ -55,7 +55,6 @@ public class PlantBombActionHandler : MonoBehaviour
         SuitcaseHelper.INSTANCE?.ShowCloseSuitcaseButton(true);
 
         m_CameraManager.ZoomOutOfTarget();
-        m_UiManager.FadeInOutScreen(.77f);
 
         DeinitKeyboardView();
         DeinitKeypadView();

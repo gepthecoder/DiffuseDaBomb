@@ -132,7 +132,7 @@ public class AudioManager : MonoBehaviour
 
     #region SFX
 
-    #region public-methods
+        #region public-methods
 
         public void PlayVictorySFX(Team wTeam)
         {

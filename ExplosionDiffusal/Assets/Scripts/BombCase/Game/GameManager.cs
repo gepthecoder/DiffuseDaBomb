@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private RepairBombManager m_RepairBombManager;
     [SerializeField] private EndMatchManager m_EndMatchManager;
     [SerializeField] private AudioManager m_AudioManager;
+    [SerializeField] private RoundManager m_RoundManager;
 
     protected GlobalConfig ___Global_Config___;
 
@@ -124,6 +125,13 @@ public class GameManager : MonoBehaviour
                 {
                     AdManager.INSTANCE.HideBannerAd();
                     m_CountdownManager.DeinitCountdownObjects();
+
+                    // TRY TRIGGER BEFORE SWITCHING SIDES
+                    if(m_RoundManager.IsNextRoundHalfTime())
+                    {
+                        m_UiManager.TryShowBeforeSwitchingSides();
+                    }
+
                     m_RepairBombManager.Init(data._VictoryType_);
                 } break;
             case GameState.EndMatch:
@@ -249,7 +257,6 @@ public class GameManager : MonoBehaviour
     private void OnSetBombCodeEvent(CodeEncryptionType encryption)
     {
         m_CameraManager.ZoomOutOfTarget();
-        m_UiManager.FadeInOutScreen(.77f);
 
         m_PlantBombManager.TriggerPlantBehaviour(PlantBombState.Success, new HackingItemData(encryption));
     }
@@ -257,7 +264,6 @@ public class GameManager : MonoBehaviour
     private void OnValidateBombCodeEvent(CodeEncryptionType encryption)
     {
         m_CameraManager.ZoomOutOfTarget();
-        m_UiManager.FadeInOutScreen(.77f);
 
         m_DefuseBombManager.TriggerDefuseBehaviour(DefuseBombState.Success, new HackingItemData(encryption));
     }
@@ -379,6 +385,9 @@ public class GameManager : MonoBehaviour
         });
 
         m_RepairBombManager.OnBombRepairCompleted.AddListener(() => {
+
+            // Try Hide "Before Switching Sides"
+            m_UiManager.TryHideBeforeSwitchingSides();
 
             // INTERSTITIAL AD POPUP
             AdManager.INSTANCE.ShowInterstitalAd(() => {

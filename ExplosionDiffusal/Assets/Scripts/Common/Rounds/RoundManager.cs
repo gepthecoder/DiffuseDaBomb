@@ -10,6 +10,7 @@ using UnityEngine;
 public class RoundManager : MonoBehaviour
 {
     public static RoundManager instance;
+
     [Header("POP UPS")]
     [SerializeField] private Animator m_SwitchingSidesAnime;
     [SerializeField] private Animator m_NewRoundAnime;
@@ -49,6 +50,11 @@ public class RoundManager : MonoBehaviour
     public int GetCurrentRound() { return m_CurrentRound; }
 
     public void SetMaxRounds(int maxRounds) { m_MaxRounds = maxRounds; }
+
+    public bool IsNextRoundHalfTime()
+    {
+        return m_CurrentRound == (m_MaxRounds / 2);
+    }
 
     private bool IsHalfTime()
     {

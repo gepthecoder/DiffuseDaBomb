@@ -244,6 +244,7 @@ public class BombManager : MonoBehaviour
     public void IgniteSparks()
     {
         m_Sparks.IgniteSparkSystem();
+        AudioManager.INSTANCE.PlayStaticSparkSFX();
     }
 
     public void ResetSparks()
