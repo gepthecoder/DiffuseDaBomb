@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RematchManager : MonoBehaviour
 {
@@ -17,10 +18,16 @@ public class RematchManager : MonoBehaviour
 
     protected GlobalConfig ___Global_Config___;
 
+    [HideInInspector] public UnityEvent<GlobalConfig> OnReadyEvent = new UnityEvent<GlobalConfig>();
+
+    private bool m_Ready = false;
+
     public void InitRematchModule(GlobalConfig cfg)
     {
         if (cfg == null)
             return;
+
+        m_Ready = false;
 
         ___Global_Config___ = cfg;
 
@@ -96,8 +103,24 @@ public class RematchManager : MonoBehaviour
         m_MSRoundLimit.OnMatchSettingsItemValueChangedEvent.RemoveAllListeners();
     }
 
+    #region Button Events
+
     public void OnReadyButtonClicked()
     {
+        if(!m_Ready)
+        {
+            OnReadyEvent?.Invoke(___Global_Config___);
 
+            DeinitRematchModule();
+
+            m_Ready = true;
+        }
     }
+
+    public void CloseRematchButtonClicked()
+    {
+        DeinitRematchModule();
+    }
+
+    #endregion
 }

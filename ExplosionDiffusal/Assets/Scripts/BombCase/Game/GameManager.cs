@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private EndMatchManager m_EndMatchManager;
     [SerializeField] private AudioManager m_AudioManager;
     [SerializeField] private RoundManager m_RoundManager;
+    [SerializeField] private RematchManager m_RematchManager;
 
     protected GlobalConfig ___Global_Config___;
 
@@ -426,6 +427,10 @@ public class GameManager : MonoBehaviour
                 }
             );
 
+        });
+
+        m_RematchManager.OnReadyEvent.AddListener((cfg) => {
+            m_StartMatchManager.StartMatch(cfg);
         });
     }
 

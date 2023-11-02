@@ -60,11 +60,13 @@ public class RematchDuelObject : MonoBehaviour
         });
 
         m_TeamNamesSnap.OnCurrentItemChangedEvent.AddListener((index) => {
-
+            var tName = m_TeamNameContentParent.GetChild(index).GetComponent<TeamName>();
+            OnTeamNameChangedEvent?.Invoke(tName.GetTeamName());
         });
 
         m_TeamCountSnap.OnCurrentItemChangedEvent.AddListener((index) => {
-
+            var tCount = m_TeamCountContentParent.GetChild(index).GetComponent<TeamName>();
+            OnTeamCountChangedEvent?.Invoke(int.Parse(tCount.GetTeamName()));
         });
     }
 
