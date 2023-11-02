@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class SnapToItem : MonoBehaviour
@@ -17,6 +18,11 @@ public class SnapToItem : MonoBehaviour
     private bool m_IsSnapped = false;
 
     private float m_SnapSpeed;
+
+    private int m_PreviousItemIndex = 0;
+
+    [HideInInspector] public int CurrentItem = 0;
+    [HideInInspector] public UnityEvent<int> OnCurrentItemChangedEvent = new UnityEvent<int>();
 
     private void Start()
     {
@@ -37,15 +43,21 @@ public class SnapToItem : MonoBehaviour
     {
         if(m_Inited)
         {
-            int currentItem =
+            CurrentItem =
                 Mathf.RoundToInt(0 - m_ContentPanel.localPosition.x / (m_ContentItemList.rect.width + m_HorizontalLG.spacing));
+
+            if(m_PreviousItemIndex != CurrentItem)
+            {
+                OnCurrentItemChangedEvent?.Invoke(CurrentItem);
+                m_PreviousItemIndex = CurrentItem;
+            }
 
             if(m_Scroll.velocity.magnitude < 200 && !m_IsSnapped)
             { // SNAPPING PROCESS
                 m_Scroll.velocity = Vector2.zero;
                 m_SnapSpeed += m_SnapForce * Time.deltaTime;
 
-                float targetX = 0 - (currentItem * (m_ContentItemList.rect.width + m_HorizontalLG.spacing));
+                float targetX = 0 - (CurrentItem * (m_ContentItemList.rect.width + m_HorizontalLG.spacing));
                 m_ContentPanel.localPosition = new Vector3(
                     Mathf.MoveTowards(m_ContentPanel.localPosition.x, targetX, m_SnapSpeed),
                     m_ContentPanel.localPosition.y,

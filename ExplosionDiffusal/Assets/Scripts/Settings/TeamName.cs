@@ -14,4 +14,14 @@ public class TeamName : MonoBehaviour
             m_Text.text = tName;
         }
     }
+
+    public string GetTeamName()
+    {
+        if (m_Text)
+        {
+            return m_Text.text;
+        }
+
+        return string.Empty;
+    }
 }

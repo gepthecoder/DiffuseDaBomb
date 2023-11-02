@@ -5,6 +5,7 @@ using DG.Tweening;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class MatchSettingsItem : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class MatchSettingsItem : MonoBehaviour
     public bool m_EvenNumbers = false;
 
     private bool m_CanInteractWithArrows = true;
+
+    [HideInInspector] public UnityEvent<int> OnMatchSettingsItemValueChangedEvent = new UnityEvent<int>();
 
     private void Awake()
     {
@@ -52,6 +55,8 @@ public class MatchSettingsItem : MonoBehaviour
                 m_ValueText.transform.DOLocalMoveY(-98f, .15f).SetEase(Ease.InFlash);
 
             });
+
+            OnMatchSettingsItemValueChangedEvent?.Invoke(m_Value);
         });
         triggerLeftArrow.triggers.Add(pointerDownLeftArrow);
 
@@ -76,8 +81,18 @@ public class MatchSettingsItem : MonoBehaviour
                 m_ValueText.transform.DOLocalMoveY(-98f, .15f).SetEase(Ease.InFlash);
 
             });
+
+            OnMatchSettingsItemValueChangedEvent?.Invoke(m_Value);
         });
         triggerRightArrow.triggers.Add(pointerDownRightArrow);
+    }
+
+    public void InitSettingsItemValue(float val, bool enableArrow = true)
+    {
+        m_Value = (int)val;
+        m_ValueText.text = $"{m_Value}";
+
+        EnableArrowInteraction(enableArrow);
     }
 
     public void OnShowItem()

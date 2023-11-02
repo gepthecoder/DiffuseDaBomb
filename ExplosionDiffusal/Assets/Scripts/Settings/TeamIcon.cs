@@ -44,4 +44,19 @@ public class TeamIcon : MonoBehaviour
     {
         m_Icon.DOFade(endVal, duration);
     }
+
+    public string GetAvatarSourceID()
+    {
+        if(m_Icon.material != null)
+        {
+            return m_Icon.material.mainTexture.name;
+        }
+
+        return m_Icon.sprite.name;
+    }
+
+    public (Sprite, Material) GetSpriteMaterial()
+    {
+        return (m_Icon.sprite, m_Icon.material);
+    }
 }
