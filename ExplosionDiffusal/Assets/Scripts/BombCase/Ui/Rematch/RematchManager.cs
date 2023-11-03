@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 public class RematchManager : MonoBehaviour
 {
+    public static RematchManager INSTANCE;
+
     [Header("Match Settings")]
     [SerializeField] private MatchSettingsItem m_MSGameTime;
     [SerializeField] private MatchSettingsItem m_MSBombTime;
@@ -19,8 +21,14 @@ public class RematchManager : MonoBehaviour
     protected GlobalConfig ___Global_Config___;
 
     [HideInInspector] public UnityEvent<GlobalConfig> OnReadyEvent = new UnityEvent<GlobalConfig>();
+    [HideInInspector] public UnityEvent OnRematchInitializedEvent = new UnityEvent();
 
     private bool m_Ready = false;
+
+    private void Awake()
+    {
+        INSTANCE = this;
+    }
 
     public void InitRematchModule(GlobalConfig cfg)
     {
@@ -30,6 +38,9 @@ public class RematchManager : MonoBehaviour
         m_Ready = false;
 
         ___Global_Config___ = cfg;
+
+        // clear ui
+        OnRematchInitializedEvent?.Invoke();
 
         // Set Module Data: Match Settings / Duel
         m_MSGameTime.InitSettingsItemValue(cfg.__MATCH_SETTINGS__.GameTimeInMinutes);

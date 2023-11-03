@@ -274,6 +274,7 @@ public class GameManager : MonoBehaviour
         m_StartMatchManager.OnStartMatchEvent.AddListener((gameState, config) => {
 
             ___Global_Config___ = config;
+            Config.INSTANCE.UpdateGlobalConfig(___Global_Config___);
 
             RoundManager.instance.SetMaxRounds(___Global_Config___.__MATCH_SETTINGS__.ScoreLimit);
 
@@ -432,6 +433,10 @@ public class GameManager : MonoBehaviour
         m_RematchManager.OnReadyEvent.AddListener((cfg) => {
             m_StartMatchManager.StartMatch(cfg);
         });
+
+        m_RematchManager.OnRematchInitializedEvent.AddListener(() => { 
+            // clear ui
+        });
     }
 
     private void RemoveListeners()
@@ -449,7 +454,8 @@ public class GameManager : MonoBehaviour
         m_VictoryManager.OnVictoryShownEvent.RemoveAllListeners();
         m_VictoryManager.OnZoomOutOfComplex.RemoveAllListeners();
         m_RepairBombManager.OnBombRepairCompleted.RemoveAllListeners();
-
+        m_RematchManager.OnReadyEvent.RemoveAllListeners();
+        m_RematchManager.OnRematchInitializedEvent.RemoveAllListeners();
         SuitcaseHelper.INSTANCE.OnCloseSuitcaseButtonEvent.RemoveAllListeners();
     }
 

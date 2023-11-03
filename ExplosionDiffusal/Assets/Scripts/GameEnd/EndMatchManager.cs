@@ -46,7 +46,7 @@ public class EndMatchManager : MonoBehaviour
     }
 
     #region Button Events
-    public void OnPlayAgainButtonPressed()
+    public void OnPlayAgainButtonPressed() // REMATCH
     {
         AdManager.INSTANCE.ShowInterstitalAd(() => {
             Fader.INSTANCE.FadeToMainScene(TransitionType.PlayAgain);
