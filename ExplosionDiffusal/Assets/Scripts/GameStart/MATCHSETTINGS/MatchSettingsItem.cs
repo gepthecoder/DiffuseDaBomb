@@ -34,57 +34,7 @@ public class MatchSettingsItem : MonoBehaviour
         m_Value = m_DefaultValue;
         m_ValueText.text = m_Value.ToString();
 
-        EventTrigger triggerLeftArrow = m_LeftButton.GetComponent<EventTrigger>();
-        var pointerDownLeftArrow = new EventTrigger.Entry();
-        pointerDownLeftArrow.eventID = EventTriggerType.PointerDown;
-
-        pointerDownLeftArrow.callback.AddListener((e) => {
-            if (!m_CanInteractWithArrows)
-                return;
-
-            if(m_EvenNumbers)
-                m_Value -= 2;
-            else
-                m_Value--;
-
-            if (m_Value < m_DefaultMinValue) { m_Value = m_DefaultMinValue; }
-
-            m_ValueText.transform.DOLocalMoveY(-80f, .15f).SetEase(Ease.InFlash)
-            .OnComplete(() => {
-                m_ValueText.text = m_Value.ToString();
-                m_ValueText.transform.DOLocalMoveY(-98f, .15f).SetEase(Ease.InFlash);
-
-            });
-
-            OnMatchSettingsItemValueChangedEvent?.Invoke(m_Value);
-        });
-        triggerLeftArrow.triggers.Add(pointerDownLeftArrow);
-
-        EventTrigger triggerRightArrow = m_RightButton.GetComponent<EventTrigger>();
-        var pointerDownRightArrow = new EventTrigger.Entry();
-        pointerDownRightArrow.eventID = EventTriggerType.PointerDown;
-
-        pointerDownRightArrow.callback.AddListener((e) => {
-            if (!m_CanInteractWithArrows)
-                return;
-
-            if (m_EvenNumbers)
-                m_Value += 2;
-            else
-                m_Value++; 
-            
-            if (m_Value > m_DefaultMaxValue) { m_Value = m_DefaultMaxValue; }
-
-            m_ValueText.transform.DOLocalMoveY(-80, .15f).SetEase(Ease.InFlash)
-            .OnComplete(() => {
-                m_ValueText.text = m_Value.ToString();
-                m_ValueText.transform.DOLocalMoveY(-98f, .15f).SetEase(Ease.InFlash);
-
-            });
-
-            OnMatchSettingsItemValueChangedEvent?.Invoke(m_Value);
-        });
-        triggerRightArrow.triggers.Add(pointerDownRightArrow);
+        Sub();
     }
 
     public void InitSettingsItemValue(float val, bool enableArrow = true)
@@ -114,6 +64,61 @@ public class MatchSettingsItem : MonoBehaviour
     public void EnableArrowInteraction(bool enable)
     {
         m_CanInteractWithArrows = enable;
+    }
+
+    public void Sub()
+    {
+        EventTrigger triggerLeftArrow = m_LeftButton.GetComponent<EventTrigger>();
+        var pointerDownLeftArrow = new EventTrigger.Entry();
+        pointerDownLeftArrow.eventID = EventTriggerType.PointerDown;
+
+        pointerDownLeftArrow.callback.AddListener((e) => {
+            if (!m_CanInteractWithArrows)
+                return;
+
+            if (m_EvenNumbers)
+                m_Value -= 2;
+            else
+                m_Value--;
+
+            if (m_Value < m_DefaultMinValue) { m_Value = m_DefaultMinValue; }
+
+            m_ValueText.transform.DOLocalMoveY(-80f, .15f).SetEase(Ease.InFlash)
+            .OnComplete(() => {
+                m_ValueText.text = m_Value.ToString();
+                m_ValueText.transform.DOLocalMoveY(-98f, .15f).SetEase(Ease.InFlash);
+
+            });
+
+            OnMatchSettingsItemValueChangedEvent?.Invoke(m_Value);
+        });
+        triggerLeftArrow.triggers.Add(pointerDownLeftArrow);
+
+        EventTrigger triggerRightArrow = m_RightButton.GetComponent<EventTrigger>();
+        var pointerDownRightArrow = new EventTrigger.Entry();
+        pointerDownRightArrow.eventID = EventTriggerType.PointerDown;
+
+        pointerDownRightArrow.callback.AddListener((e) => {
+            if (!m_CanInteractWithArrows)
+                return;
+
+            if (m_EvenNumbers)
+                m_Value += 2;
+            else
+                m_Value++;
+
+            if (m_Value > m_DefaultMaxValue) { m_Value = m_DefaultMaxValue; }
+
+            m_ValueText.transform.DOLocalMoveY(-80, .15f).SetEase(Ease.InFlash)
+            .OnComplete(() => {
+                m_ValueText.text = m_Value.ToString();
+                m_ValueText.transform.DOLocalMoveY(-98f, .15f).SetEase(Ease.InFlash);
+
+            });
+
+            OnMatchSettingsItemValueChangedEvent?.Invoke(m_Value);
+        });
+        triggerRightArrow.triggers.Add(pointerDownRightArrow);
     }
 
 }

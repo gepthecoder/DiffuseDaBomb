@@ -28,11 +28,11 @@ public class GlobalConfig
     public GlobalConfig() { }
 }
 
-public enum GameState { PreMatch, Countdown, Initial, Planting, Defusing, Victory, Repair, EndMatch, }
+public enum GameState { PreMatch, ReMatch, Countdown, Initial, Planting, Defusing, Victory, Repair, EndMatch, }
 
 public class GameManager : MonoBehaviour
 {
-    private GameState m_CurrentState = GameState.Initial;
+    private GameState m_CurrentState = GameState.PreMatch;
 
     [SerializeField] private StartMatchManager m_StartMatchManager;
     [SerializeField] private CountdownManager m_CountdownManager;
@@ -61,12 +61,37 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         AddListeners();
-        TriggerBehaviour(GameState.PreMatch);
     }
 
     private void OnDestroy()
     {
         RemoveListeners();
+    }
+
+    public void InitializeGame(TransitionType transition)
+    {
+        switch (transition)
+        {
+            case TransitionType.PlayAgain:
+                {
+                    TriggerBehaviour(GameState.ReMatch);
+                } break;
+            case TransitionType.ExitGame:
+                {
+                    TriggerBehaviour(GameState.PreMatch);
+                }
+                break;
+            case TransitionType.MatchDetails:
+                {
+                    TriggerBehaviour(GameState.PreMatch);
+                    HistoryController.INSTANCE.ShowHistory();
+                }
+                break;
+            case TransitionType.Null:
+            default:
+                TriggerBehaviour(GameState.PreMatch);
+                break;
+        }
     }
 
     private void TriggerBehaviour(GameState state, VictoryEventData data = null)
@@ -81,8 +106,18 @@ public class GameManager : MonoBehaviour
                     Time.timeScale = 1.5f;
                     AdManager.INSTANCE.ShowBannerAd(BannerPosition.BOTTOM_CENTER);
                     m_StartMatchManager.Init();
-
                 } break;
+            case GameState.ReMatch:
+                Debug.Log($"<color=red>GameState</color><color=gold>ReMatch</color>");
+                {
+                    AdManager.INSTANCE.ShowBannerAd(BannerPosition.BOTTOM_CENTER);
+
+                    var cfg = Config.INSTANCE.GetGlobalConfig();
+
+                    m_StartMatchManager.Init(false);
+                    m_RematchManager.InitRematchModule(cfg);
+                }
+                break;
             case GameState.Countdown:
                 Debug.Log($"<color=red>GameState</color><color=gold>Countdown</color>");
                 {
@@ -403,6 +438,7 @@ public class GameManager : MonoBehaviour
                 m_CountdownManager.ResetCountDownObjects();
                 m_VictoryManager.ResetBombAfterMathEffect();
                 m_BombManager.ResetSparks();
+                SuitcaseHelper.INSTANCE.LockCloseSuitcaseButton(false);
 
                 // START NEW ROUND
                 RoundManager.instance.NewRound(() =>
@@ -431,11 +467,7 @@ public class GameManager : MonoBehaviour
         });
 
         m_RematchManager.OnReadyEvent.AddListener((cfg) => {
-            m_StartMatchManager.StartMatch(cfg);
-        });
-
-        m_RematchManager.OnRematchInitializedEvent.AddListener(() => { 
-            // clear ui
+            m_StartMatchManager.QuickStartMatch(cfg);
         });
     }
 
@@ -455,7 +487,6 @@ public class GameManager : MonoBehaviour
         m_VictoryManager.OnZoomOutOfComplex.RemoveAllListeners();
         m_RepairBombManager.OnBombRepairCompleted.RemoveAllListeners();
         m_RematchManager.OnReadyEvent.RemoveAllListeners();
-        m_RematchManager.OnRematchInitializedEvent.RemoveAllListeners();
         SuitcaseHelper.INSTANCE.OnCloseSuitcaseButtonEvent.RemoveAllListeners();
     }
 

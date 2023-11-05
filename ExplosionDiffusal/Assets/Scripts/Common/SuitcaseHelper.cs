@@ -14,6 +14,8 @@ public class SuitcaseHelper : MonoBehaviour
 
     [HideInInspector] public UnityEvent OnCloseSuitcaseButtonEvent = new UnityEvent();
 
+    private bool m_IsLocked = false;
+
     private void Awake()
     {
         INSTANCE = this;
@@ -26,6 +28,9 @@ public class SuitcaseHelper : MonoBehaviour
 
     public void ShowCloseSuitcaseButton(bool show)
     {
+        if (m_IsLocked)
+            return;
+
         m_SuitcaseCGroup.interactable = show;
 
         float endVal = show ? 1f : 0f;
@@ -37,6 +42,11 @@ public class SuitcaseHelper : MonoBehaviour
         ShowCloseSuitcaseButton(false);
 
         OnCloseSuitcaseButtonEvent?.Invoke();
+    }
+
+    public void LockCloseSuitcaseButton(bool locked)
+    {
+        m_IsLocked = locked;
     }
 
 }

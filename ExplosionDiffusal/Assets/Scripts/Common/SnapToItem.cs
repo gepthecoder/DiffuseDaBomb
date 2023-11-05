@@ -46,12 +46,6 @@ public class SnapToItem : MonoBehaviour
             CurrentItem =
                 Mathf.RoundToInt(0 - m_ContentPanel.localPosition.x / (m_ContentItemList.rect.width + m_HorizontalLG.spacing));
 
-            if(m_PreviousItemIndex != CurrentItem)
-            {
-                OnCurrentItemChangedEvent?.Invoke(CurrentItem);
-                m_PreviousItemIndex = CurrentItem;
-            }
-
             if(m_Scroll.velocity.magnitude < 200 && !m_IsSnapped)
             { // SNAPPING PROCESS
                 m_Scroll.velocity = Vector2.zero;
@@ -68,6 +62,12 @@ public class SnapToItem : MonoBehaviour
                 if (Mathf.Approximately(m_ContentPanel.localPosition.x, targetX))
                 {
                     m_IsSnapped = true;
+
+                    if (m_PreviousItemIndex != CurrentItem)
+                    {
+                        OnCurrentItemChangedEvent?.Invoke(CurrentItem);
+                        m_PreviousItemIndex = CurrentItem;
+                    }
                 }
 
             }

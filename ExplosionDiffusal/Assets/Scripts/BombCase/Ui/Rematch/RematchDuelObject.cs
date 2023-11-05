@@ -44,6 +44,7 @@ public class RematchDuelObject : MonoBehaviour
             TeamIconImageMapper mapper = new TeamIconImageMapper();
             var tIcon = m_TeamAvatarContentParent.GetChild(index).GetComponent<TeamIcon>();
             var icnMat = tIcon.GetSpriteMaterial();
+
             if(icnMat.Item1 != null)
             {
                 mapper.hasMaterial = false;
@@ -97,10 +98,15 @@ public class RematchDuelObject : MonoBehaviour
     private void RefreshTeamIcons(TeamIconImageMapper defaultAvatar)
     {
         // clean
+        List<TeamIconImageMapper> ORDERED_MAPPERS = new List<TeamIconImageMapper>();
+
         for (int i = 0; i < m_TeamAvatarContentParent.childCount; i++)
         {
             Destroy(m_TeamAvatarContentParent.GetChild(i).gameObject);
         }
+
+        // First
+        ORDERED_MAPPERS.Add(defaultAvatar);
 
         try
         {
@@ -129,8 +135,17 @@ public class RematchDuelObject : MonoBehaviour
                 Material newMaterial = new Material(m_MaterialTemplate);
                 newMaterial.mainTexture = sprite.texture; // Set the texture for the material.
 
-                var newIcon = Instantiate(m_TeamAvatarObject.gameObject, m_TeamAvatarContentParent);
-                newIcon.GetComponent<TeamIcon>().SetTeamIconMaterial(newMaterial);
+
+                TeamIconImageMapper mapper_MAT = new TeamIconImageMapper();
+                mapper_MAT.hasMaterial = true;
+                mapper_MAT.MATERIAL = newMaterial;
+
+                if(mapper_MAT.MATERIAL.mainTexture.name != 
+                    (defaultAvatar.hasMaterial ? 
+                    defaultAvatar.MATERIAL.mainTexture.name : defaultAvatar.SPRITE.name))
+                {
+                    ORDERED_MAPPERS.Add(mapper_MAT);
+                }
             }
         }
         catch (System.Exception e)
@@ -142,33 +157,34 @@ public class RematchDuelObject : MonoBehaviour
         // add default icons
         for (int i = 0; i < m_BuildInEmblems.Count; i++)
         {
-            var newIcon = Instantiate(m_TeamAvatarObject.gameObject, m_TeamAvatarContentParent);
-            newIcon.GetComponent<TeamIcon>().SetTeamIconSprite(m_BuildInEmblems[i]);
+            TeamIconImageMapper mapper_SPRITE = new TeamIconImageMapper();
+            mapper_SPRITE.hasMaterial = false;
+            mapper_SPRITE.SPRITE = m_BuildInEmblems[i];
+
+            if (mapper_SPRITE.SPRITE.name !=
+                    (defaultAvatar.hasMaterial ?
+                    defaultAvatar.MATERIAL.mainTexture.name : defaultAvatar.SPRITE.name))
+            {
+                ORDERED_MAPPERS.Add(mapper_SPRITE);
+            }
         }
 
         // add last one alpha 0
-        var lastIconHack = Instantiate(m_TeamAvatarObject.gameObject, m_TeamAvatarContentParent);
-        lastIconHack.GetComponent<TeamIcon>().SetTeamIconImageAlpha(0);
+        TeamIconImageMapper mapper = new TeamIconImageMapper();
+        mapper.hasMaterial = false;
+        mapper.SPRITE = m_BuildInEmblems[0];
+        ORDERED_MAPPERS.Add(mapper);
 
-        // move previous selected emblem to first position
-        for (int i = 0; i < m_TeamAvatarContentParent.childCount; i++)
+        // Instantiate
+        for (int i = 0; i < ORDERED_MAPPERS.Count; i++)
         {
-            var icon = m_TeamAvatarContentParent.GetChild(i).GetComponent<TeamIcon>();
-            if(icon.GetAvatarSourceID() == (defaultAvatar.hasMaterial ? 
-                defaultAvatar.MATERIAL.mainTexture.name : defaultAvatar.SPRITE.name))
+            var avatar = Instantiate(m_TeamAvatarObject, m_TeamAvatarContentParent);
+            avatar.SetTeamIconImageViaMapper(ORDERED_MAPPERS[i]);
+
+            if(i == ORDERED_MAPPERS.Count - 1)
             {
-                Destroy(m_TeamAvatarContentParent.GetChild(i));
-
-                var firstIcon = Instantiate(m_TeamAvatarObject.gameObject, m_TeamAvatarContentParent);
-                firstIcon.transform.SetAsFirstSibling();
-
-                if(defaultAvatar.hasMaterial)
-                {
-                    firstIcon.GetComponent<TeamIcon>().SetTeamIconMaterial(defaultAvatar.MATERIAL);
-                } else
-                {
-                    firstIcon.GetComponent<TeamIcon>().SetTeamIconSprite(defaultAvatar.SPRITE);
-                }
+                // last hack
+                avatar.SetTeamIconImageAlpha(0f);
             }
         }
     }
@@ -184,36 +200,17 @@ public class RematchDuelObject : MonoBehaviour
         }
 
         // load custom team names
-        var tNames = LoadTeamNames();
+        var tNames = LoadOrderedTeamNames(defaultTeamName);
+        tNames.Insert(0, defaultTeamName);
+
         for (int i = 0; i < tNames.Count; i++)
         {
             GameObject tName = Instantiate(m_TeamNameObject.gameObject, m_TeamNameContentParent);
             tName.GetComponent<TeamName>().SetTeamNameText(tNames[i]);
         }
-        // load build it team names
-        for (int i = 0; i < m_BuildInTeamNames.Count; i++)
-        {
-            GameObject tName = Instantiate(m_TeamNameObject.gameObject, m_TeamNameContentParent);
-            tName.GetComponent<TeamName>().SetTeamNameText(m_BuildInTeamNames[i]);
-        }
-
-        // move previous selected teamName to first position
-        for (int i = 0; i < m_TeamNameContentParent.childCount; i++)
-        {
-            var tName = m_TeamNameContentParent.GetChild(i).GetComponent<TeamName>();
-            if (tName.GetTeamName() == defaultTeamName)
-            {
-                Destroy(m_TeamNameContentParent.GetChild(i));
-
-                var firstName = Instantiate(m_TeamNameObject.gameObject, m_TeamNameContentParent);
-                firstName.transform.SetAsFirstSibling();
-
-                firstName.GetComponent<TeamName>().SetTeamNameText(defaultTeamName);
-            }
-        }
     }
 
-    private List<string> LoadTeamNames()
+    private List<string> LoadOrderedTeamNames(string defaultName)
     {
         List<string> tNames = new List<string>();
 
@@ -223,7 +220,7 @@ public class RematchDuelObject : MonoBehaviour
 
         for (int i = 0; i < teams.Length; i++)
         {
-            if (teams[i] == string.Empty)
+            if (teams[i] == string.Empty || teams[i] == defaultName)
             {
                 continue;
             }
@@ -232,6 +229,17 @@ public class RematchDuelObject : MonoBehaviour
         }
 
         tNames.Reverse();
+
+        // load build it team names
+        for (int i = 0; i < m_BuildInTeamNames.Count; i++)
+        {
+            if(m_BuildInTeamNames[i] == defaultName)
+            {
+                continue;
+            }
+
+            tNames.Add(m_BuildInTeamNames[i]);
+        }
 
         return tNames;
     }

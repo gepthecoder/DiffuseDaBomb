@@ -44,12 +44,12 @@ public class StartMatchManager : MonoBehaviour
         });
     }
 
-    internal void Init()
+    internal void Init(bool triggerMusic = true)
     {
         t_MainCamera.position = t_CameraStartPosition.position;
         t_MainCamera.localEulerAngles = new Vector3(t_CameraStartPosition.rotation.x, t_CameraStartPosition.rotation.y, t_CameraStartPosition.rotation.z);
 
-        m_StartMatchManagerUI.TriggerBehaviour(StartMatchState.Initial);
+        m_StartMatchManagerUI.TriggerBehaviour(StartMatchState.Initial, false, triggerMusic);
     }
 
     public void StartMatch(GlobalConfig data)
@@ -76,5 +76,11 @@ public class StartMatchManager : MonoBehaviour
         OnStartMatchEvent?.Invoke(GameState.Countdown, data);
         m_StartMatchManagerUI.DisableStartMatchCanvas();
 
+    }
+
+    public void QuickStartMatch(GlobalConfig cfg)
+    {
+        m_StartMatchManagerUI.QuickStartMatch(cfg);
+        StartMatch(cfg);
     }
 }

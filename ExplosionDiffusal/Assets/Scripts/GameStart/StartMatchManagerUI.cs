@@ -223,7 +223,7 @@ public class StartMatchManagerUI : MonoBehaviour
         SetupSceneDefault();
     }
 
-    public void TriggerBehaviour(StartMatchState state, bool goToPrevious = false)
+    public void TriggerBehaviour(StartMatchState state, bool goToPrevious = false, bool triggerMenuAudio = true)
     {
         m_CurrentState = state;
 
@@ -243,7 +243,11 @@ public class StartMatchManagerUI : MonoBehaviour
                     });
                 }
 
-                AudioManager.INSTANCE.TriggerMenuLoopChanged(MenuAudioLoopType.Loop1);
+
+                if (triggerMenuAudio)
+                {
+                    AudioManager.INSTANCE.TriggerMenuLoopChanged(MenuAudioLoopType.Loop1);
+                }
                 break;
             case StartMatchState.ModeSelection:
                 Debug.Log($"<color=orange>StartMatchState</color><color=gold>ModeSelection</color>");
@@ -423,6 +427,15 @@ public class StartMatchManagerUI : MonoBehaviour
 
     }
 
+    private void QuickShowTeamHolder(MainTeamHolder teamHolder)
+    {
+        teamHolder.DoDoScaleIn_Emblem();
+        teamHolder.DoDoScaleIn_TeamName();
+        teamHolder.DoDoScaleIn_ScoreText();
+        teamHolder.DoDoScaleIn_TeamCount();
+        teamHolder.DoDoScaleIn_AttckDefObjects();
+    }
+
     private IEnumerator ShowDuelInterfaceSequence()
     {
         NavigationManager.instance.SetNavigationPointerByState(StartMatchState.Duel);
@@ -599,6 +612,15 @@ public class StartMatchManagerUI : MonoBehaviour
         m_StartMatchCanvas.gameObject.SetActive(false);
     }
 
+    public void QuickStartMatch(GlobalConfig cfg)
+    {
+        DisableStartMatchCanvas();
+
+        m_MainCanvas.InitMainCanvas(cfg.__DUEL_SETTINGS__, cfg.__MATCH_SETTINGS__);
+
+        QuickShowTeamHolder(m_MainCanvas.GetAxisTeamHolder());
+        QuickShowTeamHolder(m_MainCanvas.GetAlliesTeamHolder());
+    }
 
     // IAP
     private bool m_IsIAPOpened = false;

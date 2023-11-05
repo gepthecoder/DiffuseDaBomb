@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class HistoryController : MonoBehaviour
 {
+    public static HistoryController INSTANCE;
+
     [SerializeField] private HistoryItemObject m_HistoryObject;
     [SerializeField] private Transform m_Parent;
     [SerializeField] private Button m_HistoryButton;
@@ -26,6 +28,8 @@ public class HistoryController : MonoBehaviour
             PlayerPrefs.SetInt(m_LastHistoryCountPrefKey, m_LastHistoryCount);
             PlayerPrefs.Save();
         }
+
+        INSTANCE = this;
     }
 
     private void Start()
@@ -86,5 +90,16 @@ public class HistoryController : MonoBehaviour
         var historyObj = Instantiate(m_HistoryObject.gameObject, m_Parent).GetComponent<HistoryItemObject>();
         historyObj.SetHistoryItemObjectData(data, m_Index);
         m_Index++;
+    }
+
+    public void ShowHistory()
+    {
+        m_HistoryButton.interactable = false;
+        m_HistoryAnimator.SetTrigger("show");
+
+        if (m_NotificationIcon.activeSelf)
+        {
+            m_NotificationIcon.SetActive(false);
+        }
     }
 }

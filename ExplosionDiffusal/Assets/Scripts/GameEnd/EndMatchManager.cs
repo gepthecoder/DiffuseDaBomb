@@ -48,18 +48,24 @@ public class EndMatchManager : MonoBehaviour
     #region Button Events
     public void OnPlayAgainButtonPressed() // REMATCH
     {
+        AudioManager.INSTANCE.MuteVictoryAudio();
+
         AdManager.INSTANCE.ShowInterstitalAd(() => {
             Fader.INSTANCE.FadeToMainScene(TransitionType.PlayAgain);
         });
     }
     public void OnMatchDetailsButtonPressed()
     {
-        AdManager.INSTANCE.ShowInterstitalAd(() => { 
+        AudioManager.INSTANCE.MuteVictoryAudio();
+
+        AdManager.INSTANCE.ShowInterstitalAd(() => {
             Fader.INSTANCE.FadeToMainScene(TransitionType.MatchDetails);
         });
     }
     public void OnExitGameButtonPressed()
     {
+        AudioManager.INSTANCE.MuteVictoryAudio();
+
         AdManager.INSTANCE.ShowInterstitalAd(() => { 
             Fader.INSTANCE.FadeToMainScene(TransitionType.ExitGame);
         });

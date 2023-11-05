@@ -21,7 +21,6 @@ public class RematchManager : MonoBehaviour
     protected GlobalConfig ___Global_Config___;
 
     [HideInInspector] public UnityEvent<GlobalConfig> OnReadyEvent = new UnityEvent<GlobalConfig>();
-    [HideInInspector] public UnityEvent OnRematchInitializedEvent = new UnityEvent();
 
     private bool m_Ready = false;
 
@@ -39,8 +38,7 @@ public class RematchManager : MonoBehaviour
 
         ___Global_Config___ = cfg;
 
-        // clear ui
-        OnRematchInitializedEvent?.Invoke();
+        AudioManager.INSTANCE.TriggerMenuLoopChanged(MenuAudioLoopType.Loop4);
 
         // Set Module Data: Match Settings / Duel
         m_MSGameTime.InitSettingsItemValue(cfg.__MATCH_SETTINGS__.GameTimeInMinutes);
@@ -102,7 +100,7 @@ public class RematchManager : MonoBehaviour
         });
     }
 
-    public void DeinitRematchModule()
+    public void DeinitRematchModule(bool changeLoop)
     {
         // Hide Module
         m_Parent.SetActive(false);
@@ -112,6 +110,11 @@ public class RematchManager : MonoBehaviour
         m_MSBombTime.OnMatchSettingsItemValueChangedEvent.RemoveAllListeners();
         m_MSStartDelay.OnMatchSettingsItemValueChangedEvent.RemoveAllListeners();
         m_MSRoundLimit.OnMatchSettingsItemValueChangedEvent.RemoveAllListeners();
+
+        if(changeLoop)
+        {
+            AudioManager.INSTANCE.TriggerMenuLoopChanged(MenuAudioLoopType.Loop1);
+        }
     }
 
     #region Button Events
@@ -122,7 +125,7 @@ public class RematchManager : MonoBehaviour
         {
             OnReadyEvent?.Invoke(___Global_Config___);
 
-            DeinitRematchModule();
+            DeinitRematchModule(false);
 
             m_Ready = true;
         }
@@ -130,7 +133,7 @@ public class RematchManager : MonoBehaviour
 
     public void CloseRematchButtonClicked()
     {
-        DeinitRematchModule();
+        DeinitRematchModule(true);
     }
 
     #endregion

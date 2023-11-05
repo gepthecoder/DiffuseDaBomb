@@ -142,6 +142,8 @@ public class AudioManager : MonoBehaviour
         private IEnumerator VictorySeq(Team wTeam)
         {
             m_VictoryAudio.volume = 0;
+
+            StartCoroutine(FadeMusic(m_RepairBombAudio, 0f, 1f));
             StartCoroutine(FadeMusic(m_VictoryAudio, 1f, 2f));
 
             m_VictoryAudio.PlayOneShot(m_VictoryClip);
@@ -159,18 +161,23 @@ public class AudioManager : MonoBehaviour
             m_VictoryAudio1.loop = true;
             m_VictoryAudio1.clip = m_VictoryClip1;
 
-            StartCoroutine(FadeMusic(m_VictoryAudio1, .65f, 9f));
+            StartCoroutine(FadeMusic(m_VictoryAudio1, .65f, 10f));
 
             m_VictoryAudio1.Play();
 
             yield break;
         }
 
-        /// <summary>
-        /// called every frame in repair state (while holding down repair btn)
-        /// </summary>
-        /// <param name="volume"></param>
-        public void PlayStaticSparkSFXUpdate(float volume)
+        public void MuteVictoryAudio()
+        {
+            StartCoroutine(FadeMusic(m_VictoryAudio1, 0f, 2f));
+        }
+
+    /// <summary>
+    /// called every frame in repair state (while holding down repair btn)
+    /// </summary>
+    /// <param name="volume"></param>
+    public void PlayStaticSparkSFXUpdate(float volume)
         {
             m_RepairBombAudio.volume = 1 - volume;
 
@@ -452,7 +459,7 @@ public class AudioManager : MonoBehaviour
 
             StartCoroutine(FadeMusic(m_StartMatchAudio, 0f, 2f));
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
 
             m_StartMatchAudioTemp.PlayOneShot(m_BeforeVOClip);
             m_StartMatchAudioTemp1.PlayOneShot(m_SwitchingSidesClipVO);
@@ -485,8 +492,6 @@ public class AudioManager : MonoBehaviour
 
     public void FadeOutVolume(MenuAudioLoopType loopType, float time)
     {
-        print("FadeOutVolume: " + time);
-
         foreach (var loopData in m_MenuAudioLoops)
         {
             if(loopData.m_Type == loopType)

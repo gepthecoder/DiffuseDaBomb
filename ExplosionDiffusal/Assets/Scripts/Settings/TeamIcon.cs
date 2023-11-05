@@ -47,11 +47,11 @@ public class TeamIcon : MonoBehaviour
 
     public string GetAvatarSourceID()
     {
-        if(m_Icon.material != null)
+        if(m_Icon.material.mainTexture != null)
         {
             return m_Icon.material.mainTexture.name;
         }
-
+        
         return m_Icon.sprite.name;
     }
 

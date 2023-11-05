@@ -7,6 +7,7 @@ public enum TransitionType
     ExitGame,
     MatchDetails,
     Null,
+    Default
 }
 
 public class Fader : MonoBehaviour
@@ -15,7 +16,10 @@ public class Fader : MonoBehaviour
 
     [SerializeField] private Animator m_FadeInOutAnime;
 
-    private TransitionType m_TransitionType;
+    private TransitionType m_TransitionType = TransitionType.Default;
+
+    private bool m_CanInitialize = true;
+    private float time;
 
     private void Awake()
     {
@@ -23,13 +27,29 @@ public class Fader : MonoBehaviour
         {
             INSTANCE = this;
             DontDestroyOnLoad(this);
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
             Destroy(gameObject);
         }
 
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        print("FADER AWAKE");
+    }
+
+    private void Update()
+    {
+        if(!m_CanInitialize)
+        {
+            time += Time.deltaTime;
+
+            if(time > 3f)
+            {
+                m_CanInitialize = true;
+                time = 0f;
+            }
+        }
     }
 
     private void OnDestroy()
@@ -48,16 +68,16 @@ public class Fader : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if(m_TransitionType == TransitionType.PlayAgain)
+        print(scene.name + " | " + m_TransitionType);
+
+        if(m_CanInitialize)
         {
-            var cfg = Config.INSTANCE.GetGlobalConfig();
+            var gm = FindObjectOfType<GameManager>();
+            gm.InitializeGame(m_TransitionType);
 
-            RematchManager.INSTANCE.InitRematchModule(cfg);
-
-            m_TransitionType = TransitionType.Null;
+            m_CanInitialize = false;
         }
     }
 

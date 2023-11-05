@@ -63,6 +63,8 @@ public class PlantBombManager : MonoBehaviour
 
                 m_CurrentSelectedEncryptor = ClickableType.None;
 
+                SuitcaseHelper.INSTANCE.LockCloseSuitcaseButton(true);
+
                 TriggerPlantBehaviour(PlantBombState.Start, new HackingItemData(data.CodeEncryption, true)); }    
             );
 

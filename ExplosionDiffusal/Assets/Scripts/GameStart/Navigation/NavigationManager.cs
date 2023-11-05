@@ -45,7 +45,7 @@ public class NavigationManager : MonoBehaviour
 
     public void ShowMenuNavigation(bool show)
     {
-        m_NavigationObjectUI.DOScale(show ? 1f : 0f, 1f).SetEase(Ease.InBack);
+        m_NavigationObjectUI.DOScale(show ? 1f : 0f, show ? 2f : 1f).SetEase(Ease.InBack);
     }
 
     public void SetNavigationPointerByState(StartMatchState mainState, MatchSettingsStateType matchSettingState = MatchSettingsStateType.None)
