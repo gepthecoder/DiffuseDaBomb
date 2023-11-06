@@ -426,6 +426,7 @@ public class GameManager : MonoBehaviour
             // Try Hide "Before Switching Sides"
             m_UiManager.TryHideBeforeSwitchingSides();
 
+#if UNITY_ANDROID
             // INTERSTITIAL AD POPUP
             AdManager.INSTANCE.ShowInterstitalAd(() => {
 
@@ -448,6 +449,26 @@ public class GameManager : MonoBehaviour
                 });
 
             });
+#else
+            // N E W  R O U N D
+
+            // RESET
+            m_PlantBombManager.Deinit();
+            m_DefuseBombManager.ResetBombDefuseSettings();
+            m_CodeManager.Deinit();
+            m_CountdownManager.ResetCountDownObjects();
+            m_VictoryManager.ResetBombAfterMathEffect();
+            m_BombManager.ResetSparks();
+            SuitcaseHelper.INSTANCE.LockCloseSuitcaseButton(false);
+
+            // START NEW ROUND
+            RoundManager.instance.NewRound(() =>
+            {
+                m_CountdownManager.InitRoundTimeCountdown();
+                TriggerBehaviour(GameState.Initial);
+            });
+#endif
+
         });
 
         SuitcaseHelper.INSTANCE.OnCloseSuitcaseButtonEvent.AddListener(() =>

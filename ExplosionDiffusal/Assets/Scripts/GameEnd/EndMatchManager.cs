@@ -50,25 +50,38 @@ public class EndMatchManager : MonoBehaviour
     {
         AudioManager.INSTANCE.MuteVictoryAudio();
 
+#if UNITY_ANDROID
+
         AdManager.INSTANCE.ShowInterstitalAd(() => {
             Fader.INSTANCE.FadeToMainScene(TransitionType.PlayAgain);
         });
+
+#else
+        Fader.INSTANCE.FadeToMainScene(TransitionType.PlayAgain);
+#endif
     }
     public void OnMatchDetailsButtonPressed()
     {
         AudioManager.INSTANCE.MuteVictoryAudio();
-
+#if UNITY_ANDROID
         AdManager.INSTANCE.ShowInterstitalAd(() => {
             Fader.INSTANCE.FadeToMainScene(TransitionType.MatchDetails);
         });
+#else
+        Fader.INSTANCE.FadeToMainScene(TransitionType.MatchDetails);
+#endif
     }
     public void OnExitGameButtonPressed()
     {
         AudioManager.INSTANCE.MuteVictoryAudio();
 
+#if UNITY_ANDROID
         AdManager.INSTANCE.ShowInterstitalAd(() => { 
             Fader.INSTANCE.FadeToMainScene(TransitionType.ExitGame);
         });
+#else
+        Fader.INSTANCE.FadeToMainScene(TransitionType.ExitGame);
+#endif
     }
     #endregion
 }
