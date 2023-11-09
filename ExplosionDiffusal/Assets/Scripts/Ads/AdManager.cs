@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Advertisements;
 
@@ -19,6 +20,12 @@ public class AdManager : MonoBehaviour
     private void Awake()
     {
         INSTANCE = this;
+    }
+
+    private IEnumerator Start()
+    {
+        yield return new WaitForSeconds(3f);
+        ShowBannerAd(BannerPosition.BOTTOM_CENTER);
     }
 
     // BANNER

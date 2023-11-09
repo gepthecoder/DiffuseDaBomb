@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -70,7 +71,7 @@ public class Fader : MonoBehaviour
     {
         print(scene.name + " | " + m_TransitionType);
 
-        if(m_CanInitialize)
+        if (m_CanInitialize)
         {
             var gm = FindObjectOfType<GameManager>();
             gm.InitializeGame(m_TransitionType);
@@ -78,5 +79,4 @@ public class Fader : MonoBehaviour
             m_CanInitialize = false;
         }
     }
-
 }

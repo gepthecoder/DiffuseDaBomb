@@ -102,6 +102,8 @@ public class IAPManager : MonoBehaviour
         {
             AdManager.INSTANCE.ForceHideBanner();
         }
+
+        print("OnNoADSPurchaseSuccessfulAction");
     }
 
     public void OnNoADSPurchaseFailedAction()
@@ -114,6 +116,8 @@ public class IAPManager : MonoBehaviour
 
         // UPDATE VIEW
         m_NoADS.EnableAdsByState((AdState)_AdsEnabled_);
+
+        print("OnNoADSPurchaseFailedAction");
     }
 
     #endregion

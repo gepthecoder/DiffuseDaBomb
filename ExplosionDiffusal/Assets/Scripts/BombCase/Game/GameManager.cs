@@ -88,6 +88,7 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case TransitionType.Null:
+            case TransitionType.Default:
             default:
                 TriggerBehaviour(GameState.PreMatch);
                 break;
@@ -104,14 +105,11 @@ public class GameManager : MonoBehaviour
                 Debug.Log($"<color=red>GameState</color><color=gold>PreMatch</color>");
                 {
                     Time.timeScale = 1.5f;
-                    AdManager.INSTANCE.ShowBannerAd(BannerPosition.BOTTOM_CENTER);
                     m_StartMatchManager.Init();
                 } break;
             case GameState.ReMatch:
                 Debug.Log($"<color=red>GameState</color><color=gold>ReMatch</color>");
                 {
-                    AdManager.INSTANCE.ShowBannerAd(BannerPosition.BOTTOM_CENTER);
-
                     var cfg = Config.INSTANCE.GetGlobalConfig();
 
                     m_StartMatchManager.Init(false);
