@@ -34,8 +34,6 @@ public class Fader : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        print("FADER AWAKE");
     }
 
     private void Update()

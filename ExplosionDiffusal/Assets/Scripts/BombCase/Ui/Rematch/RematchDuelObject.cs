@@ -45,18 +45,18 @@ public class RematchDuelObject : MonoBehaviour
             var tIcon = m_TeamAvatarContentParent.GetChild(index).GetComponent<TeamIcon>();
             var icnMat = tIcon.GetSpriteMaterial();
 
-            if(icnMat.Item1 != null)
+            if (icnMat.Item1 != null)
             {
                 mapper.hasMaterial = false;
                 mapper.SPRITE = icnMat.Item1;
-            }
+                mapper.MATERIAL = null;
 
-            if (icnMat.Item2 != null)
+            } else
             {
                 mapper.hasMaterial = true;
                 mapper.MATERIAL = icnMat.Item2;
+                mapper.SPRITE = null;
             }
-
             OnTeamAvatarChangedEvent?.Invoke(mapper);
         });
 

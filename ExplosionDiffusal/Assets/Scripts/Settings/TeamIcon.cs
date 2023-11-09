@@ -30,7 +30,7 @@ public class TeamIcon : MonoBehaviour
 
     public void SetTeamIconImageViaMapper(TeamIconImageMapper mapper)
     {
-        if(mapper.hasMaterial) {
+        if(mapper.MATERIAL != null) {
             m_Icon.sprite = null;
             SetTeamIconMaterial(mapper.MATERIAL);
         } else
