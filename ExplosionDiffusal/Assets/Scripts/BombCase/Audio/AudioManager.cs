@@ -485,7 +485,7 @@ public class AudioManager : MonoBehaviour
             bool fadeIn = loopData.m_Type == loopType;
 
             StartCoroutine(FadeMusic(loopData.m_MenuMusicLoopSource, fadeIn ? 1f : 0f, 
-                fadeIn ? loopType == MenuAudioLoopType.Loop1 ? 5f: 3f : 2f
+                fadeIn ? loopType == MenuAudioLoopType.Loop1 ? 5f : 1f : 1f
             ));
         }
     }

@@ -17,20 +17,21 @@ public class AdManager : MonoBehaviour
 
     [SerializeField] private ADS m_ADS;
 
+    private bool m_AdsInitialized = false;
+
     private void Awake()
     {
         INSTANCE = this;
     }
 
-    private IEnumerator Start()
-    {
-        yield return new WaitForSeconds(3f);
-        ShowBannerAd(BannerPosition.BOTTOM_CENTER);
-    }
-
     // BANNER
     public void ShowBannerAd(BannerPosition bannerPosition) {
-        if(IAPManager.INSTANCE.AdsEnabled()) {
+        if(!m_AdsInitialized)
+        {
+            return;
+        }
+
+        if (IAPManager.INSTANCE.AdsEnabled()) {
             m_ADS.BANNER.ShowBannerAd(bannerPosition);
         }
     }
@@ -49,6 +50,10 @@ public class AdManager : MonoBehaviour
     // INTERSTITIAL
     public void ShowInterstitalAd(Action callback) {
         if (IAPManager.INSTANCE.AdsEnabled()) {
+            if (!m_AdsInitialized)
+            {
+                return;
+            }
             m_ADS.INTERSTITIAL.ShowAd(callback);
         }
         else { callback?.Invoke(); }
@@ -57,5 +62,10 @@ public class AdManager : MonoBehaviour
     // REWARDED
     public void ShowRewardedVideoAd() {
         m_ADS.REWARDED.ShowAd();
+    }
+
+    public void Init(bool success)
+    {
+        m_AdsInitialized = success;
     }
 }
