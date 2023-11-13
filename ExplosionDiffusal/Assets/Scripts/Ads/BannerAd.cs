@@ -34,7 +34,7 @@ public class BannerAd : MonoBehaviour
         // Configure the Load Banner button to call the LoadBanner() method when clicked:
         //_loadBannerButton.onClick.AddListener(LoadBanner);
         //_loadBannerButton.interactable = true;
-        LoadBanner();
+        Invoke("LoadBanner", 1f);
     }
 
     // Implement a method to call when the Load Banner button is clicked:
@@ -64,6 +64,8 @@ public class BannerAd : MonoBehaviour
         // Enable both buttons:
         //_showBannerButton.interactable = true;
         //_hideBannerButton.interactable = true;
+
+        AdManager.INSTANCE.ShowBannerAd(BannerPosition.BOTTOM_CENTER);
     }
 
     // Implement code to execute when the load errorCallback event triggers:
@@ -74,7 +76,7 @@ public class BannerAd : MonoBehaviour
     }
 
     // Implement a method to call when the Show Banner button is clicked:
-    public void ShowBannerAd(BannerPosition bannerPosition)
+    public void ShowBannerAd(BannerPosition bannerPosition = BannerPosition.BOTTOM_CENTER)
     {
         _bannerPosition = bannerPosition;
         // Set Position Of The Banner
@@ -97,7 +99,6 @@ public class BannerAd : MonoBehaviour
     {
         // Hide the banner:
         Advertisement.Banner.Hide();
-        //LoadBanner(); G3P ADDED MAYBE
     }
 
     void OnBannerClicked() { }

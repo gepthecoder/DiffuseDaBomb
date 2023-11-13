@@ -32,13 +32,10 @@ public class AdSDK : MonoBehaviour, IUnityAdsInitializationListener
     public void OnInitializationComplete()
     {
         Debug.Log("Unity Ads initialization complete.");
-        AdManager.INSTANCE?.Init(true);
-        AdManager.INSTANCE?.ShowBannerAd(BannerPosition.BOTTOM_CENTER);
     }
 
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)
     {
         Debug.Log($"Unity Ads Initialization Failed: {error.ToString()} - {message}");
-        AdManager.INSTANCE?.Init(false);
     }
 }
