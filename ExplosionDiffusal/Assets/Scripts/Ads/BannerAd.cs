@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Advertisements;
+using System.Collections;
+using System;
 
 public class BannerAd : MonoBehaviour
 {
@@ -34,7 +36,20 @@ public class BannerAd : MonoBehaviour
         // Configure the Load Banner button to call the LoadBanner() method when clicked:
         //_loadBannerButton.onClick.AddListener(LoadBanner);
         //_loadBannerButton.interactable = true;
-        Invoke("LoadBanner", 1f);
+
+        StartCoroutine(WaitUntilInitialized(() => {
+            LoadBanner();
+        }));
+    }
+
+    private IEnumerator WaitUntilInitialized(Action callback)
+    {
+        while(!Advertisement.isInitialized)
+        {
+            yield return null;
+        }
+
+        callback?.Invoke();
     }
 
     // Implement a method to call when the Load Banner button is clicked:

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class FinalScore
@@ -19,6 +20,8 @@ public class FinalScore
 
 public class EndMatchManager : MonoBehaviour
 {
+    [SerializeField] private Image m_Blocker;
+    [Space(5)]
     [SerializeField] private Animator m_EndMatchAnimeSeq;
     [SerializeField] private Animator m_EndMatchAnimePopUp;
     [Space(5)]
@@ -31,6 +34,9 @@ public class EndMatchManager : MonoBehaviour
 
     public void InitEndMatch(EndMatchObjectData DATA)
     {
+        m_Blocker.raycastTarget = true;
+        InGameSettingsManager.instance.ForceCloseSettings();
+
         // Init Data
         m_EndMatchObject?.SetEndMatchObjectData(DATA);
         m_FinalScore?.SetScore(DATA.m_WinningTeamScore, DATA.m_LosingTeamScore);

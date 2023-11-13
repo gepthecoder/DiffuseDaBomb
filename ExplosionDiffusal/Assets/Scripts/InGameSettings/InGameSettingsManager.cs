@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class InGameSettingsManager : MonoBehaviour
 {
+    public static InGameSettingsManager instance;
+
     [SerializeField] private Slider m_MasterVolumeSlider;
     [SerializeField] private TextMeshProUGUI m_MasterVolumeValueText;
     [Header("Audio Settings")]
@@ -15,6 +17,9 @@ public class InGameSettingsManager : MonoBehaviour
     [SerializeField] private Sprite m_SFX_OFF;
     [SerializeField] private TextMeshProUGUI m_SFX_Text;
     [SerializeField] private TextMeshProUGUI m_MUSIC_Text;
+    [Space(5)]
+    [SerializeField] private GameObject m_ParentModule;
+    [SerializeField] private GameObject m_ParentButton;
 
     private const float m_MinInput = -80f;
     private const float m_MaxInput = 0f;
@@ -31,6 +36,11 @@ public class InGameSettingsManager : MonoBehaviour
     private bool m_IsSFX_ON = true;
     private bool m_IsMUSIC_ON = true;
 
+    private void Awake()
+    {
+        instance = this;
+    }
+
     public void Start()
     {
         m_MasterVolumeSlider.onValueChanged.AddListener((value) => {
@@ -44,6 +54,11 @@ public class InGameSettingsManager : MonoBehaviour
         });
     }
 
+    public void ForceCloseSettings()
+    {
+        m_ParentModule.SetActive(false);
+        m_ParentButton.SetActive(true);
+    }
 
     #region Button Methods
 
